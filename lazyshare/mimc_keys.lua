@@ -16,9 +16,9 @@ function initUserKeyActions()
 end
 
 function initDefaultKeyMap()
-  initUserKeyActions()
-  local defaultKeyMappings = import('/mods/lazyshare/defaultKeyMap.lua').mimcDefaultKeyMap
-    for pattern, action in defaultKeyMappings do
-    KeyMapper.SetUserKeyMapping(pattern, false, action)
-  end
+  --initUserKeyActions()
+  --local defaultKeyMappings = import('/mods/lazyshare/defaultKeyMap.lua').mimcDefaultKeyMap
+  --  for pattern, action in defaultKeyMappings do
+   -- KeyMapper.SetUserKeyMapping(pattern, false, action)
+  --end
 end

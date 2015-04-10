@@ -60,6 +60,9 @@ function CreateUI(isReplay)
 		----
 		--remove unit from group
 		['Alt-C'] = {action =  'UI_Lua import("/mods/group_split/lua/group_split/group_split.lua").DisbandSelection()', category = 'Group Split', order = 22,},
+
+		['V'] = {action =  'UI_Lua import("/mods/group_split/lua/group_split/group_split.lua").SmartSplitL()', category = 'Group Split', order = 23,},
+		['B'] = {action =  'UI_Lua import("/mods/group_split/lua/group_split/group_split.lua").SmartSplitR()', category = 'Group Split', order = 23,},
 		
 	}
 	IN_AddKeyMapTable(trackMap)

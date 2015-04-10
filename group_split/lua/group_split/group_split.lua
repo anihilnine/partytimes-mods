@@ -16,6 +16,8 @@ local GameCommon = import('/lua/ui/game/gamecommon.lua')
 local Announcement = import('/lua/ui/game/announcement.lua').CreateAnnouncement
 local Selection = import('/lua/ui/game/selection.lua')
 local Tooltip = import('/lua/ui/game/tooltip.lua')
+local lastSetIndex = 0
+local controlGroupCount = 0
 
 controls = {
     groups = {},
@@ -35,6 +37,76 @@ validGroups = {
 }
 
 groupOrder = {'11','12','13','14','15','16','17','18','19','20'}
+
+function vIn(v, b)
+	for kb,vb in b do
+		if v == vb then return true end
+	end
+
+	return false 
+end
+
+
+function areSame(lastSet, currentSelection)
+	if lastSet == nil then return false end
+	if currentSelection == nil then return false end
+
+
+	for k,v in lastSet do
+		if not vIn(v, currentSelection) then return end
+	end	
+
+	for k,v in currentSelection do
+		if not vIn(v, lastSet) then return end
+	end	
+	
+	return true
+end
+
+
+local logEnabled = false
+function Log(msg)
+	if logEnabled then
+		LOG(msg)
+	end
+end
+
+
+function SmartSplitL()
+	Log("last index was " .. lastSetIndex)
+	local lastSet = Selection.selectionSets[lastSetIndex]
+	local currentSelection = GetSelectedUnits()
+	if currentSelection == nil then return end
+	local same = areSame(lastSet, currentSelection)
+	Log("same was", same)
+	if same then
+		lastSetIndex = lastSetIndex + 1
+		if lastSetIndex == 11+controlGroupCount then 
+			lastSetIndex = lastSetIndex - 1
+		end
+		SelectSplitGroup(lastSetIndex)
+	else
+		SplitUnitsIntoGroups(100)
+	end
+end
+function SmartSplitR()
+	Log("last index was " .. lastSetIndex)
+	local lastSet = Selection.selectionSets[lastSetIndex]
+	local currentSelection = GetSelectedUnits()
+	if currentSelection == nil then return end
+	local same = areSame(lastSet, currentSelection)
+	Log("same was", same)
+	if same then
+		lastSetIndex = lastSetIndex - 1
+		if lastSetIndex == 10 then 
+			lastSetIndex = 11
+		end
+		SelectSplitGroup(lastSetIndex)
+	else
+		SplitUnitsIntoGroups(100)
+	end
+end
+
 
 function CreateUI(mapGroup)
     controls.parent = mapGroup
@@ -287,18 +359,40 @@ function RemoveUnitFromGroup(groupName, unit)
 	end
 end
 
+function RemoveCurrentGroups()
+
+	local lastGroupIndex = 11+controlGroupCount-1
+	Log(lastGroupIndex)
+	for i = 11, lastGroupIndex do
+		Log(i)
+
+		local unitArray = Selection.selectionSets[i]
+		if unitArray then
+			for index, unit in unitArray do
+				local unitGroup = unit.GroupName
+				if unitGroup then
+					Selection.RemoveUnitFromGroupSet(i, unit)
+				end
+			end
+		end
+	end
+
+	controlGroupCount = 0
+
+	
+end
+
+
 function SplitUnitsIntoGroups(NumOfGroups)
 	if type(NumOfGroups) == 'number' then
+		RemoveCurrentGroups()
 		CleanSelectionGroups()
 		
 		if NumOfGroups <= 0 then
 			NumOfGroups = 10
 		end
 		
-		if NumOfGroups > 10 then
-			return 
-		end
-				
+
 		local selectedunits = ValidateUnitsList(GetSelectedUnits())
 			
 		table.sort(selectedunits, 
@@ -339,6 +433,10 @@ function SplitUnitsIntoGroups(NumOfGroups)
 				end
 			end
 
+			controlGroupCount = table.getn(Groups)
+			Log("actual groups " ..controlGroupCount )
+			
+
 			if table.getn(Groups) > 0 then		
 				for GroupNum, units in Groups do
 					Selection.AddGroupSet(GroupNum +10, units)
@@ -347,6 +445,9 @@ function SplitUnitsIntoGroups(NumOfGroups)
 		else
 			Selection.AddGroupSet(NumOfGroups +10 , nil)
 		end
+
+		lastSetIndex = 11
+		SelectSplitGroup(lastSetIndex)
 	end
 end
 
@@ -378,6 +479,7 @@ function CleanSelectionGroup(GroupName)
 end
 
 function SelectSplitGroup(GroupNumber)
+	lastSetIndex = GroupNumber
 	Selection.ApplyGroupSet(GroupNumber)
 end
 

@@ -11,22 +11,64 @@ local UIUtil = import('/lua/ui/uiutil.lua')
 
 local overlays = {}
 
+function CreateSubOverlay(overlay, w, h, x, y)
+	local overlay2 = Bitmap(overlay)
+	overlay2:SetSolidColor('red')
+	overlay2.Width:Set(w)
+	overlay2.Height:Set(h)
+	LayoutHelpers.AtLeftTopIn(overlay2, overlay, x, y)
+end
+
+
 function CreateOverlay(unit)
 	local overlay = Bitmap(GetFrame(0))
 	local id = unit:GetEntityId()
 	
 	--print "creating overlay"
 
-	overlay:SetSolidColor('black')
-	overlay.Width:Set(10)
-	overlay.Height:Set(10)
+	overlay:SetSolidColor('magenta')
 	
+	local w = 5
+	local h = 1
+	local t =2
+	 
+	if not unit:IsInCategory("FACTORY") then 
+		--w = 20
+		--h = 20
+	end
+	if unit:IsInCategory("TECH2") then h = 3 end
+	if unit:IsInCategory("TECH3") then h = 6 end
+	
+	overlay.Width:Set(w)
+	overlay.Height:Set(h)
+
+	--CreateSubOverlay(overlay, w, t, 0, h-5)
+	--CreateSubOverlay(overlay, w, t, 0, 0)
+	--CreateSubOverlay(overlay, w, t, 0, h)
+	--CreateSubOverlay(overlay, t, h, 0, 0)
+	--CreateSubOverlay(overlay, t, h+t, w, 0)
+	
+	local isFirst = true
 	overlay:SetNeedsFrameUpdate(true)
 	overlay.OnFrame = function(self, delta)
+
 		if(not unit:IsDead()) then
 			local worldView = import('/lua/ui/game/worldview.lua').viewLeft
-			local pos = worldView:Project(unit:GetPosition())
-			LayoutHelpers.AtLeftTopIn(overlay, worldView, pos.x - overlay.Width() / 2, pos.y - overlay.Height() / 2 + 1)
+			local bp = unit:GetBlueprint()
+			local unitW = bp.LifeBarSize / 2
+			local unitH = bp.LifeBarOffset
+			local pos1 = unit:GetPosition() 
+			pos1.x = pos1.x + unitW
+			pos1.z = pos1.z + unitH
+			local pos2 = unit:GetPosition()
+			pos2.x = pos2.x - unitW
+			
+			local posA = worldView:Project(pos1)
+			local posB = worldView:Project(pos2)
+			local w = posB.x - posA.x
+
+			overlay.Width:Set(w)
+			LayoutHelpers.AtLeftTopIn(overlay, worldView, posA.x, posA.y)
 		else
 			overlay.destroy = true
 			overlay:Hide()
@@ -35,10 +77,11 @@ function CreateOverlay(unit)
 		
 	overlay.id = unit:GetEntityId()
 	overlay.destroy = false
-	overlay.text = UIUtil.CreateText(overlay, '0', 10, UIUtil.bodyFont)
-	overlay.text:SetColor('green')
-	overlay.text:SetDropShadow(true)
-	LayoutHelpers.AtCenterIn(overlay.text, overlay, 0, 0)
+	--overlay.text = UIUtil.CreateText(overlay, '0', 20, UIUtil.bodyFont)
+	--overlay.text:SetColor('green')
+	--overlay.text:SetDropShadow(true)
+	--LayoutHelpers.AtCenterIn(overlay.text, overlay, 0, 0)
+
 
 	return overlay
 end
@@ -54,8 +97,8 @@ function UpdateOverlay(e)
 		if(not overlays[id] and e:IsIdle()) then
 			overlays[id] = CreateOverlay(e)
 		end
-		overlays[id].text:SetColor('red')
-		overlays[id].text:SetText("E")
+		--overlays[id].text:SetColor('magenta')
+		--overlays[id].text:SetText("_")
 	else
 		if (overlays[id]) then
 			--print "Bye bye overlay"
@@ -67,7 +110,8 @@ end
 
 function engineerOverlay()
 	--print "Hello"
-	local engineers = EntityCategoryFilterDown(categories.ENGINEER, getUnits())
+	local engineers = EntityCategoryFilterDown(categories.ENGINEER + categories.FACTORY, getUnits())
+	if engineers == nil then return end
 	for _, e in engineers do
 		--print "Whats up doc!"
 		--LOG("e", repr(e))

@@ -8,6 +8,8 @@
 ## complication: moving to a coords centers on that coord whereas we want to keep the mouse cursor in the same position after zooming. 
 ## complication: the first time there is a flicker whilst we work out the relationship between WS and SS coords at the (zoompop) zoom level. subsequent pops we can just reuse this ratio without flicker
 
+local UIP = import('/mods/UI-Plus/modules/UI-Plus.lua')
+
 local first = true
 local wXperSx
 local wYperSy 
@@ -19,6 +21,12 @@ local oldToggleZoomPop = ToggleZoomPop
 
 function ToggleZoomPop()
 	
+	if UIP.IsDisabled() then 
+		oldToggleZoomPop()
+		return 0
+	end
+		
+
 	cam = GetCamera('WorldCamera')	
 	wv = import('/lua/ui/game/worldview.lua').GetWorldViews()["WorldCamera"];
 	popZoom = import('/lua/user/prefs.lua').GetFromCurrentProfile('options').gui_zoom_pop_distance
@@ -30,6 +38,8 @@ function ToggleZoomPop()
 
 		if first then
 			first = false
+
+			UipLog("First time zoom pop")
 
 			local p1 = GetMouseWorldPos()
 

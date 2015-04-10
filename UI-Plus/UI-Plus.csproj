@@ -32,10 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="hook\lua\ui\game\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hook\lua\ui\game\gamemain.lua" />
+    <None Include="modules\UI-Plus.lua" />
     <None Include="hook\modules\zoompopper.lua" />
     <None Include="mod_info.lua" />
   </ItemGroup>

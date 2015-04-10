@@ -1,0 +1,10 @@
+name = "Selection Deprioritizer"
+version = 4.0
+copyright = "nah"
+description = "Prevents accidental selection of things like mobile T3 Artillery. "
+author = "partytime"
+url = ""
+uid = "EDBD82E0-2569-4EB8-86EB-C34F84AFFBA3"
+exclusive = false
+ui_only =true
+conflicts = {}

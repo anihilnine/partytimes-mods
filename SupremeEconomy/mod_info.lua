@@ -1,0 +1,10 @@
+name = "Supreme Economy 2.1 (nolag)"
+version = 2.1
+copyright = "MaCielPL,Crotalus"
+description = "Tools that help with micromanaging economy"
+author = "MaCielPL"
+url = "http://supecono.googlepages.com"
+uid = "a0714870-3f5e-4b60-970e-1b02341990ec"
+exclusive = false
+ui_only = true
+conflicts = {"89BF1572-9EA8-11DC-1313-635F56D89591", "f8d8c95a-71e7-4978-921e-8765beb328e8"}

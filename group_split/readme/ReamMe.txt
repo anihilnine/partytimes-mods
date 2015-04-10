@@ -1,0 +1,35 @@
+
+
+Hi, 
+
+Thanks for downloading and using my mod.
+
+what this mod does is split a group of units into subgroups
+
+you can split any number of units into max 10 sub groups.
+
+Installation:
+
+Put the mod folder into your forged alliance mods folder, enable in the mod manager.
+This is a UI mod.
+
+
+HotKeys:
+
+alt + shift + 0 - 9 will split the group into that number.
+alt + 0 - 9 will select that group (if it exists)
+
+if you select unit(s) not in a group, you can hold alt and left click a group icon to add those units to that group.
+if you have a group unit selected you can press alt + s to select the whole group (squad) you can also click the group icon.
+
+alt + c will remove the selected group units from there group, but you can also right click on the groups icon to remove them.
+you can select a group unit and alt + left click one of the other groups icon and that unit will switch groups.
+
+Enjoy!
+
+Domino
+
+Credits:
+
+PartyTime - general idea
+Domino - Coder.

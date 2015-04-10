@@ -1,0 +1,26 @@
+Changelog:
+
+Lazyshare v2.0 (20th May 2009)
+- ID's are now left from the Playername.
+- Focused player has a '*' in the id-column.
+- Teammates are now orange in the scoreboard.
+- Score will represented with K when it is higher than 999.
+  For example 1500 Points are now shown as 1.5K.
+- Added functions to get other modders the chance to get infos about the ID's.
+  (also added support for AutoGive by falcontx)
+- If the Emergencybutton was pressed and an ID was choosen that's not a valid ID
+  and we have at least one Teammate it will be given all to this one.
+
+_____________________________________________________________________________________________
+
+LazyShare_for_FAF BETA2 (15th August 2013)
+- Adapted to the new Score UI, used by FA 1.5.3625
+- Changed files to fall back to the unchanged UI if watching a Replay.
+
+Known Bug: If playing Galactic War, the Player Rank isnt displayed in the Score Table (the players Avatar-name is displayed correctly)
+
+
+BETA3 (15th August 2013)
+- Adapted to FAF (shows Rank Names aswell als Rank Number next to the Avatar-Name)
+- Streched the Score Window a bit to make it fit in
+- All changes are done in score.lua

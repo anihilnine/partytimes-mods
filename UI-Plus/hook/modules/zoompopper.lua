@@ -21,7 +21,7 @@ local oldToggleZoomPop = ToggleZoomPop
 
 function ToggleZoomPop()
 	
-	if UIP.IsDisabled() then 
+	if not UIP.GetSetting("overrideZoomPop") or not UIP.Enabled() then 
 		oldToggleZoomPop()
 		return 0
 	end

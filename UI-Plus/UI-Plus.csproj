@@ -39,6 +39,7 @@
     <None Include="modules\UI-Plus.lua" />
     <None Include="hook\modules\zoompopper.lua" />
     <None Include="mod_info.lua" />
+    <None Include="settings.lua" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

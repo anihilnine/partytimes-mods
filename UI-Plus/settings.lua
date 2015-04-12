@@ -11,6 +11,8 @@ local settings = {
 	hideMenusOnStart = true,
 
 	startSplitScreen = true,
+
+	rearrangeBottomPanes = true
 }
 
 

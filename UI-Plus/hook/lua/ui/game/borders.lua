@@ -28,6 +28,7 @@ function SplitMapGroup(splitState, forceSplit)
 		MoveBuilders(splitState)
 
 	end
+
 end
 
 function MoveBuilders(halfMode)

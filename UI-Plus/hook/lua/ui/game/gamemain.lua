@@ -96,7 +96,7 @@ function OnFirstUpdate()
 		UIZoomTo(avatars, 1.2)
 			
 		WaitSeconds(1)
-		cam1:SetZoom(100,0.1) -- different zoom level to usual, not as close
+		cam1:SetZoom(import('/modules/zoompopper.lua').GetPopLevel(),0.1) -- different zoom level to usual, not as close
 		cam1:RevertRotation() -- UIZoomTo does something funny
 
 	end)

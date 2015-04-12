@@ -29,11 +29,9 @@ function triggerNotification()
 	unitsToSelect = {}
 	
 	for catName, catValue in cats do
-		for _,u in selectHelper.getAllUnits() do
-			if(u:IsInCategory("FACTORY") and u:IsInCategory(catValue))then
-				if(u:IsIdle() and not selectHelper.isUnitUpgrading(u) )then
-					table.insert(unitsToSelect, u)
-				end
+		for _,u in GetIdleFactories() or {} do
+			if(u:IsInCategory(catValue))then
+				table.insert(unitsToSelect, u)
 			end	
 		end
 		

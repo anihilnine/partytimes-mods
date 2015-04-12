@@ -46,19 +46,7 @@ function createPrefsUi()
 
 	-- copy configs to local, to not mess with the original ones until they should save
 	savedPrefs = notificationPrefs.getPreferences()
-	curPrefs = {
-		global = {},
-		notification = {}
-	}
-	for id, bool in savedPrefs.global do
-		curPrefs.global[id] = bool
-	end
-	for id, t in savedPrefs.notification do
-		curPrefs.notification[id] = {}
-		for id2, bool in t do
-			curPrefs.notification[id][id2] = bool
-		end
-	end
+	curPrefs = table.deepcopy(savedPrefs, {})
 	
 	-- make the ui	
 	createMainPanel()
@@ -161,7 +149,6 @@ function createNotificationList(posY)
 	for id, value in curPrefs.notification do
 		local curId = id
 		LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, utils.getFilenameWithoutDir(id), uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-		
 		createSettingCheckbox(curX+10, curY+2, 13, {"notification", curId, "states", "isActive"})
 		
 		if(utils.modulo(count, 2) == 0) then
@@ -206,24 +193,14 @@ end
 
 function createSettingCheckbox(posX, posY, size, args)
 	local value = curPrefs
+	local argsCopy = args
 	for _,v in args do
 		value = value[v]
 	end
-	
-	local argsCopy = args
 
-	local box = UIUtil.CreateCheckbox(uiPanel.main,
-		modpath.."/textures/checkbox_inactive_up.png",
-		modpath.."/textures/checkbox_active_up.png",
-		modpath.."/textures/checkbox_inactive_over.png",
-		modpath.."/textures/checkbox_active_over.png",
-		modpath.."/textures/checkbox_inactive_disabled.png",
-		modpath.."/textures/checkbox_active_disabled.png",
-		nil, nil
-	)
+	local box = UIUtil.CreateCheckbox(uiPanel.main, '/CHECKBOX/')
 	box.Height:Set(size)
 	box.Width:Set(size)
-	
 	box:SetCheck(value, true)
 	
 	box.OnClick = function(self)
@@ -271,13 +248,10 @@ function createSettingsSliderWithText(posX, posY, text, size, minVal, maxVal, va
 end
 
 
-function setCurPrefByArgs(args, value)
+function setCurPrefByArgs(args, value)	
 	num = table.getn(args)
 	if num==2 then
 		curPrefs[args[1]][args[2]] = value
-	end
-	if num==3 then
-		curPrefs[args[1]][args[2]][args[3]] = value
 	end
 	if num==4 then
 		curPrefs[args[1]][args[2]][args[3]][args[4]] = value

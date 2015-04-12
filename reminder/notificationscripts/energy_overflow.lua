@@ -26,7 +26,7 @@ function triggerNotification()
 		and (econData["income"]["ENERGY"] > (econData["lastUseRequested"]["ENERGY"]*1.2)) ) then
 		alreadyCounting = alreadyCounting + 0.1
 		
-		if(alreadyCounting > 3) then
+		if(alreadyCounting > 10) then
 			alreadyCounting = 0
 			return true
 		end

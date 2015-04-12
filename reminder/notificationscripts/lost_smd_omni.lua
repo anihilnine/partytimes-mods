@@ -32,7 +32,7 @@ function triggerNotification()
 	
 	-- smds
 	for _,u in selectHelper.getAllUnits() do
-		if(u:IsInCategory("ANTIMISSILE") and u:IsInCategory("TECH3"))then
+		if(u:IsInCategory("ANTIMISSILE") and u:IsInCategory("TECH3") and u:IsInCategory("STRUCTURE"))then
 			smds = smds +1
 		end	
 	end
@@ -47,7 +47,7 @@ function triggerNotification()
 		return true
 	end
 	
-	-- t2 and t3 radar
+	-- t3 radar
 	for _,u in selectHelper.getAllUnits() do
 		if(u:IsInCategory("OMNI") and u:IsInCategory("STRUCTURE") )then
 			omnis = omnis +1

@@ -3,7 +3,7 @@ local selectHelper = import(modpath..'/modules/selectHelper.lua')
 
 function getFixedConfig()
 	return {
-		triggerAtSeconds = 1200,
+		triggerAtSeconds = 600,
 		retriggerDelay = 120,
 	}
 end

@@ -1,9 +1,9 @@
-name = "Notifications v2.2"
-version = 2.2
+name = "Notifications v2.4"
+version = 2.4
 copyright = "Myxir"
 description = "extensible notification mod"
 author = "Myxir"
-uid = "0faf3443-1122-633s-ya-V00000002002"
+uid = "0faf3443-1122-633s-ya-V00000002004"
 url = ""
 icon = "/mods/reminder/bubble.png"
 identifier = ""

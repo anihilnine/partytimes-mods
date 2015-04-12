@@ -3,7 +3,7 @@ local fixedConfig = {
 }
 local runtimeConfig = {
 	text = "Spend Mass",
-	subtext = "you have alot mass in storage!",
+	subtext = "you have a lot mass in storage!",
 	icon = 'eco/massIcon.png',
 }
 function getFixedConfig()

@@ -17,21 +17,8 @@ function getRuntimeConfig()
 end
 
 
+local allFactories = {}
 local unitsToSelect = nil
-
-
-local hqsPrev = {
-	T2 = {
-		Land = 0,
-		Air = 0,
-		Naval = 0,
-	},
-	T3 = {
-		Land = 0,
-		Air = 0,
-		Naval = 0,
-	},
-}
 
 
 function init()
@@ -39,55 +26,43 @@ end
 
 
 function triggerNotification()
-	local hqs = {
-		T2 = {
-			Land = 0,
-			Air = 0,
-			Naval = 0,
-		},
-		T3 = {
-			Land = 0,
-			Air = 0,
-			Naval = 0,
-		},
-	}
+	local notificationIsReady = false
 
+	-- add all new existing factories
 	for _,u in selectHelper.getAllUnits() do
-		if(u:IsInCategory("FACTORY") )then
-			if((not selectHelper.isUnitUpgrading(u)) and isHq(u)) then
-				uTech = "T2"
-				uKind = "Land"
-			
-				if(u:IsInCategory("TECH3") )then
-					uTech = "T3"
-				end
-				if(u:IsInCategory("AIR") )then
-					uKind = "Air"
-				elseif(u:IsInCategory("NAVAL") )then
-					uKind = "Naval"
-				end
-				hqs[uTech][uKind] = hqs[uTech][uKind]+1
+		if(u:IsInCategory("FACTORY") and u:IsInCategory("STRUCTURE"))then
+			if(allFactories[u:GetEntityId()] == nil) then
+				allFactories[u:GetEntityId()] = {unit = u, position = u:GetPosition()}
 			end
 		end
 	end
 	
-	notificationIsReady = false
-	for iTech,vTech in hqs do
-		for iKind,vKind in vTech do
-			if(hqs[iTech][iKind] > hqsPrev[iTech][iKind]) then
-				runtimeConfig.subtext = iTech..' '..iKind..' HQ finished!'
-				prepareHqSelectList(iTech, iKind)
-				notificationIsReady = true
+	-- remove dead ones... or are they finished upgrading?
+	for id,v in allFactories do
+		if(v.unit:IsDead()) then
+			-- same position as another unit? - upgrade done! - else dead
+			local unitWithSamePosition = nil
+			for id2, v2 in allFactories do
+				if (id ~= id2) then
+					if (v.position[1] == v2.position[1] and v.position[3] == v2.position[3]) then
+						unitWithSamePosition = v2.unit
+						break
+					end
+				end
 			end
-			hqsPrev[iTech][iKind] = hqs[iTech][iKind]
 			
-			if(notificationIsReady) then
-				return true
+			if(unitWithSamePosition ~= nil) then
+				if(setRuntimeConfig(unitWithSamePosition)) then
+					unitsToSelect = {unitWithSamePosition}
+					notificationIsReady = true
+				end
 			end
-		end		
+			
+			allFactories[id] = nil
+		end
 	end
 	
-	return false
+	return notificationIsReady
 end
 
 
@@ -103,10 +78,27 @@ end
 ---------------------
 
 
-function isHq(u)
-	bp = u:GetBlueprint()
-	return (isT2Hq(bp) or isT3Hq(bp))
+function setRuntimeConfig(u)
+	local iKind = "Land"
+	if(u:IsInCategory("AIR")) then
+		iKind = "Air"
+	elseif(u:IsInCategory("NAVAL")) then
+		iKind = "Navy"
+	end
+	
+	local iTech = ""
+	if(isT2Hq(u:GetBlueprint())) then
+		iTech = "T2"
+	elseif(isT3Hq(u:GetBlueprint())) then
+		iTech = "T3"
+	else
+		return false
+	end
+	runtimeConfig.subtext = iTech..' '..iKind..' HQ finished!'
+	return true
 end
+
+
 function isT2Hq(bp)
 	return cutBpId(bp.BlueprintId) == "020"
 end
@@ -117,21 +109,4 @@ end
 
 function cutBpId(s)
    return string.sub(s, 4, 6)   
-end
-
-
-function prepareHqSelectList(cat1, cat2)
-	unitsToSelect = {}
-	
-	if(cat1 == "T2") then
-		cat1 = "TECH2"
-	elseif(cat1 == "T3") then
-		cat1 = "TECH3"
-	end
-	
-	for _,u in selectHelper.getAllUnits() do
-		if( u:IsInCategory(cat1) and u:IsInCategory(string.upper(cat2)) ) then
-			table.insert(unitsToSelect, u)
-		end
-	end
 end

@@ -1,7 +1,6 @@
 local oldSelection = nil
 local isAutoSelection = false
 local allUnits = {}
-local upgradingUnits = {}
 local lastFocusedArmy = 0
 
 
@@ -39,7 +38,6 @@ function UpdateAllUnits()
 	for entityid, unit in allUnits do
 		if unit:IsDead() then
 			allUnits[entityid] = nil
-			upgradingUnits[entityid] = nil
 		elseif unit:GetFocus() and not unit:GetFocus():IsDead() then
 			allUnits[unit:GetFocus():GetEntityId()] = unit:GetFocus()
 		end
@@ -59,25 +57,4 @@ end
 
 function IsAutoSelection()
 	return isAutoSelection
-end
-
-
-function addUpgradingUnit(u)
-	upgradingUnits[u:GetEntityId()] = u
-end
-
-
-function removeUpgradingUnit(u)
-	upgradingUnits[u:GetEntityId()] = nil
-end
-
-
-function isUnitUpgrading(u)
-	targetId = u:GetEntityId()
-	for id2,u2 in upgradingUnits do
-		if(u:GetPosition()[1] == u2:GetPosition()[1]) and (u:GetPosition()[3] == u2:GetPosition()[3]) then
-			return true
-		end
-	end
-	return false
 end

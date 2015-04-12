@@ -8,6 +8,7 @@ function CreateUI(isReplay)
 	oldCreateUI(isReplay)
 
 	if UIP.Enabled() then 
+
 		ForkThread(function() 
 			
 			local tabs = import('/lua/ui/game/tabs.lua')
@@ -34,6 +35,16 @@ function OnFirstUpdate()
 
 	if not UIP.GetSetting("startSplitScreen") or not UIP.Enabled() then 
 		oldOnFirstUpdate()
+
+					
+		if UIP.GetSetting("overrideZoomPop") then 
+			ForkThread(function()
+				import('/modules/zoompopper.lua').Init()
+				local cam = GetCamera('WorldCamera')
+				cam:Reset()
+			end)
+		end
+
 		return
 	end
 
@@ -54,7 +65,7 @@ function OnFirstUpdate()
 	PlaySound( Sound { Bank='AmbientTest', Cue='AMB_Planet_Rumble_zoom'} )
 
 	ForkThread(function()
-
+		
 		if not IsNISMode() then
 			import('/lua/ui/game/worldview.lua').UnlockInput()
 		end
@@ -64,6 +75,11 @@ function OnFirstUpdate()
 		Borders.SplitMapGroup(true, true)
 		import('/lua/ui/game/worldview.lua').Expand() -- required to initialize something else there is a crash
 			
+		if UIP.GetSetting("overrideZoomPop") then 
+			WaitSeconds(0)
+			import('/modules/zoompopper.lua').Init()
+		end
+
 		-- select acu & start placing fac
 		AddSelectUnits(avatars)
 		import('/modules/hotbuild.lua').buildAction('Builders')

@@ -10,7 +10,7 @@ local settings = {
 	moveMainMenuToRight = true,
 	hideMenusOnStart = true,
 
-	startSplitScreen = true,
+	startSplitScreen = false,
 
 	rearrangeBottomPanes = true
 }

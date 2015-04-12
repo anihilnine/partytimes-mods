@@ -19,77 +19,67 @@ local wv
 local cam
 local oldToggleZoomPop = ToggleZoomPop
 
+
+function Init()
+	UipLog("First time zoom pop")
+
+	cam = GetCamera('WorldCamera')
+	wv = import('/lua/ui/game/worldview.lua').GetWorldViews()["WorldCamera"];
+
+	local p1 = GetMouseWorldPos()
+	local popZoom = GetPopLevel()
+	
+	local settings = cam:SaveSettings()
+	pitch = settings.Pitch
+	heading = settings.Heading
+
+	local hpr = Vector(settings.Heading, settings.Pitch, 0)   
+	cam:SnapTo(p1, hpr, popZoom)
+	WaitSeconds(0)
+
+	--3. measure the difference in ws to ss x/y
+	local sp = GetMouseScreenPos()
+	local p2 = UnProject(wv, sp)
+	sp[1] = sp[1] + 1
+	sp[2] = sp[2] + 1
+	local p3 = UnProject(wv, sp)
+	wXperSx = p3[1] - p2[1]
+	wYperSy = p3[3] - p2[3]
+	LOG(wXperSx)
+	LOG(wYperSy)
+
+end
+
+function GetPopLevel()
+	local popZoom = import('/lua/user/prefs.lua').GetFromCurrentProfile('options').gui_zoom_pop_distance
+	if popZoom == nil then
+		popZoom = 80
+	end
+	return popZoom
+end
+
 function ToggleZoomPop()
 	
 	if not UIP.GetSetting("overrideZoomPop") or not UIP.Enabled() then 
 		oldToggleZoomPop()
 		return 0
 	end
-		
 
 	cam = GetCamera('WorldCamera')	
 	wv = import('/lua/ui/game/worldview.lua').GetWorldViews()["WorldCamera"];
-	popZoom = import('/lua/user/prefs.lua').GetFromCurrentProfile('options').gui_zoom_pop_distance
-	if popZoom == nil then
-		popZoom = 80
-	end
+
+	local popZoom = GetPopLevel()
 
 	if math.abs(cam:GetZoom() - popZoom) > 1 then
-
-		if first then
-			first = false
-
-			UipLog("First time zoom pop")
-
-			local p1 = GetMouseWorldPos()
-
-			--1. reset the cam so we can get nice pitch/heading
-			local settingsOri = cam:SaveSettings()
-			cam:Reset()
-			ForkThread(function() 
-				WaitSeconds(0)
-
-				
-				--2. jump to the right zoom level
-				local settings = cam:SaveSettings()
-				pitch = settings.Pitch
-				heading = settings.Heading
-
-				local hpr = Vector(settings.Heading, settings.Pitch, 0)   
-				cam:SnapTo(p1, hpr, popZoom)
-				ForkThread(function() 
-					WaitSeconds(0)
-
-					--3. measure the difference in ws to ss x/y
-					local sp = GetMouseScreenPos()
-					local p2 = UnProject(wv, sp)
-					sp[1] = sp[1] + 1
-					sp[2] = sp[2] + 1
-					local p3 = UnProject(wv, sp)
-					wXperSx = p3[1] - p2[1]
-					wYperSy = p3[3] - p2[3]
-					--LOG("test", wXperSx, wYperSy)
-
-					cam:RestoreSettings(settingsOri)
-					ForkThread(function() 
-						WaitSeconds(0)
-						Pop()
-					end)
-
-				end)
-			end)
-
-		else
-	
-			Pop()
-
-		end
+		Pop()
 	else
 		cam:Reset()
 	end
 end 
 
 function Pop()
+
+	local popZoom = GetPopLevel()
 
 	local mp = GetMouseScreenPos()
 	local center = { wv:Width()/2, wv:Height() /2 }

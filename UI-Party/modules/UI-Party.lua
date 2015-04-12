@@ -1,9 +1,9 @@
-local settings = import('/mods/UI-Plus/settings.lua')
+local settings = import('/mods/UI-Party/settings.lua')
 
 function Init() 
 
 	local KeyMapper = import('/lua/keymap/keymapper.lua')
-	KeyMapper.SetUserKeyAction('Disable UI-Plus', {action = "UI_Lua import('/mods/UI-Plus/modules/UI-Plus.lua').ToggleEnabled()", category = 'Mods', order = 1,})
+	KeyMapper.SetUserKeyAction('Disable UI-Party', {action = "UI_Lua import('/mods/UI-Party/modules/UI-Party.lua').ToggleEnabled()", category = 'Mods', order = 1,})
 
 	_G.UipLog = function(a)
 		if (GetSetting("logEnabled")) then 
@@ -16,9 +16,9 @@ function ToggleEnabled()
 	SetSetting("enabled", not GetSetting("enabled"))
 
 	if GetSetting("enabled") then
-		print("UI-Plus - ENABLED")
+		print("UI-Party - ENABLED")
 	else
-		print("UI-Plus - DISABLED")
+		print("UI-Party - DISABLED")
 	end
 
 	UipLog("UIP.Enabled " .. tostring(GetSetting("enabled")))

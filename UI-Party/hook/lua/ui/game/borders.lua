@@ -1,4 +1,4 @@
-local UIP = import('/mods/UI-Plus/modules/UI-Plus.lua')
+local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 
 local oldSplitMapGroup = SplitMapGroup
 function SplitMapGroup(splitState, forceSplit)
@@ -23,7 +23,7 @@ function SplitMapGroup(splitState, forceSplit)
 	end
 
 	-- move bottom panes
-	if UIP.GetSetting("rearrangeBottomPanes")then 
+	if UIP.GetSetting("smallerContructionTabWhenSplitScreen")then 
 
 		MoveBuilders(splitState)
 

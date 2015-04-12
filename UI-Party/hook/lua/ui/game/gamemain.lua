@@ -1,4 +1,4 @@
-local UIP = import('/mods/UI-Plus/modules/UI-Plus.lua')
+local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 
 UIP.Init()
 
@@ -37,7 +37,7 @@ function OnFirstUpdate()
 		oldOnFirstUpdate()
 
 					
-		if UIP.GetSetting("overrideZoomPop") then 
+		if UIP.Enabled() and UIP.GetSetting("overrideZoomPop") then 
 			ForkThread(function()
 				import('/modules/zoompopper.lua').Init()
 				local cam = GetCamera('WorldCamera')

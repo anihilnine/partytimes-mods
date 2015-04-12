@@ -1,10 +1,11 @@
-name = "UI-Plus"
-version = 1
+name = "UI Party"
+version = 3
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
 author = "partytime"
 url = ""
-uid = "24DD23CA-DDBA-41FB-840B-3ED1668FA5B3"
+uid = "022E3DB4-9C00-4ED7-84D1-4866D316E693"
 exclusive = false
 ui_only =true
-conflicts = {}
+--conflicts = {  }
+conflicts = {  }

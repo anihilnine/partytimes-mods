@@ -5,14 +5,15 @@ local settings = {
 	logEnabled = false,
 
 	overrideZoomPop = true,
-
+	
 	moveAvatarsToLeftSplitScreen = true,
 	moveMainMenuToRight = true,
 	hideMenusOnStart = true,
+	smallerContructionTabWhenSplitScreen = true,
+	rearrangeBottomPanes = true,
+	startSplitScreen = true, -- split screen
 
-	startSplitScreen = true,
-
-	rearrangeBottomPanes = true
+	setGroundFireOnAttack = true
 }
 
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{FF2E2676-5B80-4ECF-AEE6-4EBAA198285D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UI-Plus</RootNamespace>
-    <AssemblyName>UI-Plus</AssemblyName>
+    <RootNamespace>UI-Party</RootNamespace>
+    <AssemblyName>UI-Party</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,8 +35,14 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hook\lua\ui\game\borders.lua" />
     <None Include="hook\lua\ui\game\gamemain.lua" />
-    <None Include="modules\UI-Plus.lua" />
+    <None Include="hook\lua\ui\game\commandmode.lua" />
+    <None Include="hook\lua\ui\game\layouts\orders_mini.lua" />
+    <None Include="hook\lua\ui\game\layouts\unitviewDetail_mini.lua" />
+    <None Include="hook\lua\ui\game\layouts\unitview_mini.lua" />
+    <None Include="hook\lua\ui\game\orders.lua" />
+    <None Include="modules\UI-Party.lua" />
     <None Include="hook\modules\zoompopper.lua" />
     <None Include="mod_info.lua" />
     <None Include="settings.lua" />

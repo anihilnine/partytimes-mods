@@ -8,7 +8,7 @@
 ## complication: moving to a coords centers on that coord whereas we want to keep the mouse cursor in the same position after zooming. 
 ## complication: the first time there is a flicker whilst we work out the relationship between WS and SS coords at the (zoompop) zoom level. subsequent pops we can just reuse this ratio without flicker
 
-local UIP = import('/mods/UI-Plus/modules/UI-Plus.lua')
+local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 
 local wXperSx
 local wYperSy 

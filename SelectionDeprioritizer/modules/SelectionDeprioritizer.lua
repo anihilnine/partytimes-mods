@@ -84,7 +84,7 @@ local exoticBlueprintIds = {
 
 
 
-local logEnabled = true
+local logEnabled = false
 function Log(msg)
 	if logEnabled then
 		LOG(msg)

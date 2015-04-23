@@ -1,4 +1,5 @@
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
+local UnitSplit = import('/mods/UI-Party/modules/UnitSplit.lua')
 
 UIP.Init()
 
@@ -112,4 +113,11 @@ function OnFirstUpdate()
 		end
 	end
 
+end
+
+
+local oldOnSelectionChanged = OnSelectionChanged
+function OnSelectionChanged(oldSelection, newSelection, added, removed)
+	UnitSplit.SelectionChanged()
+	oldOnSelectionChanged(oldSelection, newSelection, added, removed)
 end

@@ -2,7 +2,7 @@
 local settings = {
 
 	enabled = true,
-	logEnabled = false,
+	logEnabled = true,
 
 	overrideZoomPop = true,
 	

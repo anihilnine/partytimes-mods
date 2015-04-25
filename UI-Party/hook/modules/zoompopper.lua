@@ -45,7 +45,6 @@ function Init()
 	wYperSy = p3[3] - p2[3]
 
 	cam:RestoreSettings(settings)
-	cam:RevertRotation()
 end
 
 function GetPopLevel()

@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="hook\lua\options\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

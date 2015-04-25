@@ -11,7 +11,7 @@ local settings = {
 	hideMenusOnStart = true,
 	smallerContructionTabWhenSplitScreen = true,
 	rearrangeBottomPanes = true,
-	startSplitScreen = true, -- split screen
+	startSplitScreen = true,
 
 	setGroundFireOnAttack = true
 }

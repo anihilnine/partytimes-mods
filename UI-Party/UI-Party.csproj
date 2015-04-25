@@ -42,6 +42,7 @@
     <None Include="hook\lua\ui\game\layouts\unitviewDetail_mini.lua" />
     <None Include="hook\lua\ui\game\layouts\unitview_mini.lua" />
     <None Include="hook\lua\ui\game\orders.lua" />
+    <None Include="modules\linq.lua" />
     <None Include="modules\unitsplit.lua" />
     <None Include="modules\UI-Party.lua" />
     <None Include="hook\modules\zoompopper.lua" />

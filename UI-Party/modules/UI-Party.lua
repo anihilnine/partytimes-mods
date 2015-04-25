@@ -17,26 +17,27 @@ end
 function InitKeys()
 	local KeyMapper = import('/lua/keymap/keymapper.lua')
 	local order = 1
-	KeyMapper.SetUserKeyAction('Disable UI-Party', {action = "UI_Lua import('/mods/UI-Party/modules/UI-Party.lua').ToggleEnabled()", category = 'Mods', order = order,})
+	local cat = "UI Party"
+	KeyMapper.SetUserKeyAction('Disable UI-Party', {action = "UI_Lua import('/mods/UI-Party/modules/UI-Party.lua').ToggleEnabled()", category = cat, order = order,})
+	
+	range(2,10).foreach(function(k,v)
+		order = order + 1		
+		KeyMapper.SetUserKeyAction('Split selection into ' .. v .. ' groups', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SplitGroups(" .. v .. ")", category = cat, order = order,})
+	end)	
+
+	range(1,10).foreach(function(k,v)
+		order = order + 1
+		KeyMapper.SetUserKeyAction('Select split group ' .. v, {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectGroup(" .. v .. ")", category = cat, order = order,})
+	end)
+
 	order = order + 1
-	KeyMapper.SetUserKeyAction('Split selection into 2 groups', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SplitGroups(2)", category = 'Mods', order = order,})
-	order = order + 1		 
-	KeyMapper.SetUserKeyAction('Split selection into 3 groups', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SplitGroups(3)", category = 'Mods', order = order,})
-	order = order + 1			
-	KeyMapper.SetUserKeyAction('Split selection into 4 groups', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SplitGroups(4)", category = 'Mods', order = order,})
+	KeyMapper.SetUserKeyAction('Select next split group', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectNextGroup()", category = cat, order = order,})
 	order = order + 1
-	KeyMapper.SetUserKeyAction('Select next split group', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectNextGroup()", category = 'Mods', order = order,})
+	KeyMapper.SetUserKeyAction('Select prev split group', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectPrevGroup()", category = cat, order = order,})
 	order = order + 1
-	KeyMapper.SetUserKeyAction('Select prev split group', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectPrevGroup()", category = 'Mods', order = order,})
+	KeyMapper.SetUserKeyAction('Select next split group (shift)', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectNextGroup()", category = cat, order = order,})
 	order = order + 1
-	KeyMapper.SetUserKeyAction('Select split group 1', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectGroup(1)", category = 'Mods', order = order,})
-	order = order + 1
-	KeyMapper.SetUserKeyAction('Select split group 2', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectGroup(2)", category = 'Mods', order = order,})
-	order = order + 1
-	KeyMapper.SetUserKeyAction('Select split group 3', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectGroup(3)", category = 'Mods', order = order,})
-	order = order + 1
-	KeyMapper.SetUserKeyAction('Select split group 4', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectGroup(4)", category = 'Mods', order = order,})
-	order = order + 1
+	KeyMapper.SetUserKeyAction('Select prev split group (shift)', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectPrevGroup()", category = cat, order = order,})
 end
 
 

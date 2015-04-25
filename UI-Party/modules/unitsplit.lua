@@ -1,155 +1,39 @@
 
-function first(t)
-	for k,v in t do
-		return v	
-	end
-end
-
-function any(t, selectClause)
-	for k,v in t do
-		return project(v, selectClause)
-	end
-	return false
-end
-
-function valueIn(t, vToFind)
-	for k,v in t do
-		if v == vToFind then return true end
-	end
-	return false
-end
-
-
-function containAllSameValues(lastSet, currentSelection)
-	if lastSet == nil then return false end
-	if currentSelection == nil then return false end
-
-	for k,v in lastSet do
-		if not valueIn(currentSelection, v) then return false end
-	end	
-
-	for k,v in currentSelection do
-		if not valueIn(lastSet, v) then return false end
-	end	
-	
-	return true
-end
-
-
-
-function project(v, selectClause)
-	if selectClause == nil then return v end
-	return selectClause(v)
-end
-
-function max(t, selectClause)
-	local best = nil
-	local r = {}
-	for k,v in t do
-		v = project(v, selectClause)
-		if v > best then best = v end
-	end
-	return best
-end
-
-function select(t, selectClause)
-	local r = {}
-	for k,v in t do
-		table.insert(r, project(v, selectClause))
-	end
-	return r
-end
-
-function where(t, whereClause)
-	local r = {}
-	for k,v in t do
-		if whereClause(v) then
-			table.insert(r, v)
-		end
-	end
-	return r
-end
-
-function selectMany(t, selectClause)
-	local r = {}
-	for k,v in t do
-		local t2 = selectClause(v)
-		for kv,v2 in t2 do
-			table.insert(r, v2)
-		end
-	end
-	return r
-end
-
-function count(t)
-	return table.getn(t)
-end
-
-function sum(t, selectClause)
-	local s = 0
-	for k,v in t do
-		s = s + project(v, selectClause)
-	end
-	return s
-end
-
-function avg(t, selectClause)
-	return sum(t, selectClause) / count(t)
-end
-
-function copy(t)
-	local r = {}
-	for k,v in t do
-		r[k] = v
-	end
-	return r
-end
-
-function remove(t, toRemove)
-	for k, v in t do
-		if v == toRemove then
-			table.remove(t, k)
-			return
-		end
-	end
-end
-
-function foreach(t, a)
-	for k, v in t do a(k, v) end
-end
+local selectionsClearGroupCycle = true
+local lastSelectedGroup
+local groups
 
 function GetAveragePoint(units)
 	
-	local count = count(units)
-	local x = avg(units, function(v) return v:GetPosition()[1] end)
-	local y = avg(units, function(v) return v:GetPosition()[2] end)
-	local z = avg(units, function(v) return v:GetPosition()[3] end)
+	local x = units.avg(function(k,v) return v:GetPosition()[1] end)
+	local y = units.avg(function(k,v) return v:GetPosition()[2] end)
+	local z = units.avg(function(k,v) return v:GetPosition()[3] end)
 	local pos = { x, y, z}
 	return pos
 end
 
 function GetPriorityUnits(ungroupedUnits)
-	local maxVal = max(ungroupedUnits, function(v) return v:GetBlueprint().Economy.BuildCostMass end)
-	return where(ungroupedUnits, function(v) return v:GetBlueprint().Economy.BuildCostMass == maxVal end)
+	local maxVal = ungroupedUnits.max(function(k,v) return v:GetBlueprint().Economy.BuildCostMass end)
+	return ungroupedUnits.where(function(k,v) return v:GetBlueprint().Economy.BuildCostMass == maxVal end)
 end
 
 function FindUnitFurtherestFromAllPoints(units, avoidancePoints)
 	local bestD = -1
-	local bestU
-	for uk, uv in units do
+	local bestU = nil
+	units.foreach(function(uk,uv)
 		local thisUnitClosestPoint = 10000
-		for pk, pv in avoidancePoints do
+		avoidancePoints.foreach(function(pk,pv)
 			local d = VDist3(uv:GetPosition(), pv)
 			if d < thisUnitClosestPoint then
 				thisUnitClosestPoint = d
 			end
-		end
+		end)
 
 		if thisUnitClosestPoint > bestD then
 			bestD = thisUnitClosestPoint
 			bestU = uv
 		end
-	end
+	end)
 
 	return bestU;
 end
@@ -158,16 +42,16 @@ end
 	local bestD = 10000
 	local bestU
 	local bestG
-	for uk, uv in units do
-		for gk, gv in groups do
+	units.foreach(function(uk,uv)
+		groups.foreach(function(gk,gv)
 			local d = VDist3(uv:GetPosition(), gv.Center)
 			if d < bestD then
 				bestD = d
 				bestU = uv
 				bestG = gv
 			end
-		end
-	end
+		end)
+	end)
 	local result = {Unit = bestU, Group = bestG}
 	return result
 end
@@ -175,109 +59,120 @@ end
 function FindNearestToPos(groups, pos)
 	local bestD = 10000
 	local bestG
-	for gk, gv in groups do
+	groups.foreach(function(gk,gv)
 		local d = VDist3(gv.Center, pos)
 		if d < bestD then
 			bestD = d
 			bestG = gv
 		end
-	end
+	end)
 	return bestG
 end
 
-local groups = {}
 function SplitGroups(desiredGroups)
-
-
-	local ungroupedUnits = GetSelectedUnits()
+	local ungroupedUnits = from(GetSelectedUnits()).copy()
 	if ungroupedUnits == nil then return end
 
 	local avg = GetAveragePoint(ungroupedUnits)
-	groups = {}
+	groups = from({})
 		
 	-- START A GROUP
-	local priorityUnits = {}
-	while count(groups) < desiredGroups do
-		if not any(priorityUnits) then priorityUnits = GetPriorityUnits(ungroupedUnits) end
-		if not any(priorityUnits) then 
+	local priorityUnits = from({})
+	while groups.count() < desiredGroups do
+		if not priorityUnits.any() then priorityUnits = GetPriorityUnits(ungroupedUnits) end
+		if not priorityUnits.any() then 
 			UipLog("Not enough units to make another group'")
 			break
 		end
 	
-		local avoidancePoints = { avg }
-		if any(groups) then 
-			avoidancePoints = select(groups, function(v) return v.Center end)
+		local avoidancePoints = from({ avg })
+		if groups.any() then 
+			avoidancePoints = groups.select(function(k,v) return v.Center end)
 		end
 	
 		local unit = FindUnitFurtherestFromAllPoints(priorityUnits, avoidancePoints)
-		remove(ungroupedUnits, unit)
-		remove(priorityUnits, unit)
-	
+
+		ungroupedUnits.removeByValue(unit)
+		priorityUnits.removeByValue(unit)
+		
 		local group = {}
-		group.Name = count(groups)+1
+		group.Name = groups.count()+1
 		group.Center = unit:GetPosition()
-		group.Units = { unit  }
-		table.insert(groups, group);
+		group.Units = from({ unit })
+		groups.addValue(group);
 	end
 
-	-- SHUNK UNITS INTO GROUPS
-	while any(ungroupedUnits) do
 	
-		local nextGroups = copy(groups)
+	-- SHUNK UNITS INTO GROUPS
+	while ungroupedUnits.any() do
+	
+		local nextGroups = groups.copy()
+	
+		while ungroupedUnits.any() and nextGroups.any() do
 
-		while any(ungroupedUnits) and any(nextGroups) do
-		
-			if not any(priorityUnits) then priorityUnits = GetPriorityUnits(ungroupedUnits) end
+			if not priorityUnits.any() then priorityUnits = GetPriorityUnits(ungroupedUnits) end
 			local t = FindNearestToGroup(priorityUnits, nextGroups)
-			remove(nextGroups, t.Group)
-			remove(ungroupedUnits, t.Unit)
-			remove(priorityUnits, t.Unit)
-			--t.Unit:SetCustomName(t.Group.Name)
-
-			table.insert(t.Group.Units, t.Unit)
+	
+			nextGroups.removeByValue(t.Group)
+	
+			ungroupedUnits.removeByValue(t.Unit)
+			priorityUnits.removeByValue(t.Unit)
+	
+			t.Group.Units.addValue(t.Unit)
 			t.Group.Center = GetAveragePoint(t.Group.Units);
 		end
 	end
-
+	
 	-- REORDER GROUPS TO BE NEAR MOUSE (annoying bug here where very different position if you slightly move mouse before/after end-drag)
-	local sortedGroups = {}
+	local sortedGroups = from({})
 	local mpos = GetMouseWorldPos()
-	while any(groups) do
+	while groups.any() do
 		local best = FindNearestToPos(groups, mpos)
-		remove(groups, best)
-		table.insert(sortedGroups, best)
+		groups.removeByValue(best)
+		sortedGroups.addValue(best)
 	end
 	groups = sortedGroups
 	local gnum = 1
-	foreach(groups, function(gk, gv)
+	groups.foreach(function(gk, gv)
 		gv.Name = gnum
 		gnum = gnum + 1
 	end)
-
-	SelectGroup(from(groups).first().Name)
-
 	
+	SelectGroup(groups.first().Name)
+
 end
 
 
-local selectionsClearGroupCycle = true
-local lastSelectedGroup
-function SelectGroup(name)	
-	if name > count(groups) then name = 1 end
-	if name < 1 then name = count(groups) end
-
-	local group = groups[name]
-	lastSelectedGroup = group
-
+function DontClearCycle(a)
 	selectionsClearGroupCycle = false
-	SelectUnits(group.Units)
-	selectionsClearGroupCycle = true
+	a()
+	selectionsClearGroupCycle = true	
 end
 
+function SelectGroup(name, appendToExistingSelection)	
+	if name > groups.count() then name = 1 end
+	if name < 1 then name = groups.count() end
+
+	local group = groups.get(name)
+	lastSelectedGroup = group
+	if group == nil then return end
+
+	DontClearCycle(function()
+		local newSelection = group.Units
+
+		if appendToExistingSelection then
+			newSelection = newSelection
+				.concat(from(GetSelectedUnits()))
+		end
+			
+		SelectUnits(newSelection.toArray())
+	end)
+end
 
 function SelectNextGroup()	
 	if lastSelectedGroup ~= nil then
-		SelectGroup(lastSelectedGroup.Name + 1)
+		local appendToExistingSelection = IsKeyDown("Shift")
+		SelectGroup(lastSelectedGroup.Name + 1, appendToExistingSelection)
 	else
 		SplitGroups(100)
 	end

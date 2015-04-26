@@ -1,5 +1,3 @@
-
-
 local modpath = '/mods/ui-party'
 local notificationPrefs = import(modpath..'/modules/notificationPrefs.lua')
 local notificationUtils = import(modpath..'/modules/notificationUtils.lua')
@@ -32,8 +30,8 @@ local buttons = {
 	configButton = nil
 }
 
-function init(isReplay)
 
+function init()
 	-- settings
 	savedPrefs = notificationPrefs.getPreferences()
 	isNotificationsToPositiveX = savedPrefs.global.isNotificationsToPositiveX
@@ -72,6 +70,7 @@ function addMainpanelButtons()
 	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, notificationPanelValues.buttonXOffset, 0)
 	
 
+	
 	buttons.configButton = Button(mainPanel, modpath..'/textures/options_up.dds', modpath..'/textures/options_down.dds', modpath..'/textures/options_over.dds', modpath..'/textures/options_up.dds')
 	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, notificationPanelValues.buttonXOffset + (notificationPanelValues.buttonSize+notificationPanelValues.buttonDistance)*1, 0)
 	
@@ -96,7 +95,6 @@ function addMainpanelButtons()
 			PostDragger(self:GetRootFrame(), event.KeyCode, drag)
 		end
 	end
-	
 
 	buttons.configButton:EnableHitTest(true)
 	buttons.configButton.OnClick = function(self, event)

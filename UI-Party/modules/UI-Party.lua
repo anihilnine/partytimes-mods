@@ -13,6 +13,15 @@ function Init()
 	end
 end
 
+function CreateUI(isReplay)
+
+	import('/mods/UI-Party/modules/notificationPrefs.lua').init()
+	import('/mods/UI-Party/modules/notificationUi.lua').init()
+
+end
+
+
+
 
 function InitKeys()
 	local KeyMapper = import('/lua/keymap/keymapper.lua')

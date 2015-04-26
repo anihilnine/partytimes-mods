@@ -46,36 +46,18 @@ function createPrefsUi()
 
 	-- copy configs to local, to not mess with the original ones until they should save
 	savedPrefs = notificationPrefs.getPreferences()
-	curPrefs = {
-		global = {},
-		notification = {}
-	}
-	for id, bool in savedPrefs.global do
-		curPrefs.global[id] = bool
-	end
-	for id, t in savedPrefs.notification do
-		curPrefs.notification[id] = {}
-		for id2, bool in t do
-			curPrefs.notification[id][id2] = bool
-		end
-	end
+	curPrefs = table.deepcopy(savedPrefs, {})
 	
 	-- make the ui	
 	createMainPanel()
 	curY = 0
-	 klnbmb +
-	LayoutHelpers.CenteredAbove(UIUtil.CreateText(uiPanel.main, "Preferences", uiPanelSettings.textSize.headline, UIUtil.bodyFont), uiPanel.main, -curY-30)
 	
-	curY = curY + uiPanelSettings.additionalHeightTop + 15
-	
-	LayoutHelpers.CenteredAbove(UIUtil.CreateText(uiPanel.main, "Global", uiPanelSettings.textSize.section, UIUtil.bodyFont), uiPanel.main, -curY)
-	curY = curY + 15
+	LayoutHelpers.CenteredAbove(UIUtil.CreateText(uiPanel.main, "UI Party Settings", uiPanelSettings.textSize.headline, UIUtil.bodyFont), uiPanel.main, -curY-30)
+	curY = 100
 	createOptions(curY)
 	
 	curY = curY + uiPanelSettings.additionalHeightOptions - 30
 	
-	LayoutHelpers.CenteredAbove(UIUtil.CreateText(uiPanel.main, "Notifications", uiPanelSettings.textSize.section, UIUtil.bodyFont), uiPanel.main, -curY+10)
-	createNotificationList(curY)
 	
 	createOkCancelButtons()
 end
@@ -109,70 +91,11 @@ function createOptions(posY)
 	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isDraggable"})
 	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance
 	
-	-- isMinimizable
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, "allow quick minimizing", uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isMinimizable"})
-	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance
-
-	-- isVisible
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, "notifications are visible", uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isVisible"})
-	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance
-	
-	-- isButtonsSetLeft
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, "buttons on left side", uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isButtonsSetLeft"})
-	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance	
-	
-	-- isNotificationsToPositiveX
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, "notifications below buttons", uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isNotificationsToPositiveX"})
-	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance	
-
-	-- isPlaySound
---	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, "allow sounds", uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
---	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isPlaySound"})
---	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance	
-	
-	-- isClickEvent
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, "allow click events", uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-	createSettingCheckbox(curX+10, curY+2, 13, {"global", "isClickEvent"})
-	curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance	
-	
-	---- right side options
-	curY = posY
-	curX = uiPanelSettings.width / 2
 	
 	createSettingsSliderWithText(curX, curY, "notification duration: ", uiPanelSettings.width/2, 1, 20, 1, {"global", "duration"})
-	curY = curY + 2.5*(uiPanelSettings.options.height + uiPanelSettings.options.distance)
-	
-	createSettingsSliderWithText(curX, curY, "min retrigger delay: ", uiPanelSettings.width/2, 1, 24, 5, {"global", "minRetriggerDelay"})
-	curY = curY + 2.5*(uiPanelSettings.options.height + uiPanelSettings.options.distance)
-	
-	createSettingsSliderWithText(curX, curY, "start delay (next game): ", uiPanelSettings.width/2, 1, 20, 30, {"global", "startDelay"})
-	curY = curY + 2.5*(uiPanelSettings.options.height + uiPanelSettings.options.distance)
 end
 
 
-function createNotificationList(posY)
-	count = 0
-	local curX = 0
-	local curY = posY
-	for id, value in curPrefs.notification do
-		local curId = id
-		LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, utils.getFilenameWithoutDir(id), uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
-		
-		createSettingCheckbox(curX+10, curY+2, 13, {"notification", curId, "states", "isActive"})
-		
-		if(utils.modulo(count, 2) == 0) then
-			curX = uiPanelSettings.width / 2
-		else
-			curX = 0
-			curY = curY + uiPanelSettings.options.height + uiPanelSettings.options.distance
-		end
-		count = count+1
-	end
-end
 
 
 function createOkCancelButtons()
@@ -206,24 +129,14 @@ end
 
 function createSettingCheckbox(posX, posY, size, args)
 	local value = curPrefs
+	local argsCopy = args
 	for _,v in args do
 		value = value[v]
 	end
-	
-	local argsCopy = args
 
-	local box = UIUtil.CreateCheckbox(uiPanel.main,
-		modpath.."/textures/checkbox_inactive_up.png",
-		modpath.."/textures/checkbox_active_up.png",
-		modpath.."/textures/checkbox_inactive_over.png",
-		modpath.."/textures/checkbox_active_over.png",
-		modpath.."/textures/checkbox_inactive_disabled.png",
-		modpath.."/textures/checkbox_active_disabled.png",
-		nil, nil
-	)
+	local box = UIUtil.CreateCheckbox(uiPanel.main, '/CHECKBOX/')
 	box.Height:Set(size)
 	box.Width:Set(size)
-	
 	box:SetCheck(value, true)
 	
 	box.OnClick = function(self)
@@ -271,13 +184,10 @@ function createSettingsSliderWithText(posX, posY, text, size, minVal, maxVal, va
 end
 
 
-function setCurPrefByArgs(args, value)
+function setCurPrefByArgs(args, value)	
 	num = table.getn(args)
 	if num==2 then
 		curPrefs[args[1]][args[2]] = value
-	end
-	if num==3 then
-		curPrefs[args[1]][args[2]][args[3]] = value
 	end
 	if num==4 then
 		curPrefs[args[1]][args[2]][args[3]][args[4]] = value

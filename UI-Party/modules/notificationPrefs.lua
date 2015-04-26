@@ -1,5 +1,5 @@
 local Prefs = import('/lua/user/prefs.lua')
-local savedPrefs = Prefs.GetFromCurrentProfile("reminder_settings")
+local savedPrefs = Prefs.GetFromCurrentProfile("Party-UI Settings")
 
 
 function init()
@@ -69,7 +69,7 @@ end
 
 
 function savePreferences()
-	Prefs.SetToCurrentProfile("reminder_settings", savedPrefs)
+	Prefs.SetToCurrentProfile("Party-UI Settings", savedPrefs)
 	Prefs.SavePreferences()
 end
 

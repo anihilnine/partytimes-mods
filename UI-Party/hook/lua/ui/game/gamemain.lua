@@ -7,12 +7,31 @@ UIP.Init()
 local oldCreateUI = CreateUI
 function CreateUI(isReplay)
 
-
+ 
 	oldCreateUI(isReplay)
 
-		import(modpath..'/modules/notificationPrefs.lua').init()
-		import(modpath..'/modules/notificationUi.lua').init()
+	UIP.CreateUI(isReplay)
 
+	if UIP.Enabled() then 
+
+		ForkThread(function() 
+			
+			local tabs = import('/lua/ui/game/tabs.lua')
+			local mf = import('/lua/ui/game/multifunction.lua')
+
+			if UIP.GetSetting("moveMainMenuToRight") then 
+				tabs.controls.parent.Left:Set(function() return GetFrame(0).Width()-600 end)
+			end
+
+			WaitSeconds(4)
+
+			if UIP.GetSetting("hideMenusOnStart") then 
+				tabs.ToggleTabDisplay(false)
+				mf.ToggleMFDPanel(false)
+			end
+
+		end)
+	end
 end 
 
 local oldOnFirstUpdate = OnFirstUpdate 

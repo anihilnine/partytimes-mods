@@ -46,9 +46,9 @@
     <None Include="modules\linq.lua" />
     <None Include="modules\unitsplit.lua" />
     <None Include="modules\UI-Party.lua" />
-    <None Include="modules\notificationPrefs.lua" />
-    <None Include="modules\notificationPrefsUi.lua" />
-    <None Include="modules\notificationUi.lua" />
+    <None Include="modules\settings.lua" />
+    <None Include="modules\settingsUi.lua" />
+    <None Include="modules\ui.lua" />
     <None Include="hook\modules\zoompopper.lua" />
     <None Include="mod_info.lua" />
     <None Include="settings.lua" />

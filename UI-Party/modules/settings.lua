@@ -13,6 +13,11 @@ function init()
 	end
 	
 	settingDescriptions = {
+		{ name = "System", settings = {
+			{ key="modEnabled", type="bool", default=true, name="Mod Enabled", description="Turns off the entire mod." },
+			{ key="logEnabled", type="bool", default=false, name="Mod Log Enabled", description="For diagnostic purposes", min=0, max=10, valMult=0.01  },
+
+		}},		
 		{ name = "Zoompop", settings = {
 			{ key="zoomPopOverride", type="bool", default=true, name="Zoompop override", description="Makes the pop more accurate" },
 			{ key="zoomPopSpeed", type="number", default=0.08, name="Zoompop speed", description="Zoom pop speed", min=0, max=10, valMult=0.01  },
@@ -35,7 +40,6 @@ function init()
 			{ key="smallerContructionTabWhenSplitScreen", type="bool", default=true, name="Construction to left", description="Construction menu just spans left screen (not both)" },
 			{ key="moveAvatarsToLeftSplitScreen", type="bool", default=true, name="Avatars to left", description="Move the avatars (idle engies pane) to the left screen." },
 			{ key="moveMainMenuToRight", type="bool", default=true, name="Main menu to right", description="Move the tabs (main menu) to the right screen." },
-			{ key="t2estxxx1x1x2", type="bool", default="1233fa", name="Main menu to right", description="Move the tabs (main menu) to the right screen." },
 		}},
 		
 		
@@ -68,15 +72,8 @@ function init()
 		end
 	end)
 
-
-
-	if savedPrefs.notification == nil then
-		savedPrefs.notification = {}
-	end
-	
 	-- correct x/y if outside the window
 	if (savedPrefs.global.xOffset < 0 or savedPrefs.global.xOffset > GetFrame(0).Width()) then
-		UipLog("!!!!", GetFrame(0).Width())
 		savedPrefs.global.xOffset = GetFrame(0).Width()/2
 	end
 	if (savedPrefs.global.yOffset < 0 or savedPrefs.global.yOffset > GetFrame(0).Height()) then

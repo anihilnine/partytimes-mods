@@ -1,5 +1,5 @@
 local modpath = '/mods/ui-party'
-local notificationUi = import(modpath..'/modules/notificationUi.lua')
+local uiPartyUi = import(modpath..'/modules/ui.lua')
 
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
 local UIUtil = import('/lua/ui/uiutil.lua')
@@ -8,7 +8,7 @@ local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local Checkbox = import('/lua/maui/checkbox.lua').Checkbox
 local IntegerSlider = import('/lua/maui/slider.lua').IntegerSlider
 
-local notificationPrefs = import(modpath..'/modules/notificationPrefs.lua')
+local settings = import(modpath..'/modules/settings.lua')
 local savedPrefs = nil
 local curPrefs = nil
 local curY = 0
@@ -38,7 +38,7 @@ function createPrefsUi()
 	end
 
 	-- copy configs to local, to not mess with the original ones until they should save
-	savedPrefs = notificationPrefs.getPreferences()
+	savedPrefs = settings.getPreferences()
 	curPrefs = table.deepcopy(savedPrefs, {})
 	
 	-- make the ui	
@@ -75,9 +75,9 @@ end
 function createOptions()	
 	---- left side options
 	
-	local settings = notificationPrefs.getSettingDescriptions()
+	local settingGroups = settings.getSettingDescriptions()
 
-	from(settings).foreach(function(gk, kv) 
+	from(settingGroups).foreach(function(gk, kv) 
 	
 		if kv.name ~= "Hidden" then
 			curY = curY + 10
@@ -109,8 +109,8 @@ function createOkCancelButtons()
 	local btnOk = UIUtil.CreateButtonStd(uiPanel.main, '/dialogs/standard-small_btn/standard-small', 'OK', 12, 2, 0, "UI_Opt_Mini_Button_Click", "UI_Opt_Mini_Button_Over")
 	LayoutHelpers.AtLeftTopIn(btnOk, uiPanel.main, curX-20, curY)
 	btnOk.OnClick = function(self)
-		notificationPrefs.setAllGlobalValues(curPrefs.global)
-		notificationUi.reloadAndApplyGlobalConfigs()
+		settings.setAllGlobalValues(curPrefs.global)
+		uiPartyUi.reloadAndApplyGlobalConfigs()
 		uiPanel.main:Destroy()
 		uiPanel.main = nil
 	end

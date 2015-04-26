@@ -41,7 +41,7 @@ function OnFirstUpdate()
 		oldOnFirstUpdate()
 
 					
-		if UIP.Enabled() and UIP.GetSetting("overrideZoomPop") then 
+		if UIP.Enabled() and UIP.GetSetting("zoomPopOverride") then 
 			ForkThread(function()
 				import('/modules/zoompopper.lua').Init()
 				local cam = GetCamera('WorldCamera')
@@ -79,7 +79,7 @@ function OnFirstUpdate()
 		Borders.SplitMapGroup(true, true)
 		import('/lua/ui/game/worldview.lua').Expand() -- required to initialize something else there is a crash
 			
-		if UIP.GetSetting("overrideZoomPop") then 
+		if UIP.GetSetting("zoomPopOverride") then 
 			WaitSeconds(0)
 			import('/modules/zoompopper.lua').Init()
 		end

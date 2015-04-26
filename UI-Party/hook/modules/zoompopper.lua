@@ -58,7 +58,7 @@ end
 local oldToggleZoomPop = ToggleZoomPop
 function ToggleZoomPop()
 	
-	if not UIP.GetSetting("overrideZoomPop") or not UIP.Enabled() then 
+	if not UIP.GetSetting("zoomPopOverride") or not UIP.Enabled() then 
 		oldToggleZoomPop()
 		return 0
 	end
@@ -89,7 +89,7 @@ end
 
 function Pop()
 
-	local speed = UIP.GetSettings().global.zoomPopSpeed
+	local speed = UIP.GetSetting("zoomPopSpeed")
 	local mp = GetMouseScreenPos()
 	local center = { wv:Width()/2, wv:Height() /2 }
 	local dstFromCenter = {  mp[1] - center[1], mp[2] -center[2]  }

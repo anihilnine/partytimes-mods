@@ -1,5 +1,5 @@
 local modpath = '/mods/ui-party'
-local notificationPrefs = import(modpath..'/modules/notificationPrefs.lua')
+local settings = import(modpath..'/modules/settings.lua')
 
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
 local UIUtil = import('/lua/ui/uiutil.lua')
@@ -10,12 +10,9 @@ local Dragger = import('/lua/maui/dragger.lua').Dragger
 
 
 local savedPrefs = nil
-local isVisible = nil
-local isNotificationsToPositiveX = nil
 local mainPanel = nil
-local notifications = {}
 
-local notificationPanelValues = {
+local panelConst = {
 	height = 60,
 	width = 300,
 	distance = 4,
@@ -32,15 +29,13 @@ local buttons = {
 
 function init()
 	-- settings
-	savedPrefs = notificationPrefs.getPreferences()
-	isNotificationsToPositiveX = savedPrefs.global.isNotificationsToPositiveX
-	isVisible = savedPrefs.global.isVisible
+	savedPrefs = settings.getPreferences()
 	
 	mainPanel = Bitmap(GetFrame(0))
 	mainPanel.Depth:Set(99)
 	LayoutHelpers.AtLeftTopIn(mainPanel, GetFrame(0), savedPrefs.global.xOffset, savedPrefs.global.yOffset)
-	mainPanel.Height:Set(notificationPanelValues.buttonSize)
-	mainPanel.Width:Set(notificationPanelValues.buttonSize)
+	mainPanel.Height:Set(panelConst.buttonSize)
+	mainPanel.Width:Set(panelConst.buttonSize)
 	
 	addMainpanelButtons()
 end
@@ -56,10 +51,10 @@ end
 
 function addMainpanelButtons()
 	buttons.dragButton = Button(mainPanel, modpath..'/textures/drag_up.dds', modpath..'/textures/drag_down.dds', modpath..'/textures/drag_over.dds', modpath..'/textures/drag_up.dds')
-	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, notificationPanelValues.buttonXOffset, 0)
+	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, panelConst.buttonXOffset, 0)
 	
 	buttons.configButton = Button(mainPanel, modpath..'/textures/options_up.dds', modpath..'/textures/options_down.dds', modpath..'/textures/options_over.dds', modpath..'/textures/options_up.dds')
-	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, notificationPanelValues.buttonXOffset + (notificationPanelValues.buttonSize+notificationPanelValues.buttonDistance)*1, 0)
+	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, panelConst.buttonXOffset + (panelConst.buttonSize+panelConst.buttonDistance)*1, 0)
 	
 	buttons.dragButton.HandleEvent = function(self, event)
 		if event.Type == 'ButtonPress' then
@@ -72,7 +67,7 @@ function addMainpanelButtons()
 				GetCursor():SetTexture(UIUtil.GetCursor('MOVE_WINDOW'))
 			end
 			drag.OnRelease = function(dragself)
-				notificationPrefs.setXYvalues(self.Left(), self.Top())
+				settings.setXYvalues(self.Left(), self.Top())
 				GetCursor():Reset()
 				drag:Destroy()
 			end
@@ -82,17 +77,17 @@ function addMainpanelButtons()
 
 	buttons.configButton:EnableHitTest(true)
 	buttons.configButton.OnClick = function(self, event)
-		import(modpath..'/modules/notificationPrefsUi.lua').createPrefsUi()
+		import(modpath..'/modules/settingsUi.lua').createPrefsUi()
 	end	
 	
 end
 
 function moveMainpanelButtons(s)
-	helpDistance = notificationPanelValues.buttonSize + notificationPanelValues.buttonDistance
+	helpDistance = panelConst.buttonSize + panelConst.buttonDistance
 	helpOffsetX = 0
 	
 	if s == "right" then
-		helpOffsetX = notificationPanelValues.width - 3*helpDistance + notificationPanelValues.buttonDistance
+		helpOffsetX = panelConst.width - 3*helpDistance + panelConst.buttonDistance
 	end
 	
 	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, helpOffsetX + helpDistance*0, 0)

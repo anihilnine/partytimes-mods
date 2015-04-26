@@ -1,4 +1,4 @@
-local settings = import('/mods/UI-Party/settings.lua')
+local settings = import('/mods/UI-Party/modules/settings.lua')
 
 function Init() 
 
@@ -7,7 +7,7 @@ function Init()
 	InitKeys()
 
 	_G.UipLog = function(a)
-		if (GetSetting("logEnabled")) then 
+		if GetSettings().global.logEnabled then 
 			LOG("UIP:", a)
 		end
 	end
@@ -15,13 +15,10 @@ end
 
 function CreateUI(isReplay)
 
-	import('/mods/UI-Party/modules/notificationPrefs.lua').init()
-	import('/mods/UI-Party/modules/notificationUi.lua').init()
+	import('/mods/UI-Party/modules/settings.lua').init()
+	import('/mods/UI-Party/modules/ui.lua').init()
 
 end
-
-
-
 
 function InitKeys()
 	local KeyMapper = import('/lua/keymap/keymapper.lua')
@@ -49,39 +46,20 @@ function InitKeys()
 	KeyMapper.SetUserKeyAction('Select prev split group (shift)', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectPrevGroup()", category = cat, order = order,})
 end
 
-
-
-
-function ToggleEnabled()
-	SetSetting("enabled", not GetSetting("enabled"))
-
-	if GetSetting("enabled") then
-		print("UI-Party - ENABLED")
-	else
-		print("UI-Party - DISABLED")
-	end
-
-	UipLog("UIP.Enabled " .. tostring(GetSetting("enabled")))
-end
-
 function GetSettings()
-	local notificationPrefs = import('/mods/UI-Party/modules/notificationPrefs.lua')
-	local prefs = notificationPrefs.getPreferences()
-	return prefs
+	return settings.getPreferences()
 end
 
 function GetSetting(key)
-	if key == "overrideZoomPop" then
-		return GetSettings().global.zoomPopOverride
+	local val = GetSettings().global[key]
+	if val == nil then
+		UipLog("Setting not found: " .. key)
+		UipLog("Settings are: " .. repr(GetSettings()))
 	end
-	return settings.GetSetting(key)
-end
-
-function SetSetting(key, value)
-	return settings.SetSetting(key, value)
+	return  val
 end
 
 function Enabled()
-	return GetSetting("enabled")
+	return GetSettings().global.modEnabled
 end
 

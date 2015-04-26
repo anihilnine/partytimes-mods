@@ -36,6 +36,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="hook\lua\ui\game\gamemain.lua" />
+    <None Include="modules\notificationFileHelper.lua" />
+    <None Include="modules\notificationPrefs.lua" />
+    <None Include="modules\notificationPrefsUi.lua" />
+    <None Include="modules\notificationUtils.lua" />
+    <None Include="modules\notificationUi.lua" />
     <None Include="modules\UI-Plus.lua" />
     <None Include="hook\modules\zoompopper.lua" />
     <None Include="mod_info.lua" />

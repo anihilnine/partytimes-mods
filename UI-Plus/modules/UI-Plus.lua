@@ -12,6 +12,9 @@ function Init()
 	end
 end
 
+function CreateUI(isReplay)
+end
+
 function ToggleEnabled()
 	SetSetting("enabled", not GetSetting("enabled"))
 

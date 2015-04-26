@@ -1,5 +1,4 @@
 local modpath = '/mods/ui-party'
-local utils = import(modpath..'/modules/notificationUtils.lua')
 local notificationUi = import(modpath..'/modules/notificationUi.lua')
 
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')

@@ -1,6 +1,10 @@
 local Prefs = import('/lua/user/prefs.lua')
 local savedPrefs = Prefs.GetFromCurrentProfile("Party-UI Settings")
+local settingDescriptions
 
+function getSettingDescriptions()
+	return settingDescriptions
+end
 
 function init()
 	-- settings
@@ -8,20 +12,34 @@ function init()
 		savedPrefs = {}
 	end
 	
+	settingDescriptions = {
+		{ name = "Zoompop", settings = {
+			{ key="zoomPopOverride", type="bool", default=true, name="Zoompop override", description="Makes the pop more accurate" },
+			{ key="zoomPopSpeed", type="number", default=0.08, name="Zoompop speed", description="Zoom pop speed", min=0, max=10, valMult=0.01  },
+
+		}},
+		{ name = "Windows", settings = {
+			{ key="rearrangeBottomPanes", type="bool", default=true, name="Move bottom panes", description="Move bottom panes" },
+			{ key="hideMenusOnStart", type="bool", default=true, name="Hide misc menus", descrption="On startup, collapse the multifunction (pings) and tabs (main menu)" },
+			
+		}},
+		{ name = "Orders", settings = {
+			{ key="setGroundFireOnAttack", type="bool", default=true, name="Attack sets ground firing mode", description="" },
+		}},
+		{ name = "Split Screen", settings = {
+			{ key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="startSplitScreen" },
+			{ key="smallerContructionTabWhenSplitScreen", type="bool", default=true, name="Construction to left", description="Construction menu just spans left screen (not both)" },
+			{ key="moveAvatarsToLeftSplitScreen", type="bool", default=true, name="Avatars to left", description="Move the avatars (idle engies pane) to the left screen." },
+			{ key="moveMainMenuToRight", type="bool", default=true, name="Main menu to right", description="Move the tabs (main menu) to the right screen." },
+		}},
+		
+		
+	} 
+
 	if not savedPrefs.global then
 		savedPrefs.global = {
-			xOffset = 2,
-			yOffset = 156,
-			startDelay = 60,
-			duration = 5,
-			minRetriggerDelay = 15,
-			isVisible = true,
-			isMinimizable = true,
-			isDraggable = true,
-			isButtonsSetLeft = true,
-			isNotificationsToPositiveX = true,
-			isPlaySound = false,
-			isClickEvent = true,
+			zoomPopOverride = true,
+			zoomPopSpeed = 0.08,
 		}
 	end
 	
@@ -82,11 +100,6 @@ function getPreferences()
 end
 
 
-function setIsVisible(bool)
-	savedPrefs.global.isVisible = bool
-	savePreferences()
-end
-
 
 function setAllGlobalValues(t)
 	for id, value in t do
@@ -102,23 +115,3 @@ function setXYvalues(posX, posY)
 	savePreferences()
 end
 
-
-function setNotificationState(configId, t)
-	if not savedPrefs.notification[configId] then
-		savedPrefs.notification[configId] = {}
-	end
-	if not savedPrefs.notification[configId].states then
-		savedPrefs.notification[configId].states = {}
-	end
-	for id, value in t do
-		savedPrefs.notification[configId].states[id] = value
-	end
-	savePreferences()
-end
-
-
-function setAllNotificationStates(t)
-	for id,subT in t do
-		setNotificationState(id, subT.states)
-	end
-end

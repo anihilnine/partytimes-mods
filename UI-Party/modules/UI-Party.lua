@@ -64,7 +64,16 @@ function ToggleEnabled()
 	UipLog("UIP.Enabled " .. tostring(GetSetting("enabled")))
 end
 
+function GetSettings()
+	local notificationPrefs = import('/mods/UI-Party/modules/notificationPrefs.lua')
+	local prefs = notificationPrefs.getPreferences()
+	return prefs
+end
+
 function GetSetting(key)
+	if key == "overrideZoomPop" then
+		return GetSettings().global.zoomPopOverride
+	end
 	return settings.GetSetting(key)
 end
 

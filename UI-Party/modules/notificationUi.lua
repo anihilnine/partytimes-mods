@@ -53,7 +53,6 @@ end
 function reloadAndApplyGlobalConfigs()
 	savedPrefs = notificationPrefs.getPreferences()
 	
-	setIsVisible(savedPrefs.global.isVisible)
 	isNotificationsToPositiveX = savedPrefs.global.isNotificationsToPositiveX
 	resetPosY()
 	
@@ -75,9 +74,6 @@ function addMainpanelButtons()
 	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, notificationPanelValues.buttonXOffset + (notificationPanelValues.buttonSize+notificationPanelValues.buttonDistance)*1, 0)
 	
 	buttons.dragButton.HandleEvent = function(self, event)
-		if not savedPrefs.global.isDraggable then
-			return
-		end
 		if event.Type == 'ButtonPress' then
 			local drag = Dragger()
 			local offX = event.MouseX - self.Left()
@@ -120,13 +116,7 @@ function moveMainpanelButtons(s)
 end
 
 
-function setIsVisible(bool)
-	if ( isVisible == bool ) then
-		return
-	end
-	isVisible = bool
-	showPanels(bool)
-end
+
 
 
 function setNotificationsTowardsPositiveX(bool)

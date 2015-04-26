@@ -89,6 +89,7 @@ end
 
 function Pop()
 
+	local speed = UIP.GetSettings().global.zoomPopSpeed
 	local mp = GetMouseScreenPos()
 	local center = { wv:Width()/2, wv:Height() /2 }
 	local dstFromCenter = {  mp[1] - center[1], mp[2] -center[2]  }
@@ -97,7 +98,7 @@ function Pop()
 	local p1 = GetMouseWorldPos()
 	p1[1] = p1[1] - (wXperSx * dstFromCenter[1])
 	p1[3] = p1[3] - (wYperSy * dstFromCenter[2])
-	cam:MoveTo(p1, hpr, popZoom, 0.08)
+	cam:MoveTo(p1, hpr, popZoom, speed)
 	ForkThread(function() 
 		WaitSeconds(0)
 		cam:RevertRotation()

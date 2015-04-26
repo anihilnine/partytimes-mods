@@ -20,6 +20,10 @@ function CreateUI(isReplay)
 
 end
 
+function ToggleEnabled()
+	GetSettings().global.modEnabled = not GetSettings().global.modEnabled
+end
+
 function InitKeys()
 	local KeyMapper = import('/lua/keymap/keymapper.lua')
 	local order = 1

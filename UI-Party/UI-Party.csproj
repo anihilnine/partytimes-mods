@@ -51,7 +51,6 @@
     <None Include="modules\ui.lua" />
     <None Include="hook\modules\zoompopper.lua" />
     <None Include="mod_info.lua" />
-    <None Include="settings.lua" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="textures\checkbox_active_disabled.png" />

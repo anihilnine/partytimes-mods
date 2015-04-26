@@ -80,20 +80,22 @@ function createOptions()
 
 	from(settings).foreach(function(gk, kv) 
 	
-		curY = curY + 10
-		LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, kv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX-20, curY)
-		curY = curY + 30
+		if kv.name ~= "Hidden" then
+			curY = curY + 10
+			LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, kv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX-20, curY)
+			curY = curY + 30
 
-		from(kv.settings).foreach(function(sk, sv) 
+			from(kv.settings).foreach(function(sk, sv) 
 	
-			if sv.type == "bool" then
-				createSettingCheckbox(curX, curY, 13, {"global", sv.key}, sv.name)
-			elseif sv.type == "number" then
-				createSettingsSliderWithText(curX, curY, sv.name, sv.min, sv.max, sv.valMult, {"global", sv.key})
-			else
-				UipLog("Unknown settings type: " .. sv.type)
-			end
-		end)
+				if sv.type == "bool" then
+					createSettingCheckbox(curX, curY, 13, {"global", sv.key}, sv.name)
+				elseif sv.type == "number" then
+					createSettingsSliderWithText(curX, curY, sv.name, sv.min, sv.max, sv.valMult, {"global", sv.key})
+				else
+					UipLog("Unknown settings type: " .. sv.type)
+				end
+			end)
+		end
 	end)
 
 end
@@ -108,7 +110,6 @@ function createOkCancelButtons()
 	local btnOk = UIUtil.CreateButtonStd(uiPanel.main, '/dialogs/standard-small_btn/standard-small', 'OK', 12, 2, 0, "UI_Opt_Mini_Button_Click", "UI_Opt_Mini_Button_Over")
 	LayoutHelpers.AtLeftTopIn(btnOk, uiPanel.main, curX-20, curY)
 	btnOk.OnClick = function(self)
-		notificationPrefs.setAllNotificationStates(curPrefs.notification)
 		notificationPrefs.setAllGlobalValues(curPrefs.global)
 		notificationUi.reloadAndApplyGlobalConfigs()
 		uiPanel.main:Destroy()

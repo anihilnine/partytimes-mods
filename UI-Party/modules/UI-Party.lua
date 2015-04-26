@@ -8,7 +8,7 @@ function Init()
 
 	_G.UipLog = function(a)
 		if (GetSetting("logEnabled")) then 
-			LOG(a)
+			LOG("UIP:", a)
 		end
 	end
 end

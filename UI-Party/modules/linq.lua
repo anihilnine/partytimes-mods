@@ -144,6 +144,10 @@ _G.from = function(t)
 		t[k] = v
 	end
 
+	self.removeKey = function(k)
+		t[k] = nil
+	end
+
 	self.removeByKey = function(k)
 		table.remove(t, k)
 		return self

@@ -26,80 +26,74 @@ function init()
 		{ name = "Orders", settings = {
 			{ key="setGroundFireOnAttack", type="bool", default=true, name="Attack sets ground firing mode", description="" },
 		}},
+		{ name = "Hidden", settings = {
+			{ key="xOffset", default=345 },
+			{ key="yOffset", default=50 },
+		}},
 		{ name = "Split Screen", settings = {
 			{ key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="startSplitScreen" },
 			{ key="smallerContructionTabWhenSplitScreen", type="bool", default=true, name="Construction to left", description="Construction menu just spans left screen (not both)" },
 			{ key="moveAvatarsToLeftSplitScreen", type="bool", default=true, name="Avatars to left", description="Move the avatars (idle engies pane) to the left screen." },
 			{ key="moveMainMenuToRight", type="bool", default=true, name="Main menu to right", description="Move the tabs (main menu) to the right screen." },
+			{ key="t2estxxx1x1x2", type="bool", default="1233fa", name="Main menu to right", description="Move the tabs (main menu) to the right screen." },
 		}},
 		
 		
 	} 
 
 	if not savedPrefs.global then
-		savedPrefs.global = {
-			zoomPopOverride = true,
-			zoomPopSpeed = 0.08,
-		}
+		savedPrefs.global = {}
 	end
 	
+	-- make defaults
+	local keys = from({})
+	from(settingDescriptions).foreach(function(gk, kv) 
+		from(kv.settings).foreach(function(sk, sv) 
+	
+			keys.addValue(sv.key)
+			if savedPrefs.global[sv.key] == nil then
+				UipLog("setting default " .. sv.key)
+				savedPrefs.global[sv.key] = sv.default
+			end
+			
+		end)
+	end)
+
+	-- clear old stuff
+	local g = from(savedPrefs.global)
+	g.foreach(function(gk, gv)
+		if not keys.contains(gk) then
+			UipLog("removing old key " .. gk)
+			g.removeKey(gk)
+		end
+	end)
+
+
+
 	if savedPrefs.notification == nil then
 		savedPrefs.notification = {}
 	end
 	
 	-- correct x/y if outside the window
 	if (savedPrefs.global.xOffset < 0 or savedPrefs.global.xOffset > GetFrame(0).Width()) then
+		UipLog("!!!!", GetFrame(0).Width())
 		savedPrefs.global.xOffset = GetFrame(0).Width()/2
 	end
 	if (savedPrefs.global.yOffset < 0 or savedPrefs.global.yOffset > GetFrame(0).Height()) then
 		savedPrefs.global.yOffset = GetFrame(0).Height()/2
 	end
 	
-	--removing old stuff
-	savedPrefs.notificationIsActive = nil
-	savedPrefs.xOffset = nil
-	savedPrefs.yOffset = nil
-	savedPrefs.isVisible = nil
-	
 	savePreferences()
 end
-
-
-function removeNotificationsNotInTables(t1, t2)
-	for id,value in savedPrefs.notification do
-		if not (isInTable(id, t1) or isInTable(id, t2)) then
-			LOG('Notification Mod: '..id..' not found anymore, is removed from game.prefs')
-			savedPrefs.notification[id] = nil
-		end
-	end
-	Prefs.SavePreferences()
-end
-
-
-function isInTable(id, t)
-	for id2,_ in t do
-		if(id == id2) then
-			return true
-		end
-	end
-	return false
-end
-
 
 function savePreferences()
 	Prefs.SetToCurrentProfile("Party-UI Settings", savedPrefs)
 	Prefs.SavePreferences()
 end
 
-
----------
-
-
 function getPreferences()
 	return savedPrefs
 end
-
-
 
 function setAllGlobalValues(t)
 	for id, value in t do
@@ -107,7 +101,6 @@ function setAllGlobalValues(t)
 	end
 	savePreferences()
 end
-
 
 function setXYvalues(posX, posY)
 	savedPrefs.global.xOffset = posX

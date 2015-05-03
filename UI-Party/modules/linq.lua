@@ -179,7 +179,7 @@ _G.range = function(startValue, endValue)
 	while not finished do
 		result.addValue(i)
 		i = i + 1
-		finished = i >= endValue
+		finished = i >= endValue + 1
 	end
 	return result
 end

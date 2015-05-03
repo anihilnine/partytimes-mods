@@ -1,12 +1,14 @@
 local modpath = '/mods/ui-party'
 local uiPartyUi = import(modpath..'/modules/ui.lua')
 
+local KeyMapper = import('/lua/keymap/keymapper.lua')
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
 local UIUtil = import('/lua/ui/uiutil.lua')
 local Button = import('/lua/maui/button.lua').Button
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local Checkbox = import('/lua/maui/checkbox.lua').Checkbox
 local IntegerSlider = import('/lua/maui/slider.lua').IntegerSlider
+local Tooltip = import('/lua/ui/game/tooltip.lua')
 
 local settings = import(modpath..'/modules/settings.lua')
 local savedPrefs = nil
@@ -29,6 +31,46 @@ local uiPanelSettings = {
 	},
 }
 
+function CreateResetKeysControl(sv)
+	local btn = UIUtil.CreateButtonStd(uiPanel.main, '/dialogs/standard-small_btn/standard-small', 'Set', 12, 2, 0, "UI_Opt_Mini_Button_Click", "UI_Opt_Mini_Button_Over")
+    Tooltip.AddButtonTooltip(btn, 'UIP_' .. sv.key)
+	btn.OnClick = function(self)
+		UIUtil.QuickDialog(uiPanel.main, "Really set the keys bindings?",
+           "Yes", ResetKeys,
+            "No", nil,
+            nil, nil,
+            true, 
+            {escapeButton = 2, enterButton = 1, worldCover = false})
+	end
+	return btn
+end
+
+function ResetKeys()
+	local keys = {
+		['V'] = 'Select next split group',
+		['Shift-V'] = 'Select next split group (shift)',
+	}
+	
+	range(2,10).foreach(function(k,v)
+		local action = 'Split selection into ' .. v .. ' groups'
+		if v == 10 then v = 0 end
+		local key = 'Ctrl-Alt-' .. v
+		keys[key] = action
+	end)	
+
+	range(1,10).foreach(function(k,v)
+		local action = 'Select split group ' .. v
+		if v == 10 then v = 0 end
+		local key = 'Alt-' .. v
+		keys[key] = action
+	end)
+
+	from(keys).foreach(function(k,v)		
+	    KeyMapper.SetUserKeyMapping(k,nil, v)
+	end)
+
+	UIUtil.ShowInfoDialog(uiPanel.main, "Bindings set", "Ok", nil, true)
+end
 
 function createPrefsUi()
 	if uiPanel.main then
@@ -87,9 +129,13 @@ function createOptions()
 			from(kv.settings).foreach(function(sk, sv) 
 	
 				if sv.type == "bool" then
-					createSettingCheckbox(curX, curY, 13, {"global", sv.key}, sv.name)
+					createSettingCheckbox(curX, curY, 13, {"global", sv.key}, sv.name, sv.key)
 				elseif sv.type == "number" then
-					createSettingsSliderWithText(curX, curY, sv.name, sv.min, sv.max, sv.valMult, {"global", sv.key})
+					createSettingsSliderWithText(curX, curY, sv.name, sv.min, sv.max, sv.valMult, {"global", sv.key}, sv.key)
+				elseif sv.type == "custom" then
+					LayoutHelpers.AtLeftTopIn(sv.control(sv), uiPanel.main, curX+30, curY)
+					LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, sv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+130, curY+7)
+					curY = curY + 30
 				else
 					UipLog("Unknown settings type: " .. sv.type)
 				end
@@ -129,7 +175,7 @@ end
 ---------------------------------------------------------------------
 
 
-function createSettingCheckbox(posX, posY, size, args, text)
+function createSettingCheckbox(posX, posY, size, args, text, key)
 	local value = curPrefs
 	local argsCopy = args
 	for _,v in args do
@@ -137,6 +183,7 @@ function createSettingCheckbox(posX, posY, size, args, text)
 	end
 
 	local box = UIUtil.CreateCheckbox(uiPanel.main, '/CHECKBOX/')
+    Tooltip.AddCheckboxTooltip(box, 'UIP_' .. key)
 	box.Height:Set(size)
 	box.Width:Set(size)
 	box:SetCheck(value, true)
@@ -159,8 +206,7 @@ function createSettingCheckbox(posX, posY, size, args, text)
 	
 end
 
-
-function createSettingsSliderWithText(posX, posY, text, minVal, maxVal, valMult, args)
+function createSettingsSliderWithText(posX, posY, text, minVal, maxVal, valMult, args, key)
 	
 	-- value
 	local value = curPrefs
@@ -185,6 +231,8 @@ function createSettingsSliderWithText(posX, posY, text, minVal, maxVal, valMult,
 		valueText:SetText(string.format("%g",newValue*valMult))
 		setCurPrefByArgs(args, newValue*valMult)
 	end
+    Tooltip.AddCheckboxTooltip(slider, 'UIP_' .. key)
+
 
 	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, text, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
 

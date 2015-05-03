@@ -1,6 +1,8 @@
 local Prefs = import('/lua/user/prefs.lua')
 local savedPrefs = Prefs.GetFromCurrentProfile("Party-UI Settings")
 local settingDescriptions
+local UIUtil = import('/lua/ui/uiutil.lua')
+local SettingsUi = import('/mods/UI-Party/modules/settingsUi.lua')
 
 function getSettingDescriptions()
 	return settingDescriptions
@@ -13,53 +15,66 @@ function init()
 	end
 	
 	settingDescriptions = {
-		{ name = "System", settings = {
-			{ key="modEnabled", type="bool", default=true, name="Mod Enabled", description="Turns off the entire mod." },
-			{ key="logEnabled", type="bool", default=false, name="Mod Log Enabled", description="For diagnostic purposes", min=0, max=10, valMult=0.01  },
-
-		}},		
-		{ name = "Zoompop", settings = {
-			{ key="zoomPopOverride", type="bool", default=true, name="Zoompop override", description="Makes the pop more accurate" },
-			{ key="zoomPopSpeed", type="number", default=0.08, name="Zoompop speed", description="Zoom pop speed", min=0, max=10, valMult=0.01  },
+			
+		{ name = "Unit Split", settings = {
+			{ key="resetKeys", type="custom", name="Set Unit Split Keybindings", 
+			  description="Splits the selection into even groups.\r\n\r\nTry just selecting a large amount of units and pressing [V] - you cycle through them. Then [Shift V] to select a few. Select a large group and hit [Ctrl-Alt-3] to divide them into three equal groups. The first group will be selected automatically. [V] Will cycle to the other groups or you can select the second one manually by pressing [Alt-2].\r\n\r\n[Ctrl-Alt-Number] - splits the selection into that many groups\r\n\r\n[Alt-Number] - selects that group\r\n\r\n[V] cycles between groups (hold shift to add to current selection)\r\n\r\nThe 'first' group is the one furtherest or closest to the mouse, depending on if you move the mouse between dragging and splitting.", control = SettingsUi.CreateResetKeysControl },
+		}},	
+		{ name = "Zoom Pop", settings = {
+			{ key="zoomPopOverride", type="bool", default=true, name="Fix Zoom Pop Accuracy", description="Reimplements zoom pop to be more accurate. To see the problem with old zoom pop, zoom out, hover a fac near a mex then pop in ... you will be at some random place nearby. In the new implementation the hovering fac is pretty much in the same place as before you popped." },
+			{ key="zoomPopSpeed", type="number", default=0.08, name="Zoom Pop Speed", description="Speed up/slow down the pop animation. (Zero = disabled).", min=0, max=10, valMult=0.01  },
 
 		}},
-		{ name = "Windows", settings = {
-			{ key="rearrangeBottomPanes", type="bool", default=true, name="Move bottom panes", description="Move bottom panes" },
-			{ key="hideMenusOnStart", type="bool", default=true, name="Hide misc menus", descrption="On startup, collapse the multifunction (pings) and tabs (main menu)" },
+		{ name = "UI Position", settings = {
+			{ key="rearrangeBottomPanes", type="bool", default=true, name="Move bottom panes", description="Reorders the selected-unit-info pane and the orders pane to take up less vertical space. (For wide monitors)" },
+			{ key="hideMenusOnStart", type="bool", default=true, name="Hide misc menus", description="On startup, collapse the multifunction (pings) and tabs (main menu)" },
 			
 		}},
-		{ name = "Orders", settings = {
-			{ key="setGroundFireOnAttack", type="bool", default=true, name="Attack sets ground firing mode", description="" },
-		}},
-		{ name = "Hidden", settings = {
-			{ key="xOffset", default=345 },
-			{ key="yOffset", default=50 },
+		{ name = "Units", settings = {
+			{ key="setGroundFireOnAttack", type="bool", default=true, name="Always ground fire", description="Sets it so all units are ground firing. This is because normal fire mode is useless and ground fire does the same except allows you to fire at ground as well." },
 		}},
 		{ name = "Split Screen", settings = {
-			{ key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="startSplitScreen" },
+			{ key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="The game starts in split screen mode.\r\nLeft screen zooms in.\r\nRight screen zooms out.\r\nUser can control acu earlier.\r\nAcu is automatically set in place-land-factory mode." },
 			{ key="smallerContructionTabWhenSplitScreen", type="bool", default=true, name="Construction to left", description="Construction menu just spans left screen (not both)" },
 			{ key="moveAvatarsToLeftSplitScreen", type="bool", default=true, name="Avatars to left", description="Move the avatars (idle engies pane) to the left screen." },
 			{ key="moveMainMenuToRight", type="bool", default=true, name="Main menu to right", description="Move the tabs (main menu) to the right screen." },
+		}},
+		{ name = "Mod", settings = {
+			{ key="modEnabled", type="bool", default=true, name="Mod Enabled", description="Turns off the entire mod. This does not put windows in their original place, etc. It just stops doing anything at all." },
+			{ key="logEnabled", type="bool", default=false, name="Mod Log Enabled", description="For diagnostic purposes", min=0, max=10, valMult=0.01  },
+
+		}},	
+		{ name = "Hidden", settings = {
+			{ key="xOffset", default=345 },
+			{ key="yOffset", default=50 },
 		}},
 		
 		
 	} 
 
+	local tooltips = import('/lua/ui/help/tooltips.lua').Tooltips
+
 	if not savedPrefs.global then
 		savedPrefs.global = {}
 	end
 	
-	-- make defaults
 	local keys = from({})
 	from(settingDescriptions).foreach(function(gk, kv) 
 		from(kv.settings).foreach(function(sk, sv) 
 	
+			-- make defaults
 			keys.addValue(sv.key)
 			if savedPrefs.global[sv.key] == nil then
 				UipLog("setting default " .. sv.key)
 				savedPrefs.global[sv.key] = sv.default
 			end
 			
+			-- add tooltips
+			tooltips["UIP_"..sv.key] = {
+				title = sv.name,
+				description = sv.description,
+				keyID = "UIP_"..sv.key,
+			}
 		end)
 	end)
 

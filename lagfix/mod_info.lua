@@ -1,0 +1,16 @@
+name = "UI lagfix"
+uid = "9cef4ff7-eccd-4d2d-bee7-cbc7bce0de38"
+version = 1
+copyright = ""
+description = "Reduce lag in games"
+author = "Crotalus"
+url = ""
+selectable = true
+enabled = true
+exclusive = false
+ui_only = false
+requires = {}
+requiresNames = {}
+conflicts = {}
+before = {}
+after = {}

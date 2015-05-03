@@ -1,4 +1,8 @@
 local settings = import('/mods/UI-Party/modules/settings.lua')
+local UnitWatcher = import('/mods/UI-Party/modules/unitWatcher.lua')
+local GameMain = import('/lua/ui/game/gamemain.lua')
+local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
+
 
 function Init() 
 
@@ -11,12 +15,20 @@ function Init()
 			LOG("UIP:", a)
 		end
 	end
+	
+	GameMain.AddBeatFunction(SelectHelper.UpdateAllUnits)
+	UnitWatcher.Init()
+	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
 end
 
 function CreateUI(isReplay)
 
 	import('/mods/UI-Party/modules/settings.lua').init()
 	import('/mods/UI-Party/modules/ui.lua').init()
+
+end
+
+function OnFirstUpdate()
 
 end
 

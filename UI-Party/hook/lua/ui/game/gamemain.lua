@@ -93,19 +93,23 @@ function OnFirstUpdate()
 		-- both cams zoom out
 		local cam1 = GetCamera("WorldCamera")
 		local cam2 = GetCamera("WorldCamera2")
-		cam1:SetZoom(cam1:GetMaxZoom() * 1.9,0)
-		cam2:SetZoom(cam2:GetMaxZoom() * 1.9,0)
+		cam1:SetZoom(cam1:GetMaxZoom(),0)
+		cam2:SetZoom(cam2:GetMaxZoom(),0)
+		cam1:RevertRotation() -- UIZoomTo does something funny
+		cam2:RevertRotation() -- UIZoomTo does something funny
 
 		-- need to wait before ui can hide, so slip in artistic camera transition
 		WaitSeconds(1)
-		-- left cam glides towards acu
-		UIZoomTo(avatars, 1.2)
-			
-		WaitSeconds(1)
-		cam1:SetZoom(import('/modules/zoompopper.lua').GetPopLevel(),0.1) -- different zoom level to usual, not as close
-		WaitSeconds(0)
-		cam1:RevertRotation() -- UIZoomTo does something funny
 
+		if not GetReplayState() then
+			-- left cam glides towards acu
+			UIZoomTo(avatars, 1.2)
+			
+			WaitSeconds(1)
+			cam1:SetZoom(import('/modules/zoompopper.lua').GetPopLevel(),0.1) -- different zoom level to usual, not as close
+			WaitSeconds(0)
+			cam1:RevertRotation() -- UIZoomTo does something funny
+		end
 	end)
 
 	if Prefs.GetOption('skin_change_on_start') != 'no' then

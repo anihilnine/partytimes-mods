@@ -27,5 +27,8 @@ function UnitFound(u)
 	if UIP.GetSetting("setGroundFireOnAttack") then
 		ToggleFireState({ u }, 1)
 	end
+	if UIP.GetSetting("factoriesStartWithRepeatOn") then
+		u:ProcessInfo('SetRepeatQueue', 'true')
+	end
 end
 

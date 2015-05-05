@@ -33,14 +33,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="hook\lua\options\" />
+    <Folder Include="hook\lua\ui\controls\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="hook\lua\ui\game\borders.lua" />
+    <None Include="hook\lua\ui\game\commandmode.lua" />
     <None Include="hook\lua\ui\game\gamemain.lua" />
+    <None Include="hook\lua\ui\game\layouts\construction_mini.lua" />
     <None Include="hook\lua\ui\game\layouts\orders_mini.lua" />
     <None Include="hook\lua\ui\game\layouts\unitviewDetail_mini.lua" />
     <None Include="hook\lua\ui\game\layouts\unitview_mini.lua" />
+    <None Include="hook\lua\ui\game\tabs.lua" />
     <None Include="modules\linq.lua" />
     <None Include="modules\selectHelper.lua" />
     <None Include="modules\unitWatcher.lua" />
@@ -53,28 +57,10 @@
     <None Include="mod_info.lua" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="textures\checkbox_active_disabled.png" />
-    <Content Include="textures\checkbox_active_over.png" />
-    <Content Include="textures\checkbox_active_up.png" />
-    <Content Include="textures\checkbox_disabled.png" />
-    <Content Include="textures\checkbox_inactive_over.png" />
-    <Content Include="textures\checkbox_inactive_up.png" />
-    <Content Include="textures\checked_down.png" />
-    <Content Include="textures\checked_over.png" />
-    <Content Include="textures\checked_up.png" />
-    <Content Include="textures\drag_down.dds" />
-    <Content Include="textures\drag_over.dds" />
     <Content Include="textures\drag_up.dds" />
-    <Content Include="textures\hide_down.dds" />
-    <Content Include="textures\hide_over.dds" />
-    <Content Include="textures\hide_up.dds" />
     <Content Include="textures\options_down.dds" />
     <Content Include="textures\options_over.dds" />
     <Content Include="textures\options_up.dds" />
-    <Content Include="textures\transparent.png" />
-    <Content Include="textures\unchecked_down.png" />
-    <Content Include="textures\unchecked_over.png" />
-    <Content Include="textures\unchecked_up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

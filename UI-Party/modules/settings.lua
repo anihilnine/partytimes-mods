@@ -31,7 +31,8 @@ function init()
 			
 		}},
 		{ name = "Units", settings = {
-			{ key="setGroundFireOnAttack", type="bool", default=true, name="Always ground fire", description="Sets it so all units are ground firing. This is because normal fire mode is useless and ground fire does the same except allows you to fire at ground as well." },
+			{ key="setGroundFireOnAttack", type="bool", default=true, name="Start in ground fire mode", description="Sets it so all units are ground firing. This is because normal fire mode is useless and ground fire does the same except allows you to fire at ground as well." },
+			{ key="factoriesStartWithRepeatOn", type="bool", default=true, name="Factories repeat always", description="Factories will repeat unless you assist another factory or manually turn it off (and even then it will be turned back on if you stop your factory).\r\n\r\nFactories start in repeat mode. Repeat mode is also turned on whenever the Stop command is issued. Repeat is turned OFF automatically when they assist another factory.\r\n\r\nThese changes include more exotic factories like Quantum Gateways and experimentals that can produce units like the Fatboy." },
 		}},
 		{ name = "Split Screen", settings = {
 			{ key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="The game starts in split screen mode.\r\nLeft screen zooms in.\r\nRight screen zooms out.\r\nUser can control acu earlier.\r\nAcu is automatically set in place-land-factory mode." },

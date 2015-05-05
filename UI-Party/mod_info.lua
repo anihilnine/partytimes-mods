@@ -1,10 +1,10 @@
 name = "UI Party"
-version = 3
+version = 4
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "partytime, with contributions (technical help / ideas / I stole their code) from Domino, Myxir, yorickm, Sir Prize, Crotalus, Coding Squirrel, Morax"
+author = "partytime, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax"
 url = ""
-uid = "022E3DB4-9C00-4ED7-84D1-4866D316E693"
+uid = "022E3DB4-9C00-4ED7-84D1-4866D316E694"
 exclusive = false
 ui_only =true
 conflicts = {  }

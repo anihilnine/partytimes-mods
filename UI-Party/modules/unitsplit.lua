@@ -1,3 +1,4 @@
+local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 
 local selectionsClearGroupCycle = true
 local lastSelectedGroup
@@ -150,15 +151,21 @@ function DontClearCycle(a)
 end
 
 function SelectGroup(name, appendToExistingSelection)	
-	if name > groups.count() then name = 1 end
-	if name < 1 then name = groups.count() end
+	if name > groups.count() then 
+		UIP.PlayErrorSound()
+		name = 1 
+	end
+	if name < 1 then 
+		UIP.PlayErrorSound()
+		name = groups.count() 
+	end
 
 	local group = groups.get(name)
 	lastSelectedGroup = group
 	if group == nil then return end
 
 	DontClearCycle(function()
-		local newSelection = group.Units
+		local newSelection = group.Units 
 
 		if appendToExistingSelection then
 			newSelection = newSelection

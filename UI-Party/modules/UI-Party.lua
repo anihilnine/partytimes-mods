@@ -21,6 +21,11 @@ function Init()
 	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
 end
 
+function PlayErrorSound()
+    local sound = Sound({Cue = 'UI_Menu_Error_01', Bank = 'Interface',})
+    PlaySound(sound)
+end
+
 function CreateUI(isReplay)
 
 	import('/mods/UI-Party/modules/settings.lua').init()

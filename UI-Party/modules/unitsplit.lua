@@ -185,6 +185,24 @@ function SelectNextGroup()
 	end
 end
 
+function ReselectSplitUnits()
+	local units = from({})
+	groups.foreach(function(k,v) 
+		units = units.concat(v.Units)
+	end)
+	SelectUnits(units.toArray())
+end
+
+function ReselectOrderedSplitUnits()
+	local units = from({})
+	groups.foreach(function(k,v) 
+		if v.Name <= lastSelectedGroup.Name then
+			units = units.concat(v.Units)
+		end
+	end)
+	SelectUnits(units.toArray())
+end
+
 function SelectPrevGroup()
 	if lastSelectedGroup ~= nil then
 		SelectGroup(lastSelectedGroup.Name - 1)

@@ -1,6 +1,7 @@
 
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 
+local oldOnCommandIssued = OnCommandIssued
 function OnCommandIssued(command)
 	if UIP.GetSetting("factoriesStartWithRepeatOn") then
 		if command.CommandType == "Guard" and command.Target.Type == "Entity" then
@@ -21,4 +22,5 @@ function OnCommandIssued(command)
 			end)
 		end	
 	end
+	oldOnCommandIssued(command)
 end

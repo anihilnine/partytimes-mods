@@ -65,6 +65,14 @@ function InitKeys()
 	KeyMapper.SetUserKeyAction('Select next split group (shift)', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectNextGroup()", category = cat, order = order,})
 	order = order + 1
 	KeyMapper.SetUserKeyAction('Select prev split group (shift)', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectPrevGroup()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Reselect Split Units', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').ReselectSplitUnits()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Reselect Ordered Split Units', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').ReselectOrderedSplitUnits()", category = cat, order = order,})
+
+
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Clear queue except for current production', {action = "UI_Lua import('/lua/ui/game/construction.lua').StopAllExceptCurrentProduction()", category = cat, order = order,})
 end
 
 function GetSettings()

@@ -49,6 +49,8 @@ function ResetKeys()
 	local keys = {
 		['V'] = 'Select next split group',
 		['Shift-V'] = 'Select next split group (shift)',
+        ['Ctrl-Shift-Alt-V'] = 'Reselect Split Units',
+        ['Ctrl-Alt-V'] = 'Reselect Ordered Split Units',
 	}
 	
 	range(2,10).foreach(function(k,v)

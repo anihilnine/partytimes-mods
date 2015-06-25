@@ -73,6 +73,10 @@ function InitKeys()
 
 	order = order + 1
 	KeyMapper.SetUserKeyAction('Clear queue except for current production', {action = "UI_Lua import('/lua/ui/game/construction.lua').StopAllExceptCurrentProduction()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Toggle Unit Lock', {action = "UI_Lua import('/mods/UI-Party/modules/unitlock.lua').ToggleSelectedUnitsLock()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Select all locked units', {action = "UI_Lua import('/mods/UI-Party/modules/unitlock.lua').SelectAllLockedUnits()", category = cat, order = order,})
 end
 
 function GetSettings()

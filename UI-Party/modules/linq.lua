@@ -27,6 +27,16 @@ _G.from = function(t)
 		return result
 	end
 	
+	
+	self.all = function(p)
+		for k,v in self.t do
+			if not p(k,v) then
+				return false
+			end
+		end
+		return true
+	end
+	
 	self.values = function()
 		local result = {}
 		for k,v in self.t do

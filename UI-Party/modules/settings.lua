@@ -33,6 +33,11 @@ function init()
 		{ name = "Units", settings = {
 			{ key="setGroundFireOnAttack", type="bool", default=true, name="Start in ground fire mode", description="Sets it so all units are ground firing. This is because normal fire mode is useless and ground fire does the same except allows you to fire at ground as well." },
 			{ key="factoriesStartWithRepeatOn", type="bool", default=false, name="Factories repeat always", description="Factories will repeat unless you assist another factory or manually turn it off (and even then it will be turned back on if you stop your factory).\r\n\r\nFactories start in repeat mode. Repeat mode is also turned on whenever the Stop command is issued. Repeat is turned OFF automatically when they assist another factory.\r\n\r\nThese changes include more exotic factories like Quantum Gateways and experimentals that can produce units like the Fatboy. Warning: Rebind your repeat key first ... otherwise you will be turning your facs OFF repeat out of habit" },
+			{ key="showAdornments", type="bool", default=true, name="Show adornments", description="Display symbols if unit is being assisted, is locked, is repeating" },
+		}},		
+		{ name = "Selection", settings = {
+			{ key="enableUnitLock", type="bool", default=true, name="Enable Unit Lock", description="Pressing the Toggle Unit Lock key locks the unit so it will be filtered out of any selection that mixes locked and unlocked units. (Shift overrides this back to normal)" },
+			{ key="doubleClickSelectsSimilarAssisters", type="bool", default=true, name="Double click assister selects similar assisters", description="If the unit is assisting something, double clicking it will select everything else that assists the same target" },
 		}},
 		{ name = "Split Screen", settings = {
 			{ key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="The game starts in split screen mode.\r\nLeft screen zooms in.\r\nRight screen zooms out.\r\nUser can control acu earlier.\r\nAcu is automatically set in place-land-factory mode." },

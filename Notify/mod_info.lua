@@ -1,0 +1,16 @@
+name = "Notify v3.6"
+uid = "96333e77-7a0c-4627-a802-d2e9692843bb"
+version = 3
+copyright = ""
+description = "Notify allies about all ACU enhancements. Allows enqueueing enhancements on ACU and SCU."
+author = "Crotalus, CodingSquirrel"
+url = ""
+selectable = true
+enabled = true
+exclusive = false
+ui_only = true
+requires = {}
+requiresNames = {}
+conflicts = {"48feb6b3-47f3-4ce7-80a4-e161ca188950"}
+before = {}
+after = {}

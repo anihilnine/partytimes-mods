@@ -8,7 +8,7 @@ local allowSelectionIfJustOne = true
 
 -- limit the units the reduction happens to by blueprint id. If no blueprint ids are provided then ALL units are 
 local blueprintIdArray = {  
-	-- "ual0101", "url0101", "xsl0101", "uel0101"
+	 "ual0101", "url0101", "xsl0101", "uel0101"
 }
 
 ## end config
@@ -169,6 +169,10 @@ function OnSelectionChanged(oldSelection, newSelection, added, removed)
 					local isApplicableBlueprint = isNotLimitedByBlueprint or blueprintIds[blueprintId] != nil
 					local thisSkipped = isAssisting and isApplicableBlueprint
 	
+					if unit:IsInCategory("ENGINEER") then
+						thisSkipped = false
+					end
+					
 					if thisSkipped then
 						changesMade = true
 					else

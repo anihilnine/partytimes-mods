@@ -1,4 +1,4 @@
--- this file by Myxir
+-- this file stolen from Myxir
 local oldSelection = nil
 local isAutoSelection = false
 local allUnits = {}

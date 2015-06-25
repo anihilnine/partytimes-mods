@@ -1,10 +1,10 @@
 name = "UI Party"
-version = 6
+version = 7
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "partytime, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild"
+author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase"
 url = ""
-uid = "022E3DB4-9C00-4ED7-84D1-4866D316E696"
+uid = "022E3DB4-9C00-4ED7-9876-4866D316E697"
 exclusive = false
 ui_only =true
 conflicts = {  }
@@ -13,6 +13,9 @@ conflicts = {  }
 -- ### history
 
 -- v7
+--	manual unit lock
+--	adornments
+--	double click assister selects similar assisters
 --	added key - Reselect Split Units
 --	added key - Reselect Ordered Split Units
 

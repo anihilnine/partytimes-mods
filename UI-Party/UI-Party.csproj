@@ -48,6 +48,7 @@
     <None Include="hook\lua\ui\game\construction.lua" />
     <None Include="modules\linq.lua" />
     <None Include="modules\selectHelper.lua" />
+    <None Include="modules\unitlock.lua" />
     <None Include="modules\unitWatcher.lua" />
     <None Include="modules\unitsplit.lua" />
     <None Include="modules\UI-Party.lua" />
@@ -58,7 +59,9 @@
     <None Include="mod_info.lua" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="textures\crown_icon.dds" />
     <Content Include="textures\drag_up.dds" />
+    <Content Include="textures\lock_icon.dds" />
     <Content Include="textures\options_down.dds" />
     <Content Include="textures\options_over.dds" />
     <Content Include="textures\options_up.dds" />

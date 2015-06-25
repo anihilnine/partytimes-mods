@@ -1,4 +1,5 @@
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
+local UnitLock = import('/mods/ui-party/modules/unitlock.lua')
 
 local selectionsClearGroupCycle = true
 local lastSelectedGroup
@@ -172,8 +173,14 @@ function SelectGroup(name, appendToExistingSelection)
 				.concat(from(GetSelectedUnits()))
 		end
 			
-		SelectUnits(newSelection.toArray())
+		SetSelectedUnits(newSelection.toArray())
 	end)
+end
+
+function SetSelectedUnits(units)
+	UnitLock.IgnoreLocksWhile(function() 
+		SelectUnits(units)
+	end)	
 end
 
 function SelectNextGroup()	
@@ -190,7 +197,7 @@ function ReselectSplitUnits()
 	groups.foreach(function(k,v) 
 		units = units.concat(v.Units)
 	end)
-	SelectUnits(units.toArray())
+	SetSelectedUnits(units.toArray())
 end
 
 function ReselectOrderedSplitUnits()
@@ -200,7 +207,7 @@ function ReselectOrderedSplitUnits()
 			units = units.concat(v.Units)
 		end
 	end)
-	SelectUnits(units.toArray())
+	SetSelectedUnits(units.toArray())
 end
 
 function SelectPrevGroup()

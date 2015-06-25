@@ -1,6 +1,7 @@
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 local UnitSplit = import('/mods/UI-Party/modules/UnitSplit.lua')
 local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
+local UnitLock = import('/mods/ui-party/modules/unitlock.lua')
 
 UIP.Init()
 
@@ -131,7 +132,11 @@ local oldOnSelectionChanged = OnSelectionChanged
 function OnSelectionChanged(oldSelection, newSelection, added, removed)
 	if not SelectHelper.IsAutoSelection() then 
 		UnitSplit.SelectionChanged()
-		oldOnSelectionChanged(oldSelection, newSelection, added, removed)
+
+		local selectionChanged = UnitLock.OnSelectionChanged(oldSelection, newSelection, added, removed)
+		if not selectionChanged then
+			oldOnSelectionChanged(oldSelection, newSelection, added, removed)
+		end
 	end
 end
 

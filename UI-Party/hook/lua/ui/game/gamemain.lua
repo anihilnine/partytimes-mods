@@ -140,3 +140,9 @@ function OnSelectionChanged(oldSelection, newSelection, added, removed)
 	end
 end
 
+
+local oldOnQueueChanged = OnQueueChanged
+function OnQueueChanged(newQueue)
+	LOG("!!")
+    oldOnQueueChanged(newQueue)
+end

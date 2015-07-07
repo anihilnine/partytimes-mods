@@ -46,6 +46,7 @@
     <None Include="hook\lua\ui\game\layouts\unitview_mini.lua" />
     <None Include="hook\lua\ui\game\tabs.lua" />
     <None Include="hook\lua\ui\game\construction.lua" />
+    <None Include="hook\modules\reclaim.lua" />
     <None Include="modules\linq.lua" />
     <None Include="modules\selectHelper.lua" />
     <None Include="modules\unitlock.lua" />

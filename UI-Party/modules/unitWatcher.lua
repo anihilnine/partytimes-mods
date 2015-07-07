@@ -12,7 +12,7 @@ function Init()
 		{
 			name="idle",
 			testFn= function(u) 
-				if (u:IsInCategory("FACTORY") or u:IsInCategory("ENGINEER")) and u:IsIdle() then
+				if (u:IsInCategory("FACTORY") or u:IsInCategory("ENGINEER")) and u:IsIdle() and u:GetWorkProgress() == 0 then
 					if u:IsInCategory("FACTORY") then return { val=12, img='/mods/ui-party/textures/idle_icon.dds', width=12, height=12 } end
 					return { val=8, img='/mods/ui-party/textures/idle_icon_small.dds', width=8, height=8 }
 				end
@@ -33,21 +33,59 @@ function Init()
 		{
 			name="assisted",
 			testFn= function(u) 				
-				if u.assistedByF then return { val=12, img='/mods/ui-party/textures/crown_icon.dds', width=12, height=12 }
-				elseif u.assistedByE then return { val=8, img='/mods/ui-party/textures/crown_icon_small.dds', width=8, height=8 }
-				elseif u.assistedByU then return { val=8, img='/mods/ui-party/textures/crown_icon_small_grey.dds', width=8, height=8 }
-				else return { val = false }
+				if (not u:IsInCategory("FACTORY")) then
+					if u.assistedByE then return { val=8, img='/mods/ui-party/textures/crown_icon_small.dds', width=8, height=8 }
+					elseif u.assistedByU then return { val=8, img='/mods/ui-party/textures/crown_icon_small_grey.dds', width=8, height=8 }
+					end
 				end
+				return { val = false }
 			end
 		},
 		{
-			name="repeatQueue",
-			testFn= function(u) 				
-				if u:IsRepeatQueue() then
-					if u:IsInCategory("FACTORY") then
-						return { val=12, img='/mods/ui-party/textures/repeat_icon_small.dds', width=8, height=8 }
+			name="masterFactory",
+			testFn= function(u) 
+
+				local repeating_master = { val=1, img='/mods/ui-party/textures/repeating_master_fac.dds', width=12, height=16 }
+				local master = { val=2, img='/mods/ui-party/textures/master_fac.dds', width=12, height=16 }
+				local repeating_solo = { val=3, img='/mods/ui-party/textures/repeating_solo_fac.dds', width=12, height=16 }
+				local solo = { val=4, img='/mods/ui-party/textures/solo_fac.dds', width=12, height=16 }
+				
+				if (u:IsInCategory("FACTORY")) then
+					local isGuarding = u:GetGuardedEntity() ~= nil
+					local isRepeating = u:IsRepeatQueue()
+					local hasQueue = SetCurrentFactoryForQueueDisplay(u) ~= nil
+					local isMaster = u.assistedByF
+
+					if (u.assistedByF) then
+
+						if (isGuarding) then 
+							isMaster = hasQueue
+						end
+					
 					end
-				end					
+
+					if (isMaster) then
+
+						if isRepeating then 
+							return repeating_master
+						else
+							return master
+						end
+
+					else  
+
+						if hasQueue then 
+							-- its a solo
+
+							if isRepeating then
+								return repeating_solo
+							else
+								return solo
+							end
+						end
+
+					end
+				end		
 				return { val = false }
 			end
 		}
@@ -59,6 +97,8 @@ local adornmentsVisible = false
 function OnBeat()
 
 	if UIP.Enabled() then
+
+		local selectedUnits = GetSelectedUnits()
 
 		local units = SelectHelper.getAllUnits()
 		from(units).foreach(function(k,v)
@@ -92,6 +132,11 @@ function OnBeat()
 			from(units).foreach(function(k,v)
 				UpdateUnit(v)
 			end)
+		end
+
+		if selectedUnits and table.getn(selectedUnits) == 1 then
+			-- return the queue back the way it was
+			SetCurrentFactoryForQueueDisplay(selectedUnits[1])
 		end
 
 	end

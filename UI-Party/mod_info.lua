@@ -1,16 +1,19 @@
 name = "UI Party"
-version = 8
+version = 9
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
 author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase"
 url = ""
-uid = "022E3DB4-9C00-4ED7-9876-4866D316E008"
+uid = "022E3DB4-9C00-4ED7-9876-4866D316E009"
 exclusive = false
 ui_only =true
 conflicts = {  }
 
 
 -- ### history
+
+-- v9
+--	Compatibility with FAF 3642
 
 -- v8
 --	Clear queue except for current production - now works for multiple units at once. Also clears the first item if it hasnt been started yet (because another unit is still walking off factory)

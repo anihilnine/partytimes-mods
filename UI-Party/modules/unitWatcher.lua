@@ -149,6 +149,7 @@ function OnBeat()
 			v.assistedByF = false
 			v.assistedByE = false
 			v.assistedByU = false
+			v.isUpgradee = false
 		end)
 
 		from(units).foreach(function(k,v)
@@ -157,6 +158,13 @@ function OnBeat()
 				if v:IsInCategory("FACTORY") then e.assistedByF = true
 				elseif v:IsInCategory("ENGINEER") then e.assistedByE = true
 				else e.assistedByU = true 
+				end
+			end
+
+			if v:IsInCategory("STRUCTURE") then
+				local f = v:GetFocus()
+				if f ~= nil and f:IsInCategory("STRUCTURE") then
+					f.isUpgradee = true
 				end
 			end
 		end)
@@ -171,13 +179,17 @@ function OnBeat()
 
 		if adornmentsVisible then
 			from(units).foreach(function(k,v)
-				UpdateUnit(v)
+				if not v.isUpgradee then
+					UpdateUnit(v)
+				end
 			end)
 		end
 
 		if selectedUnits and table.getn(selectedUnits) == 1 then
 			-- return the queue back the way it was
 			SetCurrentFactoryForQueueDisplay(selectedUnits[1])
+		else
+			ClearCurrentFactoryForQueueDisplay()
 		end
 
 	end

@@ -6,6 +6,7 @@ local Group = import('/lua/maui/group.lua').Group
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
 local trackers = {}
+local enhancementQueue = {}
 
 function Init()
 	trackers = {
@@ -29,6 +30,23 @@ function Init()
 				return { val = false }
 			end,
 			
+		},
+		{
+			name="upgrade",
+			testFn= function(u) 				
+				if (u:IsInCategory("STRUCTURE")) then
+					local queue = SetCurrentFactoryForQueueDisplay(u);
+					if (queue ~= nil) then
+						local firstItem = queue[1]
+						local firstBp = __blueprints[firstItem.id]
+						local firstIsStruct = from(firstBp.Categories).contains("STRUCTURE")
+						if (firstIsStruct) then 
+							return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+						end
+					end
+				end
+				return { val = false }
+			end
 		},
 		{
 			name="assisted",
@@ -90,6 +108,27 @@ function Init()
 			end
 		}
 	}
+
+	local hasNotify = exists('/mods/Notify/modules/notify.lua')
+	if (hasNotify) then
+
+		enhancementQueue = import('/mods/Notify/modules/notify.lua').getEnhancementQueue()
+
+		table.insert(trackers, 
+			{
+				name="enhance",
+				testFn= function(u) 	
+
+					local unitQueue = enhancementQueue[u:GetEntityId()];
+					local isEnhancing = unitQueue ~= nil and table.getn(unitQueue) > 0
+					if (isEnhancing) then 
+						return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+					end
+					return { val = false }
+				end
+			});
+
+	end
 end
 
 local adornmentsVisible = false
@@ -101,6 +140,7 @@ function OnBeat()
 		local selectedUnits = GetSelectedUnits()
 
 		local units = SelectHelper.getAllUnits()
+
 		from(units).foreach(function(k,v)
 			if v.uip == nil then
 				v.uip = true
@@ -110,6 +150,7 @@ function OnBeat()
 			v.assistedByE = false
 			v.assistedByU = false
 		end)
+
 		from(units).foreach(function(k,v)
 			local e = v:GetGuardedEntity()
 			if e ~= nil then

@@ -7,7 +7,7 @@ local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
 function Init() 
 
 	import('/mods/UI-Party/modules/linq.lua')
-
+	
 	InitKeys()
 
 	_G.UipLog = function(a)
@@ -17,8 +17,12 @@ function Init()
 	end
 	
 	GameMain.AddBeatFunction(SelectHelper.UpdateAllUnits)
+
 	UnitWatcher.Init()
 	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
+	GameMain.AddBeatFunction(function() 
+        import('/mods/UI-Party/modules/test.lua') 
+    end)
 end
 
 function PlayErrorSound()

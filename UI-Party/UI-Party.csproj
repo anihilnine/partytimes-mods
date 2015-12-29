@@ -49,6 +49,7 @@
     <None Include="hook\modules\reclaim.lua" />
     <None Include="modules\linq.lua" />
     <None Include="modules\selectHelper.lua" />
+    <None Include="modules\test.lua" />
     <None Include="modules\unitlock.lua" />
     <None Include="modules\unitWatcher.lua" />
     <None Include="modules\unitsplit.lua" />

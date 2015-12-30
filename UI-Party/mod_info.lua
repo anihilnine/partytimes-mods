@@ -14,16 +14,20 @@ conflicts = {  }
 --	select units on screen + remove last queue item
 --	fix eco bar strat icons left
 --	allow click incomplete stuff
---	ka-ching noise when upgrade finishes (hq/mex)
+
 
 
 
 -- ### history
 
 -- v10
+--	added key - Select similar onscreen units
+--	added key - Undo last queue order - works for engies and factories
+--	update beep/message for finished structure/acu upgrades.
 --	upgrade adornment for structures
 --	upgrade adorment for acu upgrades - this feature requires notify mod, doesnt work in replay
 --	fix - shows double adornments when upgrading fac
+--	adornments - greater emphasis on idle master facs
 
 -- v9
 --	Compatibility with FAF 3642

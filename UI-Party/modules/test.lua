@@ -46,32 +46,45 @@ function ArmyAnnounce(armyID, text, textDesc)
 	import('/lua/ui/game/announcement.lua').CreateAnnouncement(LOC(text),group , textDesc)
 end
 
-local a, b = pcall(function()
-                    --PlaySound(Sound({Bank = 'Interface', Cue = 'X_Main_Menu_On'})) --!!
-   -- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Announcement_Open'}))
-             --   PlaySound(Sound({Bank = 'Interface', Cue = 'UI_END_Game_Victory'}))
-    --PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Economy_Rollover'}))
-        --PlaySound(Sound({Bank = 'Interface', Cue = 'UI_MFD_checklist'})) 
-                 --  PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Over'}))
-                  --  PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Click'}))
---                PlaySound(Sound({Bank = 'Interface', Cue = 'UI_IG_Camera_Move'}))
-                -- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Diplomacy_Open'})) --!!
-           -- PlaySound(Sound({Cue = "UI_Score_Window_Open", Bank = "Interface"}))
-           -- PlaySound(Sound({Cue = "UI_Score_Window_Close", Bank = "Interface"}))
-	--PlaySound(Sound({Cue = "AMB_SER_OP_Briefing", Bank = "AmbientTest",}))
-                       -- PlaySound(Sound({Cue = "UI_Tab_Rollover_01", Bank = "Interface",}))
-                        --PlaySound(Sound({Cue = "UI_Tab_Click_01", Bank = "Interface",}))
+function Invoke()
+	local a, b = pcall(function()
+		LOG("A")
+--		local units = GetSelectedUnits()	
+--		if (units ~= nil) then 
+--			local blueprints = from(units).select(function(k, u) return u:GetBlueprint(); end).distinct()
+--			local str = ''
+--			blueprints.foreach(function(k,v) 
+--				str = str .. "+inview " .. v.BlueprintId .. ","
+--			end)
+--			LOG(str)
+--			ConExecute("Ui_SelectByCategory " .. str)
+--			--UI_SelectByCategory("+inview", "*")
+--		end
 
---	    local sound = Sound({Cue = 'UI_Menu_Error_01', Bank = 'Interface',})
---		PlaySound(sound)
---            PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Tab_Rollover_01'}))
-		local u = GetSelectedUnits()[1]	
---		print(UnitHelper.GetUnitName(u) .. " complete")
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'X_Main_Menu_On'})) --!!
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Announcement_Open'}))
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_END_Game_Victory'}))
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Economy_Rollover'}))
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_MFD_checklist'})) 
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Over'}))
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Click'}))
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_IG_Camera_Move'}))
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Diplomacy_Open'})) --!!
+--	PlaySound(Sound({Cue = "UI_Score_Window_Open", Bank = "Interface"}))
+--	PlaySound(Sound({Cue = "UI_Score_Window_Close", Bank = "Interface"}))
+--	PlaySound(Sound({Cue = "AMB_SER_OP_Briefing", Bank = "AmbientTest",}))
+--	PlaySound(Sound({Cue = "UI_Tab_Rollover_01", Bank = "Interface",}))
+--	PlaySound(Sound({Cue = "UI_Tab_Click_01", Bank = "Interface",}))
 
---		ArmyAnnounce(1, 'Holy snake balls batmap', 'xxx')
-end)
+--	local sound = Sound({Cue = 'UI_Menu_Error_01', Bank = 'Interface',})
+--	PlaySound(sound)
+--	PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Tab_Rollover_01'}))
+--	print(UnitHelper.GetUnitName(u) .. " complete")
 
+	end)
+	
+	LOG("UI PARTY RESULT: ", a, b)   
+end
 
+Invoke()
 
-
-LOG("UI PARTY RESULT: ", a, b)   

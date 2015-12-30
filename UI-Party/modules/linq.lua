@@ -25,6 +25,16 @@ _G.from = function(t)
 			end
 		end
 		return result
+	end	
+	
+	self.distinct = function()
+		local result = from({})
+		for k,v in self.t do
+			if not result.contains(v) then
+				result.addValue(v)
+			end
+		end
+		return result
 	end
 	
 	

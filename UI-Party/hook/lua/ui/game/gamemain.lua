@@ -143,6 +143,5 @@ end
 
 local oldOnQueueChanged = OnQueueChanged
 function OnQueueChanged(newQueue)
-	LOG("!!")
     oldOnQueueChanged(newQueue)
 end

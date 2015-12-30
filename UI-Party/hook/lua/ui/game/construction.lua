@@ -24,3 +24,21 @@ function clearQueue(unit, queue)
 		end
 	end
 end
+
+function UndoLastQueueOrder()
+
+	local units = GetSelectedUnits()	
+	if (units ~= nil) then
+		local u = units[1]
+		local queue = SetCurrentFactoryForQueueDisplay(u);
+		if queue ~= nil then
+			local lastIndex = table.getn(queue)
+			local count = 1
+			if IsKeyDown('Shift') then
+				count = 5
+			end
+			DecreaseBuildCountInQueue(lastIndex, count)
+		end
+	end
+
+end

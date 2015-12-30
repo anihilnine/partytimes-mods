@@ -20,9 +20,9 @@ function Init()
 
 	UnitWatcher.Init()
 	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
-	GameMain.AddBeatFunction(function() 
-        import('/mods/UI-Party/modules/test.lua') 
-    end)
+--	GameMain.AddBeatFunction(function() 
+--        import('/mods/UI-Party/modules/test.lua') 
+--    end)
 end
 
 function PlayErrorSound()
@@ -77,6 +77,12 @@ function InitKeys()
 
 	order = order + 1
 	KeyMapper.SetUserKeyAction('Clear queue except for current production', {action = "UI_Lua import('/lua/ui/game/construction.lua').StopAllExceptCurrentProduction()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Undo last queue order', {action = "UI_Lua import('/lua/ui/game/construction.lua').UndoLastQueueOrder()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Undo last queue order (shift)', {action = "UI_Lua import('/lua/ui/game/construction.lua').UndoLastQueueOrder()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Select similar onscreen units', {action = "UI_Lua import('/mods/UI-Party/modules/selection.lua').SelectSimilarOnscreenUnits()", category = cat, order = order,})
 	order = order + 1
 	KeyMapper.SetUserKeyAction('Toggle Unit Lock', {action = "UI_Lua import('/mods/UI-Party/modules/unitlock.lua').ToggleSelectedUnitsLock()", category = cat, order = order,})
 	order = order + 1

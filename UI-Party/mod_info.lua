@@ -2,15 +2,28 @@ name = "UI Party"
 version = 9
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase"
+author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL"
 url = ""
 uid = "022E3DB4-9C00-4ED7-9876-4866D316E009"
 exclusive = false
 ui_only =true
 conflicts = {  }
 
+-- ### upcoming features
+
+--	select units on screen + remove last queue item
+--	fix eco bar strat icons left
+--	allow click incomplete stuff
+--	ka-ching noise when upgrade finishes (hq/mex)
+
+
 
 -- ### history
+
+-- v10
+--	upgrade adornment for structures
+--	upgrade adorment for acu upgrades - this feature requires notify mod, doesnt work in replay
+--	fix - shows double adornments when upgrading fac
 
 -- v9
 --	Compatibility with FAF 3642

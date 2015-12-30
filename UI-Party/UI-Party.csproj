@@ -48,6 +48,7 @@
     <None Include="hook\lua\ui\game\construction.lua" />
     <None Include="hook\modules\reclaim.lua" />
     <None Include="modules\linq.lua" />
+    <None Include="modules\unitHelper.lua" />
     <None Include="modules\selectHelper.lua" />
     <None Include="modules\test.lua" />
     <None Include="modules\unitlock.lua" />
@@ -67,6 +68,7 @@
     <Content Include="textures\options_down.dds" />
     <Content Include="textures\options_over.dds" />
     <Content Include="textures\options_up.dds" />
+    <Content Include="textures\upgrade.dds" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

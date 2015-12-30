@@ -5,8 +5,12 @@ local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 local Group = import('/lua/maui/group.lua').Group
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
+local UnitHelper = import('/mods/ui-party/modules/unitHelper.lua')
 local trackers = {}
 local enhancementQueue = {}
+local hasNotify = exists('/mods/Notify/modules/notify.lua')
+local notify = nil
+if hasNotify then notify = import('/mods/Notify/modules/notify.lua') end
 
 function Init()
 	trackers = {
@@ -41,7 +45,11 @@ function Init()
 						local firstBp = __blueprints[firstItem.id]
 						local firstIsStruct = from(firstBp.Categories).contains("STRUCTURE")
 						if (firstIsStruct) then 
-							return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+							if GetIsPaused({ u }) then 
+								return { val=7, img='/mods/ui-party/textures/upgrade.dds', width=8, height=8 }
+							else
+								return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+							end
 						end
 					end
 				end
@@ -109,19 +117,16 @@ function Init()
 		}
 	}
 
-	local hasNotify = exists('/mods/Notify/modules/notify.lua')
 	if (hasNotify) then
 
-		enhancementQueue = import('/mods/Notify/modules/notify.lua').getEnhancementQueue()
+		enhancementQueue = notify.getEnhancementQueue()
 
 		table.insert(trackers, 
 			{
 				name="enhance",
 				testFn= function(u) 	
 
-					local unitQueue = enhancementQueue[u:GetEntityId()];
-					local isEnhancing = unitQueue ~= nil and table.getn(unitQueue) > 0
-					if (isEnhancing) then 
+					if (u.isEnhancing) then 
 						return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
 					end
 					return { val = false }
@@ -146,12 +151,25 @@ function OnBeat()
 				v.uip = true
 				UnitFound(v)
 			end
+
+			v.lastIsUpgradee = v.isUpgradee
+			v.lastIsEnhancing = v.isEnhancing
+
 			v.assistedByF = false
 			v.assistedByE = false
 			v.assistedByU = false
 			v.isUpgradee = false
-		end)
+			v.isUpgrader = false
+			v.upgradingTo = nil
+			v.upgradingFrom = nil
 
+			if hasNotify then
+				local unitQueue = enhancementQueue[v:GetEntityId()];
+				v.isEnhancing = unitQueue ~= nil and table.getn(unitQueue) > 0
+			end
+
+		end)
+		
 		from(units).foreach(function(k,v)
 			local e = v:GetGuardedEntity()
 			if e ~= nil then
@@ -164,11 +182,27 @@ function OnBeat()
 			if v:IsInCategory("STRUCTURE") then
 				local f = v:GetFocus()
 				if f ~= nil and f:IsInCategory("STRUCTURE") then
-					f.isUpgradee = true
+				v.isUpgrader = true
+				v.upgradingTo = f;
+				f.isUpgradee = true
+				f.upgradingFrom = v;
 				end
 			end
 		end)
 		
+		if (UIP.GetSetting("alertUpgradeFinished")) then 
+			from(units).foreach(function(k,v)
+				if v.lastIsUpgradee and not v.isUpgradee and not v:IsDead() then
+					PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Over'}))
+					print(UnitHelper.GetUnitName(v) .. " complete")
+				end
+				if v.lastIsEnhancing and not v.isEnhancing and not v:IsDead() then
+					PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Over'}))
+					print(UnitHelper.GetUnitName(v) .. " no longer upgrading") -- too hard to work out if complete/cancelled, we only know if there is an upgrade in the queue at al
+				end
+			end)
+		end
+
 		local newadornmentsVisible = UIP.GetSetting("showAdornments")
 		if adornmentsVisible and not newadornmentsVisible then
 			from(units).foreach(function(k,v)
@@ -179,7 +213,7 @@ function OnBeat()
 
 		if adornmentsVisible then
 			from(units).foreach(function(k,v)
-				if not v.isUpgradee then
+				if not v.isUpgradee then -- the old fac is overlayed by new fac unit - we dont want to draw icons for new fac until old one dies
 					UpdateUnit(v)
 				end
 			end)

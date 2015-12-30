@@ -18,11 +18,24 @@ function Init()
 			name="idle",
 			testFn= function(u) 
 				if (u:IsInCategory("FACTORY") or u:IsInCategory("ENGINEER")) and u:IsIdle() and u:GetWorkProgress() == 0 then
-					if u:IsInCategory("FACTORY") then return { val=12, img='/mods/ui-party/textures/idle_icon.dds', width=12, height=12 } end
-					return { val=8, img='/mods/ui-party/textures/idle_icon_small.dds', width=8, height=8 }
+					if u:IsInCategory("FACTORY") then 
+						if (u.assistedByF) then 
+							-- idle master fac is terrible
+							return { val=16, img='/mods/ui-party/textures/idle_icon.dds', width=16, height=16 } 
+						elseif (u.assistedByE) then 
+							-- idle assistedByEng fac is bad
+							return { val=14, img='/mods/ui-party/textures/idle_icon.dds', width=14, height=14 } 
+						else
+							-- idle solo fac is bad
+							return { val=12, img='/mods/ui-party/textures/idle_icon.dds', width=12, height=12 } 
+						end
+					else
+						-- idle engie is not bad
+						return { val=8, img='/mods/ui-party/textures/idle_icon_small.dds', width=8, height=8 }
+					end					
 				end
 				return { val = false }
-			end,
+			end
 		},
 		{
 			name="locked",

@@ -339,7 +339,7 @@ function UpdateUnitPos(u)
 		local worldView = import('/lua/ui/game/worldview.lua').viewLeft
 		local pos1 = u:GetPosition() 
 		local posA = worldView:Project(pos1)
-		LayoutHelpers.AtLeftTopIn(st.group, worldView, posA.x, posA.y)
+		LayoutHelpers.AtLeftTopIn(st.group, worldView, posA.x + 3, posA.y)
 	else
 		DestroyTracker(u, st)
 	end

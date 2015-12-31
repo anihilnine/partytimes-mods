@@ -187,17 +187,23 @@ function UpdateResourceUsage()
 				button.income:SetText("-" .. info.data)
 				
 				-- set the texture that corresponds to the unit
-				local iconName1, iconName2, iconName3, iconName4 = GameCommon.GetCachedUnitIconFileNames(unitWithMostProgress:GetBlueprint())
-				button.icon:SetTexture(iconName1)
-				
+				--local iconName1, iconName2, iconName3, iconName4 = GameCommon.GetCachedUnitIconFileNames(unitWithMostProgress:GetBlueprint())
+				local iconName = __blueprints[unitWithMostProgress:GetBlueprint().BlueprintId].StrategicIconName
+				iconName = '/textures/ui/common/game/strategicicons/'..iconName..'_rest.dds'
+				button.icon:SetTexture(iconName)
+				button.icon.Height:Set(button.icon.BitmapHeight)
+				button.icon.Width:Set(button.icon.BitmapWidth)
+--				LayoutHelpers.AtBottomIn(button.icon, button, 5)
+--				LayoutHelpers.AtLeftIn(button.icon, button, 5)
+
 				-- show the button
 				button:Show()
 				
 				-- show the construction marker
 				if consumptionTypes[info.name] == CONSTRUCTION then
-					button.marker:Show()
-				else
 					button.marker:Hide()
+				else
+					button.marker:Show()
 				end
 			end
 		end
@@ -217,6 +223,8 @@ function CreateModUI(isReplay, parent)
 	img.Width:Set(resourceIconHeight/58 * 70)
 	img.Height:Set(resourceIconHeight)
 	img:SetTexture(UIUtil.UIFile('/game/resources/mass_btn_up.dds'))
+	img:SetAlpha(0.3)
+
 	LayoutHelpers.CenteredAbove(img, grid[1][1], 0)
 	
 	local count = 1
@@ -235,6 +243,7 @@ function CreateModUI(isReplay, parent)
 	img.Height:Set(resourceIconHeight)
 	img:SetTexture(UIUtil.UIFile('/game/resources/energy_btn_up.dds'))
 	LayoutHelpers.CenteredAbove(img, grid[2][1], 0)
+	img:SetAlpha(0.3)
 	
 	GameMain.AddBeatFunction(UpdateResourceUsage)
 end

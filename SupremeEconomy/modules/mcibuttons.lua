@@ -84,6 +84,8 @@ function CreateGenericButton(parent)
 	
 	local bg = Bitmap(parent, buttonBackgroundName)
 
+	bg:SetAlpha(0.3)
+	--bg:InternalSetSolidColor('red')
     bg.Height:Set(44)
     bg.Width:Set(44)
 	
@@ -92,37 +94,39 @@ function CreateGenericButton(parent)
 	
 	bg.marker = Bitmap(bg)
 	bg.marker:SetTexture(UIUtil.UIFile('/game/avatar/pulse-bars_bmp.dds'))
+	bg.marker:SetAlpha(0.3)
 	bg.marker.Height:Set(54)
 	bg.marker.Width:Set(54)
 	LayoutHelpers.AtLeftTopIn(bg.marker, bg, -5, -5)
 	
 	bg.icon = Bitmap(bg)
-    bg.icon.Height:Set(34)
-    bg.icon.Width:Set(34)
-	LayoutHelpers.AtLeftTopIn(bg.icon, bg, 5, 5)
-	
+    bg.icon.Height:Set(24)
+    bg.icon.Width:Set(24)
+	LayoutHelpers.AtLeftTopIn(bg.icon, bg, 8, 8)
+
 	bg.progress = StatusBar(bg, 0, 1, false, false,
 							UIUtil.UIFile('/game/unit-over/health-bars-back-1_bmp.dds'),
 							UIUtil.UIFile('/game/unit-over/bar01_bmp.dds'), true, "Unit RO Health Status Bar")
 	
 	bg.progress.Width:Set(32)
     bg.progress.Height:Set(0)
+	bg.progress:SetAlpha(0.3)
     LayoutHelpers.AtLeftTopIn(bg.progress, bg, 6, 2)
     
 	
-    bg.income = UIUtil.CreateText(bg.icon, '', 10, UIUtil.bodyFont)
+    bg.income = UIUtil.CreateText(bg, '', 10, UIUtil.bodyFont)
 	bg.income:SetColor('red')
     bg.income:SetDropShadow(true)
-	LayoutHelpers.AtTopIn(bg.income, bg.icon, 0)
-    LayoutHelpers.AtRightIn(bg.income, bg.icon, 2)
-	CreateTextBG(bg, bg.income, '77000000')
+	LayoutHelpers.AtTopIn(bg.income, bg, 16)
+    LayoutHelpers.AtRightIn(bg.income, bg, 8)
+	CreateTextBG(bg, bg.income, '00000000')
 	
-	bg.count = UIUtil.CreateText(bg.icon, '', 10, UIUtil.bodyFont)
+	bg.count = UIUtil.CreateText(bg, '', 10, UIUtil.bodyFont)
 	bg.count:SetColor('ffffffff')
     bg.count:SetDropShadow(true)
-	LayoutHelpers.AtBottomIn(bg.count, bg.icon, 0)
-    LayoutHelpers.AtRightIn(bg.count, bg.icon, 2)
-	CreateTextBG(bg, bg.count, '77000000')
+	LayoutHelpers.AtTopIn(bg.count, bg, 6)
+    LayoutHelpers.AtRightIn(bg.count, bg, 8)
+	CreateTextBG(bg, bg.count, '00000000')
 	
 	return bg
 end

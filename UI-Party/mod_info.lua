@@ -11,11 +11,8 @@ conflicts = {  }
 
 -- ### upcoming features
 
---	select units on screen + remove last queue item
 --	fix eco bar strat icons left
 --	allow click incomplete stuff
-
-
 
 
 -- ### history

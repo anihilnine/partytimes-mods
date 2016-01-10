@@ -52,13 +52,15 @@ local unitClasses = {
 }
 
 function GetClassForUnit(unit)
-	for _, class in unitClasses do
-		if EntityCategoryContains(class.category, unit) then
-			return class.name
-		end
-	end
-	
-	return nil
+	local iconName = __blueprints[unit:GetBlueprint().BlueprintId].StrategicIconName
+	return iconName
+--	for _, class in unitClasses do
+--		if EntityCategoryContains(class.category, unit) then
+--			return class.name
+--		end
+--	end
+
+--	return nil
 end
 
 function UpdateResourceUsage()
@@ -131,6 +133,8 @@ function UpdateResourceUsage()
 			end
 		end		
 	end
+
+	
 	
 	local dtIndex = 1
 	for _, dataType in dataTypes do
@@ -247,3 +251,4 @@ function CreateModUI(isReplay, parent)
 	
 	GameMain.AddBeatFunction(UpdateResourceUsage)
 end
+

@@ -262,6 +262,7 @@ function NotifyStartEnhancement(unit, enhancement)
 	TacticalNukeMissile = "Tactical Nuke",
 	BlastAttack = "Gun (Splash)",
 	RateOfFire = "Gun (Speed&Range)",
+	DamageStablization = "Nano-Repair",
 	DamageStabilization = "Nano-Repair",
 	DamageStabilizationAdvanced = "Advanced Nano-Repair",
 	Shield = "Shield",
@@ -277,6 +278,7 @@ function NotifyStartEnhancement(unit, enhancement)
 	AdvancedRegenAura = "Advanced Regen Aura"
 	}
 
+	LOG(repr(enhancement.ID))
 	if(valid[enhancement.ID]) then
 		watch_enhancement = table.copy(enhancement)
 

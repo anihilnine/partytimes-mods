@@ -1,6 +1,7 @@
-local modpath = '/mods/reminder'
-local notificationPrefs = import(modpath..'/modules/notificationPrefs.lua')
-local notificationUtils = import(modpath..'/modules/notificationUtils.lua')
+local modpath = '/mods/reminder/'
+local notificationPrefs = import(modpath..'modules/notificationPrefs.lua')
+local notificationUtils = import(modpath..'modules/notificationUtils.lua')
+local notificationSizes = import(modpath..'modules/notificationUiSizes.lua')
 
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
 local UIUtil = import('/lua/ui/uiutil.lua')
@@ -9,21 +10,19 @@ local Button = import('/lua/maui/button.lua').Button
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
 local Dragger = import('/lua/maui/dragger.lua').Dragger
 
+local Tooltip = import('/lua/ui/game/tooltip.lua')
+
+
+local REMOVE_CLICKBITMAP_AFTER_SECONDS = 20
 
 local savedPrefs = nil
+local notificationMainSizes = nil
+local notificationPanelSizes = nil
 local isVisible = nil
 local isNotificationsToPositiveX = nil
 local mainPanel = nil
-local notifications = {}
 
-local notificationPanelValues = {
-	height = 60,
-	width = 300,
-	distance = 4,
-	buttonSize = 15,
-	buttonDistance = 6,
-	buttonXOffset = 0
-}
+local notifications = {}
 
 local buttons = {
 	dragButton = nil,
@@ -31,18 +30,37 @@ local buttons = {
 	configButton = nil
 }
 
+local tooltips = {
+	_delay = 0.2,
+	drag = {
+		text = "Drag",
+		body = "Keep the button pressed and move the cursor around",
+	},
+	minimize = {
+		text = "Quick minimize",
+		body = "Quickly hide/show the notifications",
+	},
+	config = {
+		text = "Configuration",
+		body = "Configure everything to your liking",
+	},
+}
+
 
 function init()
 	-- settings
 	savedPrefs = notificationPrefs.getPreferences()
+	notificationMainSizes = notificationSizes.getNotificationMainSizes()
+	notificationPanelSizes = notificationSizes.getNotificationPanelSizes()
+	
 	isNotificationsToPositiveX = savedPrefs.global.isNotificationsToPositiveX
 	isVisible = savedPrefs.global.isVisible
 	
 	mainPanel = Bitmap(GetFrame(0))
 	mainPanel.Depth:Set(99)
 	LayoutHelpers.AtLeftTopIn(mainPanel, GetFrame(0), savedPrefs.global.xOffset, savedPrefs.global.yOffset)
-	mainPanel.Height:Set(notificationPanelValues.buttonSize)
-	mainPanel.Width:Set(notificationPanelValues.buttonSize)
+	mainPanel.Height:Set(notificationMainSizes.buttonSize)
+	mainPanel.Width:Set(notificationMainSizes.buttonSize)
 	
 	addMainpanelButtons()
 end
@@ -67,20 +85,46 @@ end
 
 
 function addMainpanelButtons()
-	buttons.dragButton = Button(mainPanel, modpath..'/textures/drag_up.dds', modpath..'/textures/drag_down.dds', modpath..'/textures/drag_over.dds', modpath..'/textures/drag_up.dds')
-	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, notificationPanelValues.buttonXOffset, 0)
+	local dragButtonUpTexture = modpath..'textures/drag_up.dds'
+	local hideButtonUpTexture = modpath..'textures/hide_up.dds'
+	local configButtonUpTexture = modpath..'textures/options_up.dds'
+	if savedPrefs.global.isButtonsOnlyOnMouseover == true then
+		dragButtonUpTexture = modpath..'textures/transparent.png'
+		hideButtonUpTexture = modpath..'textures/transparent.png'
+		configButtonUpTexture = modpath..'textures/transparent.png'
+	end
 	
-	buttons.hideButton = Button(mainPanel, modpath..'/textures/hide_up.dds', modpath..'/textures/hide_down.dds', modpath..'/textures/hide_over.dds', modpath..'/textures/hide_up.dds')
-	LayoutHelpers.AtLeftTopIn(buttons.hideButton, mainPanel, notificationPanelValues.buttonXOffset + (notificationPanelValues.buttonSize+notificationPanelValues.buttonDistance)*1, 0)
+	buttons.dragButton = Button(mainPanel, dragButtonUpTexture, modpath..'textures/drag_down.dds', modpath..'textures/drag_over.dds', modpath..'textures/drag_up.dds')
+	buttons.dragButton.Height:Set(notificationMainSizes.buttonSize)
+	buttons.dragButton.Width:Set(notificationMainSizes.buttonSize)
+	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, notificationMainSizes.buttonXOffset, 0)
 	
-	buttons.configButton = Button(mainPanel, modpath..'/textures/options_up.dds', modpath..'/textures/options_down.dds', modpath..'/textures/options_over.dds', modpath..'/textures/options_up.dds')
-	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, notificationPanelValues.buttonXOffset + (notificationPanelValues.buttonSize+notificationPanelValues.buttonDistance)*2, 0)
+	buttons.hideButton = Button(mainPanel, hideButtonUpTexture, modpath..'textures/hide_down.dds', modpath..'textures/hide_over.dds', modpath..'textures/hide_up.dds')
+	buttons.hideButton.Height:Set(notificationMainSizes.buttonSize)
+	buttons.hideButton.Width:Set(notificationMainSizes.buttonSize)
+	Tooltip.AddButtonTooltip(buttons.hideButton, tooltips.minimize, tooltips._delay)
+	LayoutHelpers.AtLeftTopIn(buttons.hideButton, mainPanel, notificationMainSizes.buttonXOffset + (notificationMainSizes.buttonSize+notificationMainSizes.buttonDistance)*1, 0)
+	
+	buttons.configButton = Button(mainPanel, configButtonUpTexture, modpath..'textures/options_down.dds', modpath..'textures/options_over.dds', modpath..'textures/options_up.dds')
+	buttons.configButton.Height:Set(notificationMainSizes.buttonSize)
+	buttons.configButton.Width:Set(notificationMainSizes.buttonSize)
+	Tooltip.AddButtonTooltip(buttons.configButton, tooltips.config, tooltips._delay)
+	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, notificationMainSizes.buttonXOffset + (notificationMainSizes.buttonSize+notificationMainSizes.buttonDistance)*2, 0)
 	
 	buttons.dragButton.HandleEvent = function(self, event)
-		if not savedPrefs.global.isDraggable then
-			return
+		if (event.Type == "MouseEnter") then
+			Tooltip.CreateMouseoverDisplay(self, tooltips.drag, tooltips._delay, true)
+		elseif event.Type == 'MouseExit' then
+			Tooltip.DestroyMouseoverDisplay()
 		end
+
 		if event.Type == 'ButtonPress' then
+			self:SetTexture(modpath..'textures/drag_down.dds')
+
+			if not savedPrefs.global.isDraggable then
+				return
+			end
+
 			local drag = Dragger()
 			local offX = event.MouseX - self.Left()
 			local offY = event.MouseY - self.Top()
@@ -95,6 +139,13 @@ function addMainpanelButtons()
 				drag:Destroy()
 			end
 			PostDragger(self:GetRootFrame(), event.KeyCode, drag)
+		
+		elseif event.Type == 'MouseMotion' or event.Type == 'MouseEnter' then
+			self:SetTexture(modpath..'textures/drag_over.dds')
+
+		else
+			self:SetTexture(dragButtonUpTexture)
+
 		end
 	end
 	
@@ -113,8 +164,8 @@ function addMainpanelButtons()
 	
 	buttons.configButton:EnableHitTest(true)
 	buttons.configButton.OnClick = function(self, event)
-		import(modpath..'/modules/notificationPrefsUi.lua').createPrefsUi()
-	end	
+		import(modpath..'modules/notificationPrefsUi.lua').createPrefsUi()
+	end
 	
 	if not ( savedPrefs.global.isButtonsSetLeft ) then
 		moveMainpanelButtons("right")
@@ -123,11 +174,11 @@ end
 
 
 function moveMainpanelButtons(s)
-	helpDistance = notificationPanelValues.buttonSize + notificationPanelValues.buttonDistance
+	helpDistance = notificationMainSizes.buttonSize + notificationMainSizes.buttonDistance
 	helpOffsetX = 0
 	
 	if s == "right" then
-		helpOffsetX = notificationPanelValues.width - 3*helpDistance + notificationPanelValues.buttonDistance
+		helpOffsetX = notificationPanelSizes.width - 3*helpDistance + notificationMainSizes.buttonDistance
 	end
 	
 	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, helpOffsetX + helpDistance*0, 0)
@@ -141,7 +192,7 @@ function setIsVisible(bool)
 		return
 	end
 	isVisible = bool
-	showPanels(bool)
+	showNotifications(bool)
 end
 
 
@@ -156,75 +207,72 @@ end
 -----------------------------------------------------------------------
 
 
-function createNotification(data)
-	if not notifications[data.id] == nil then
-		removeNotification(data.id)
-	end
-
+function createNotification(data, insertAt)
 	posY = nil
 	if isNotificationsToPositiveX then
-		posY  = notificationUtils.countTableElements(notifications) * (notificationPanelValues.distance + notificationPanelValues.height) + 20
+		posY  = notificationUtils.countTableElements(notifications) * (notificationMainSizes.distance + notificationPanelSizes.height) + (notificationMainSizes.buttonSize + notificationMainSizes.distance)
 	else
-		posY  = (notificationUtils.countTableElements(notifications)+1) * (notificationPanelValues.distance + notificationPanelValues.height) * (-1)
+		posY  = (notificationUtils.countTableElements(notifications)+1) * (notificationMainSizes.distance + notificationPanelSizes.height) * (-1)
 	end
 	
 	if(notifications[data.id].clickButton) then
 		notifications[data.id].clickButton:Destroy()
 	end
-	notifications[data.id] = getNotificationUI(data.text, data.subtext, data.icon, data.clickFunction, posY)
+	notifications[insertAt] = getNotificationUI(data.text, data.subtext, data.icons, data.clickFunctionLeft, data.clickFunctionRight, posY)
 end
 
 
-function getNotificationUI(text, subtext, icon, clickFunction, posY)
+function getNotificationUI(text, subtext, icons, clickFunctionLeft, clickFunctionRight, posY)
 	notificationPanel = {}
 	
 	-- notification body
 	notificationPanel.main = Bitmap(mainPanel)
 	notificationPanel.main.Depth:Set(99)
 	LayoutHelpers.AtLeftTopIn(notificationPanel.main, mainPanel, 0, posY)
-	notificationPanel.main.Height:Set(notificationPanelValues.height)
-	notificationPanel.main.Width:Set(notificationPanelValues.width)	
+	notificationPanel.main.Height:Set(notificationPanelSizes.height)
+	notificationPanel.main.Width:Set(notificationPanelSizes.width)	
 	notificationPanel.main:DisableHitTest(true)
 	notificationPanel.main:SetTexture('/textures/ui/common/game/economic-overlay/econ_bmp_m.dds')
 	
-	-- icon
-	notificationPanel.iconPanel = Bitmap(mainPanel)
-	LayoutHelpers.AtLeftTopIn(notificationPanel.iconPanel, notificationPanel.main, 2, 2)
-	notificationPanel.iconPanel.Height:Set(notificationPanelValues.height-4)
-	notificationPanel.iconPanel.Width:Set(notificationPanelValues.height-4)
-	notificationPanel.iconPanel:DisableHitTest(true)
-	notificationPanel.iconPanel:SetTexture(icon)
+	-- icons
+	smallerBy = notificationPanelSizes.height - notificationPanelSizes.iconHeight
+	notificationPanel.iconPanels = {}
+	for i, icon in icons do
+		local iconPanel = Bitmap(mainPanel)
+		iconPanel.Height:Set(notificationPanelSizes.iconHeight)
+		iconPanel.Width:Set(notificationPanelSizes.iconHeight)
+		iconPanel:DisableHitTest(true)
+		iconPanel:SetTexture(icons[i])
+		LayoutHelpers.AtLeftTopIn(iconPanel, notificationPanel.main, smallerBy/2, smallerBy/2)
+		notificationPanel.iconPanels[i] = iconPanel
+	end
 	
 	-- text
-	notificationPanel.text = UIUtil.CreateText(notificationPanel.main, text, 20, UIUtil.bodyFont)
-	notificationPanel.subtext = UIUtil.CreateText(notificationPanel.main, subtext, 14, UIUtil.bodyFont)
-	LayoutHelpers.AtLeftTopIn(notificationPanel.text, notificationPanel.main, notificationPanelValues.height+10, 10)
-	LayoutHelpers.AtLeftTopIn(notificationPanel.subtext, notificationPanel.main, notificationPanelValues.height+10, 35)
+	notificationPanel.text = UIUtil.CreateText(notificationPanel.main, text, notificationPanelSizes.textSize, UIUtil.bodyFont)
+	notificationPanel.subtext = UIUtil.CreateText(notificationPanel.main, subtext, notificationPanelSizes.subtextSize, UIUtil.bodyFont)
+	LayoutHelpers.AtLeftTopIn(notificationPanel.text, notificationPanel.main, notificationPanelSizes.height+10, notificationPanelSizes.textYIn)
+	LayoutHelpers.AtLeftTopIn(notificationPanel.subtext, notificationPanel.main, notificationPanelSizes.height+10, notificationPanelSizes.subtextYIn)
 	notificationPanel.text:DisableHitTest(true)
 	notificationPanel.subtext:DisableHitTest(true)
 	
 	-- click function button
-	notificationPanel.clickButton = Button(mainPanel, modpath..'/textures/transparent.png', modpath..'/textures/transparent.png', modpath..'/textures/transparent.png', modpath..'/textures/transparent.png')
+	notificationPanel.clickButton = Button(mainPanel, modpath..'textures/transparent.png', modpath..'textures/transparent.png', modpath..'textures/transparent.png', modpath..'textures/transparent.png')
 	LayoutHelpers.AtLeftTopIn(notificationPanel.clickButton, notificationPanel.main, 0, 0)
-	notificationPanel.clickButton.Height:Set(notificationPanelValues.height)
-	notificationPanel.clickButton.Width:Set(notificationPanelValues.width)
+	notificationPanel.clickButton.Height:Set(notificationPanelSizes.height)
+	notificationPanel.clickButton.Width:Set(notificationPanelSizes.width)
 	
 	notificationPanel.clickButton.OnClick = function(self, event)
-		if(savedPrefs.global.isClickEvent and clickFunction and notificationPanel.clickButton) then
-			clickFunction()
+		if(savedPrefs.global.isClickEvent and notificationPanel.clickButton) then
+			if event.Left and clickFunctionLeft then
+				clickFunctionLeft()
+			end			
+			if event.Right and clickFunctionRight then
+				clickFunctionRight()
+			end			
 		end
 	end
 	
-	if(isVisible == false) then
-		notificationPanel.main:Hide()
-		notificationPanel.iconPanel:Hide()
-		notificationPanel.clickButton:Hide()
-	else
-		notificationPanel.main:Show()
-		notificationPanel.iconPanel:Show()
-		notificationPanel.clickButton:Show()
-	end
-	
+	showNotification(notificationPanel, isVisible)
 	return notificationPanel
 end
 
@@ -238,17 +286,28 @@ function removeNotification(id)
 	notifications[id].clickButton.Width:Set(0)
 	
 	notifications[id].main:Destroy()
-	notifications[id].iconPanel:Destroy()
+	for _, iconPanel in notifications[id].iconPanels do
+		iconPanel:Destroy()
+	end
+
+	local clickPanelToRemove = notifications[id].clickButton
+	ForkThread(function()
+		WaitSeconds(REMOVE_CLICKBITMAP_AFTER_SECONDS)
+		clickPanelToRemove:Destroy()
+	end)
+
+	notifications[id].iconPanels = nil
 	notifications[id] = nil
+
 	resetPosY()
 end
 
 
 function resetPosY()
-	local posY = 20
-	local add = notificationPanelValues.distance + notificationPanelValues.height
+	local posY = notificationMainSizes.buttonSize + notificationMainSizes.distance
+	local add = notificationMainSizes.distance + notificationPanelSizes.height
 	if not isNotificationsToPositiveX then
-		posY = 0 - notificationPanelValues.distance - notificationPanelValues.height
+		posY = 0 - notificationMainSizes.distance - notificationPanelSizes.height
 		add = add * (-1)
 	end
 	
@@ -259,16 +318,25 @@ function resetPosY()
 end
 
 
-function showPanels(isVisible)
-	for _,panel in notifications do
-		if(isVisible == false) then
-			panel.main:Hide()
-			panel.iconPanel:Hide()
-			panel.clickButton:Hide()
-		else
-			panel.main:Show()
-			panel.iconPanel:Show()
-			panel.clickButton:Show()
-		end
+function showNotifications(isVisible)
+	for _,notification in notifications do
+		showNotification(notification, isVisible)
 	end
+end
+
+
+function showNotification(notificationPanel, isVisible)
+	if(isVisible == false) then
+		notificationPanel.main:Hide()
+		for _, iconPanel in notificationPanel.iconPanels do
+			iconPanel:Hide()
+		end
+		notificationPanel.clickButton:Hide()
+	else
+		notificationPanel.main:Show()
+		for _, iconPanel in notificationPanel.iconPanels do
+			iconPanel:Show()
+		end
+		notificationPanel.clickButton:Show()
+	end	
 end

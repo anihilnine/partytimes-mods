@@ -1,74 +1,82 @@
+--[[
+	notificationType: SCRIPT, TIMED, CONDITIONALTIMED
+]]
+
 local modpath = "/mods/reminder"
 local notificationPrefs = import(modpath..'/modules/notificationPrefs.lua')
 
 local prefs = notificationPrefs.getPreferences()
 
 
-function getNotificationsInDir(dir)
+function getNotificationsInDir(dir, notificationType)
 	filesInDir = {}
 	for i, file in DiskFindFiles(dir, "*") do
 		LOG('Notification Mod: loading... '..file)
 		table.insert(filesInDir, file)
 	end
-	return loadNotificationsFromFunctionAndDir(filesInDir, "")
+	return loadNotificationsInList(filesInDir, notificationType)
 end
 
 
-function loadNotificationsFromFunctionAndDir(list, dir)
-	local allNotifications = {}
-	local allNotificationFiles = list
-	local foundNotifications = {}
+function loadNotificationsInList(list, notificationType)
+	local allNotificationsInList = {}
+	local prefs = notificationPrefs.getPreferences()
 	
-	prefs = notificationPrefs.getPreferences()
-	
-	for _,cur in allNotificationFiles do		
-		conf = import(dir..cur).getFixedConfig()
-		allNotifications[cur] = {}
-		allNotifications[cur].filename = cur
-		allNotifications[cur].id = cur
-		allNotifications[cur].retriggerDelay = conf.retriggerDelay
-		allNotifications[cur].blockedTimer = 0
-		
-		if(conf.triggerAtSeconds) then
-			allNotifications[cur].triggerAtSeconds = conf.triggerAtSeconds
-		end
-		
-		if prefs.notification[cur] == nil then
-			prefs.notification[cur] = {}
-		end
+	for _,cur in list do		
+		allNotificationsInList[cur] = {}
+		allNotificationsInList[cur].id = cur
+		allNotificationsInList[cur].blockedTimer = 0
+
+		-- unknown notification?
+		-- default notification options
 		if prefs.notification[cur].states == nil then
-			allNotifications[cur].states = {}
-			allNotifications[cur].states.isActive = true
-			allNotifications[cur].states.isDisplay = true
-			allNotifications[cur].states.isPlaySound = 0
-			allNotifications[cur].states.isClickTriggersEvent = 0
-			notificationPrefs.setNotificationState(cur, allNotifications[cur].states)
+			allNotificationsInList[cur].states = {}
+			for _, defaultPref in notificationPrefs.getDefaultNotificationPrefs() do
+				allNotificationsInList[cur].states[defaultPref.path] = defaultPref.defaultValue
+			end
+			notificationPrefs.setNotificationState(cur, allNotificationsInList[cur].states)
 		else
-			for id,_ in prefs.notification do
-				allNotifications[cur][id] = prefs.notification[cur][id]
+			for id,_ in prefs.notification[cur] do
+				allNotificationsInList[cur][id] = prefs.notification[cur][id]
 			end
 		end
-	end
-	return allNotifications
-end
 
-
-function getDisabledFalseOrTrueValue(confId, defaultConf, f)
-	if f then
-		if defaultConf.states and defaultConf.states[confId] > 1 then
-			return defaultConf.states[confId]
+		-- settings for this notification
+		if prefs.notification[cur].preferences == nil then
+			allNotificationsInList[cur].preferences = {}
 		end
-		return 1
+		for _, preferenceTable in import(cur).getDefaultConfig() or {} do
+			if not allNotificationsInList[cur].preferences[preferenceTable.path] then
+				allNotificationsInList[cur].preferences[preferenceTable.path] = preferenceTable.value
+			end
+		end
+		notificationPrefs.setNotificationPreferences(cur, allNotificationsInList[cur].preferences)
+
+		if notificationType == "TIMED" or notificationType == "CONDITIONALTIMED" then
+			allNotificationsInList[cur].nextTrigger = allNotificationsInList[cur].preferences["triggerAtSeconds"]
+		end
 	end
-	return 0
+	return allNotificationsInList
 end
 
 
-function getResource(resourceName, path)	
-	--for i, file in DiskFindFiles(path, resourceName) do
-	--	return file
-	--end
-	return path..resourceName
+function getTexture(resourceName, path, isModFile)
+	if isModFile then
+		return path..resourceName
+	end
+	
+	for _, file in DiskFindFiles('/textures/', resourceName) do
+		return file
+	end	
+end
+
+
+function getSound(resource, isModFile)
+	if isModFile then
+		return nil --not supported yet
+	end
+	
+	return resource
 end
 
 

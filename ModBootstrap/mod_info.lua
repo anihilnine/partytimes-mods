@@ -1,0 +1,10 @@
+name = "ModBootstrap"
+version = 1
+copyright = "nah"
+description = "This is just a demo for developers - handy template for making a mod. Don't download unless you are a developer."
+author = "Anihilnine"
+url = ""
+uid = "C8FD4F48-544C-45D9-BF70-35428F549860"
+exclusive = false
+ui_only = true
+conflicts = {  }

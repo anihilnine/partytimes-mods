@@ -1,9 +1,11 @@
 local Prefs = import('/lua/user/prefs.lua')
 local savedPrefs = Prefs.GetFromCurrentProfile("reminder_settings")
 
+local preferenceChangeListener = {}
+
 
 function init()
-	-- settings
+	-- create defaults
 	if not savedPrefs then
 		savedPrefs = {}
 	end
@@ -22,6 +24,9 @@ function init()
 			isNotificationsToPositiveX = true,
 			isPlaySound = false,
 			isClickEvent = true,
+			uiSize = 2,
+			isButtonsOnlyOnMouseover = false,
+			isPing = false,
 		}
 	end
 	
@@ -30,14 +35,27 @@ function init()
 	end
 	
 	-- correct x/y if outside the window
-	if (savedPrefs.global.xOffset < 0 or savedPrefs.global.xOffset > GetFrame(0).Width()) then
+	if (savedPrefs.global.xOffset < 0 or savedPrefs.global.xOffset > GetFrame(0).Width()
+			or savedPrefs.global.yOffset < 0 or savedPrefs.global.yOffset > GetFrame(0).Height()) then
 		savedPrefs.global.xOffset = GetFrame(0).Width()/2
-	end
-	if (savedPrefs.global.yOffset < 0 or savedPrefs.global.yOffset > GetFrame(0).Height()) then
 		savedPrefs.global.yOffset = GetFrame(0).Height()/2
 	end
 	
-	--removing old stuff
+	-- add new stuff --
+	-- 2.5
+	if not savedPrefs.global.uiSize then
+		savedPrefs.global.uiSize = 2
+	end
+	-- 4.0
+	if not savedPrefs.global.isButtonsOnlyOnMouseover then
+		savedPrefs.global.isButtonsOnlyOnMouseover = false
+	end
+	if not savedPrefs.global.isPing then
+		savedPrefs.global.isPing = false
+	end
+	
+	-- removing old stuff --
+	-- <2.0
 	savedPrefs.notificationIsActive = nil
 	savedPrefs.xOffset = nil
 	savedPrefs.yOffset = nil
@@ -47,14 +65,26 @@ function init()
 end
 
 
-function removeNotificationsNotInTables(t1, t2)
+function addPreferenceChangeListener(listener)
+	table.insert(preferenceChangeListener, listener)
+end
+
+
+function removeNotificationsNotInTables(list)
 	for id,value in savedPrefs.notification do
-		if not (isInTable(id, t1) or isInTable(id, t2)) then
-			LOG('Notification Mod: '..id..' not found anymore, is removed from game.prefs')
+		local isInList = false
+		for _, l in list do
+			if isInTable(id, l) then
+				isInList = true
+				break
+			end
+		end
+		if not isInList then
+			LOG('Notification Mod: [\''..id..'\'] is not found anymore, is removed from game.prefs')
 			savedPrefs.notification[id] = nil
 		end
 	end
-	Prefs.SavePreferences()
+	savePreferences()
 end
 
 
@@ -71,6 +101,9 @@ end
 function savePreferences()
 	Prefs.SetToCurrentProfile("reminder_settings", savedPrefs)
 	Prefs.SavePreferences()
+	for _, listener in preferenceChangeListener do
+		listener()
+	end
 end
 
 
@@ -104,14 +137,22 @@ end
 
 
 function setNotificationState(configId, t)
+	setNotificationSubtable(configId, "states", t)
+end
+
+function setNotificationPreferences(configId, t)
+	setNotificationSubtable(configId, "preferences", t)
+end
+
+function setNotificationSubtable(configId, subtable, t)
 	if not savedPrefs.notification[configId] then
 		savedPrefs.notification[configId] = {}
 	end
-	if not savedPrefs.notification[configId].states then
-		savedPrefs.notification[configId].states = {}
+	if not savedPrefs.notification[configId][subtable] then
+		savedPrefs.notification[configId][subtable] = {}
 	end
-	for id, value in t do
-		savedPrefs.notification[configId].states[id] = value
+	for id, value in t or {} do
+		savedPrefs.notification[configId][subtable][id] = value
 	end
 	savePreferences()
 end
@@ -119,6 +160,41 @@ end
 
 function setAllNotificationStates(t)
 	for id,subT in t do
-		setNotificationState(id, subT.states)
+		setNotificationState(id, subT["states"])
 	end
+end
+
+function setAllNotificationPreferences(t)
+	for id,subT in t do
+		setNotificationPreferences(id, subT["preferences"])
+	end
+end
+
+
+
+----------------------------------------------------------------------
+
+function getDefaultNotificationPrefs()
+	return {
+		[1] = {
+			name = "Notification is active",
+			path = "isActive",
+			defaultValue = true
+		},
+		[2] = {
+			name = "Notification displays text",
+			path = "isDisplay",
+			defaultValue = true
+		},
+		[3] = {
+			name = "Notification can play sounds",
+			path = "isPlaySound",
+			defaultValue = false
+		},
+		[4] = {
+			name = "Notification pings related units",
+			path = "isPing",
+			defaultValue = false
+		}
+	}
 end

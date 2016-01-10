@@ -133,8 +133,13 @@ function CommonLogic()
 			control.StratIcon:SetSolidColor('00000000')
 			control.Count:SetText('')
             
-
-            control:SetUpAltButtons(up, up, up, up)
+            -- Maintaining backward compatibility
+            if control.SetOverrideTexture then
+                control:SetOverrideTexture(up)
+            else
+                control:SetUpAltButtons(up, up, up, up)
+            end
+            
             control:Disable()
             control.Height:Set(48)
             control.Width:Set(48)

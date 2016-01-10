@@ -37,6 +37,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hook\lua\UserSync.lua" />
+    <None Include="hook\lua\SimSync.lua" />
+    <None Include="hook\lua\simInit.lua" />
     <None Include="hook\lua\ui\game\borders.lua" />
     <None Include="hook\lua\ui\game\commandmode.lua" />
     <None Include="hook\lua\ui\game\gamemain.lua" />
@@ -47,8 +50,10 @@
     <None Include="hook\lua\ui\game\tabs.lua" />
     <None Include="hook\lua\ui\game\construction.lua" />
     <None Include="hook\modules\reclaim.lua" />
+    <None Include="hook\lua\sim\Unit.lua" />
     <None Include="modules\selection.lua" />
     <None Include="modules\linq.lua" />
+    <None Include="modules\simSyncUnitEcoFix.lua" />
     <None Include="modules\unitHelper.lua" />
     <None Include="modules\selectHelper.lua" />
     <None Include="modules\test.lua" />

@@ -70,6 +70,14 @@ _G.from = function(t)
 		return nil
 	end	
 	
+	self.last = function(condition)
+		local l = nil
+		for k,v in self.t do
+			if not condition or condition(k,v) then l=v end
+		end
+		return l
+	end	
+	
 	self.contains = function(value)
 		for k,v in self.t do
 			if v == value then return true end
@@ -104,7 +112,7 @@ _G.from = function(t)
 		end
 		return self --?
 	end
-	
+		
 	self.dump = function()
 		LOG("-----")
 		for k,v in self.t do

@@ -6,14 +6,25 @@ author = "Anihilnine, with contributions (technical help / ideas / I stole their
 url = ""
 uid = "022E3DB4-9C00-4ED7-9876-4866D316E009"
 exclusive = false
-ui_only =true
+ui_only = true
 conflicts = {  }
 
 -- ### upcoming features
 
+-- ######################### need maint labels, does not appear to get missiles properly, then stack the bars horiz
+--	only run test when in dev mode
 --	fix eco bar strat icons left
 --	allow click incomplete stuff
+--  sound fx
+------------
 
+-- pretty epic but all i can use GetWorkProgress() on silo to reverse engineer how much has been spent on this thing
+-- then i need to not-count assisters twice. which I could do by looking at assisters and their build power etc and minusing it? doesn't sound right when its behaving eratically. 
+-- I could just dump it all on the silo and mark the assisters as to be ignored
+
+-- a million silo problems
+-- arty power usage problems
+-- clicking on mexes to see what is upgrading selects all including maintenance, which is all. do we need to split repair/upgrade/maint/build/etc
 
 -- ### history
 

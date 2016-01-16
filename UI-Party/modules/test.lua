@@ -8,56 +8,23 @@ local UIUtil = import('/lua/ui/uiutil.lua')
 local GameMain = import('/lua/ui/game/gamemain.lua')
 local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
 local AvatarsClickFunc = import('/lua/ui/game/avatars.lua').ClickFunc
-
-function safeLog(o)
-	if o == nil then
-		LOG("nil")
-		return
-	end
-
-	for k, v in o do
-		LOG(k, v)
-	end
-
-end
-
-function LogUnit(o)
-	if o == nil then
-		LOG("nil")
-		return
-	end
-
-	LOG(o:GetEntityId())
-	LOG(o:GetBlueprint().Description)
-end
-
-function VECTOR3(x, y, z)
-	return { x, y, z, type = 'VECTOR3' }
-end
-
-
 		
--- eg: ArmyAnnounce(1, 'Holy snake balls batmap', 'xxx')
-function ArmyAnnounce(armyID, text, textDesc)
-	local textFull = text .. ' ' ..(textDesc or '')
+		
+local spendTypes = {
+	PROD = "PROD",
+	MAINT = "MAINT"
+}
 
-	local Group = import('/lua/maui/group.lua').Group
-
-	local LayoutHelpers = import('/lua/maui/layouthelpers.lua')
-
-	local group = Group(GetFrame(0))
-	group.Depth:Set(99)
-	LayoutHelpers.AtLeftTopIn(group, GetFrame(0), 0, 0)
-	group.Height:Set(100)
-	group.Width:Set(100)
-
-	import('/lua/ui/game/announcement.lua').CreateAnnouncement(LOC(text), group, textDesc)
-end
+local workerTypes = {
+	WORKING = "WORKING",
+	PAUSED = "PAUSED"
+}
 
 local resourceTypes = from( {
 	{ name = "Mass", econDataKey = "massConsumed" },
 	{ name = "Energy", econDataKey = "energyConsumed" },
 } )
+
 local unitTypes;
 
 function GetUnitType(unit)
@@ -71,6 +38,169 @@ function GetUnitType(unit)
 
 	return unitType
 end
+
+
+function OnUnitBoxClick(self, event, unitBox)
+	--LOG(unitBox.unitType.name, unitBox.spendType, unitBox.workerType)
+	--unitBox.SetOn(true)
+	if event.Type == 'ButtonPress' then
+
+		if unitBox.workerType == workerTypes.WORKING then
+			if event.Modifiers.Right then
+				DisableWorkers(unitBox)
+			else
+				SelectWorkers(unitBox)
+			end
+		elseif unitBox.workerType == workerTypes.PAUSED then
+			if event.Modifiers.Right then
+				EnablePaused(unitBox)
+			else
+				SelectPaused(unitBox)
+			end
+		end
+
+--		if event.Modifiers.Right then
+
+--			DisableUnits(unitType)
+
+--		else
+--			if selectedUnitType ~= nil then
+--				selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('aa000000')
+--			end
+--			selectedUnitType = unitType
+--			SelectUnits(unitType.prodUnits)
+
+--		end
+
+	end
+
+end
+
+function GetWorkers(unitBox)
+	local unitType = unitBox.unitType
+	local workers = nil
+	if unitBox.spendType == spendTypes.PROD then
+		workers = unitType.prodUnits
+	elseif unitBox.spendType == spendTypes.MAINT then
+		workers = unitType.maintUnits
+	end
+	return ValidateUnitsList(workers)
+end
+
+function DisableWorkers(unitBox)
+	local unitType = unitBox.unitType
+	local workers = GetWorkers(unitBox)
+	if table.getn(workers) == 0 then
+
+	else
+
+		if unitBox.spendType == spendTypes.PROD then
+			for k,v in unitType.prodUnits do
+				table.insert(unitType.pausedProdUnits, v)
+			end
+			SetPaused(workers, true)
+			unitType.typeUi.prodPausedUnitsBox.SetOn(true)
+		elseif unitBox.spendType == spendTypes.MAINT then
+			for k,v in unitType.maintUnits do
+				table.insert(unitType.pausedMaintUnits, v)
+			end
+			DisableUnitsAbility(workers)
+			unitType.typeUi.maintPausedUnitsBox.SetOn(true)
+		end
+	end
+end
+
+function SelectWorkers(unitBox)
+	local unitType = unitBox.unitType
+	local workers = GetWorkers(unitBox)
+	SelectUnits(workers)
+end
+
+function GetPaused(unitBox)
+	local unitType = unitBox.unitType
+	local workers = nil
+	if unitBox.spendType == spendTypes.PROD then
+		workers = unitType.pausedProdUnits
+	elseif unitBox.spendType == spendTypes.MAINT then
+		workers = unitType.pausedMaintUnits
+	end
+	
+	local stillPaused = {}
+	for k,v in ValidateUnitsList(workers) do
+		if GetIsPausedBySpendType({v}, unitBox.spendType) then
+			table.insert(stillPaused, v)
+		end
+	end
+	-- could check still working on same project here
+	return stillPaused
+end
+
+function GetIsPausedBySpendType(units, spendType)
+	if spendType == spendTypes.PROD then
+		return GetIsPaused(units)
+	elseif spendType == spendTypes.MAINT then
+		return GetIsUnitAbilityEnabled(units)
+	end
+end
+
+
+function EnablePaused(unitBox)
+	local pauseUnits = GetPaused(unitBox)
+	local unitType = unitBox.unitType
+	if unitBox.spendType == spendTypes.PROD then
+		SetPaused(pauseUnits, false)
+		unitType.pausedProdUnits = {}
+	elseif  unitBox.spendType == spendTypes.MAINT then
+		EnableUnitsAbility(pauseUnits)
+		unitType.pausedMaintUnits = {}
+	end
+	unitBox.SetOn(false)
+end
+
+function SelectPaused(unitBox)
+	local pauseUnits = GetPaused(unitBox)
+	local unitType = unitBox.unitType
+	SelectUnits(pauseUnits)
+end
+
+--unitToggleRules = {
+--    Shield =  0,
+--    Weapon = 1, --?
+--    Jamming = 2,
+--    Intel = 3,
+--    Production = 4, --?
+--    Stealth = 5,
+--    Generic = 6,
+--    Special = 7,
+--Cloak = 8,}
+
+function GetOnValueForScriptBit(i)
+	if i == 0 then return false end -- shield is weird and reversed... you need to set it to false to get it to turn off - unlike everything else
+	return true
+end
+
+function DisableUnitsAbility(units)
+    for i = 0,8 do
+        ToggleScriptBit(units, i, not GetOnValueForScriptBit(i))
+    end
+end
+
+function EnableUnitsAbility(units)
+    for i = 0,8 do	
+        ToggleScriptBit(units, i, GetOnValueForScriptBit(i))
+    end
+end
+
+function GetIsUnitAbilityEnabled(units)
+    
+	for i = 0,8 do	
+        if GetScriptBit(units, i) == GetOnValueForScriptBit(i) then
+			return true
+		end
+    end
+	return false
+end
+
 
 local hoverUnitType = nil
 local selectedUnitType = nil
@@ -87,18 +217,18 @@ function OnClick(self, event, unitType)
 	end
 	if event.Type == 'ButtonPress' then
 
-		if event.Modifiers.Right then
+--		if event.Modifiers.Right then
 
-			DisableUnits(unitType)
+--			DisableUnits(unitType)
 
-		else
-			if selectedUnitType ~= nil then
-				selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('aa000000')
-			end
-			selectedUnitType = unitType
-			SelectUnits(unitType.units)
+--		else
+--			if selectedUnitType ~= nil then
+--				selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('aa000000')
+--			end
+--			selectedUnitType = unitType
+--			SelectUnits(unitType.prodUnits)
 
-		end
+--		end
 
 	end
 
@@ -111,41 +241,6 @@ function OnClick(self, event, unitType)
 	end
 
 	return true
-end
-
-function OnPauseIconClick(self, event, unitType)
-	if event.Type == 'ButtonPress' then
-		if event.Modifiers.Right then
-			EnableUnits(unitType)
-		else
-			local stillPaused = {}
-			for k,v in ValidateUnitsList(unitType.pausedUnits) do
-				if GetIsPaused({v}) then
-					table.insert(stillPaused, v)
-				end
-			end
-			SelectUnits(stillPaused)
-		end
-	end
-	return true
-end
-
-function DisableUnits(unitType)
-	if table.getn(unitType.units) > 0 then
-		for k,v in unitType.units do
-			table.insert(unitType.pausedUnits, v)
-		end
-		unitType.hasPausedUnits = true
-		unitType.typeUi.pauseButton:Show()
-		SetPaused(ValidateUnitsList(unitType.units), true)
-	end
-end
-
-function EnableUnits(unitType)
-	unitType.hasPausedUnits = false
-	SetPaused(ValidateUnitsList(unitType.pausedUnits), false)
-	unitType.pausedUnits = {}
-	unitType.typeUi.pauseButton:Hide()
 end
 
 function GetEconData(unit)
@@ -169,7 +264,8 @@ function DoUpdate()
 	local units = from(SelectHelper.getAllUnits())
 
 	unitTypes.foreach( function(k, unitType)
-		unitType.units = { }
+		unitType.prodUnits = { }
+		unitType.maintUnits = { }
 	end )
 
 	-- set unittype resource usages to 0
@@ -196,13 +292,13 @@ function DoUpdate()
 		if unit:GetFocus() then
 			-- prefix = "-CONSTR- "
 			unitToGetDataFrom = unit:GetFocus()
-			isMaint = true
+			isMaint = false
 			-- consType = CONSTRUCTION
 			-- workProgressOnUnit[unit:GetFocus():GetEntityId()] = unit:GetWorkProgress() --it should be only set in the context of the "name" generated"
 		else
 			-- prefix = ""
 			unitToGetDataFrom = unit
-			isMaint = false
+			isMaint = true
 			-- consType = CONSUMPTION
 			-- workProgressOnUnit[unit:GetEntityId()] = unit:GetWorkProgress() --it should be only set in the context of the "name" generated"
 		end
@@ -218,11 +314,11 @@ function DoUpdate()
 			if (usage > 0) then
 				local unitTypeUsage = unitType.usage[rType.name]
 				if (isMaint) then
-					rType.usage = rType.usage + usage
-					unitTypeUsage.usage = unitTypeUsage.usage + usage
-				else
 					rType.maintUsage = rType.maintUsage + usage
 					unitTypeUsage.maintUsage = unitTypeUsage.maintUsage + usage
+				else
+					rType.usage = rType.usage + usage
+					unitTypeUsage.usage = unitTypeUsage.usage + usage
 				end
 				unitHasUsage = true
 			end
@@ -234,7 +330,11 @@ function DoUpdate()
 		end )
 
 		if unitHasUsage then
-			table.insert(unitType.units, unit)
+			if (isMaint) then
+				table.insert(unitType.maintUnits, unit)
+			else
+				table.insert(unitType.prodUnits, unit)
+			end
 		end
 	end )
 
@@ -249,6 +349,8 @@ function DoUpdate()
 				unitTypeUsage.maintBar.Width:Set(0)
 				--unitTypeUsage.text:SetText("")
 				--unitTypeUsage.maintText:SetText("")
+				unitType.typeUi.prodUnitsBox.SetOn(false)
+				unitType.typeUi.maintUnitsBox.SetOn(false)
 			else
 
 
@@ -269,9 +371,8 @@ function DoUpdate()
 				local shouldShow = bv + bmv > 0
 				if (shouldShow and unitType.typeUi.uiRoot:IsHidden()) then
 					unitType.typeUi.uiRoot:Show()
-					unitType.typeUi.pauseButton:Hide()
+					unitType.typeUi.Clear()
 					relayoutRequired = true
-					LOG("Y")
 				end
 
 				unitTypeUsage.bar.Width:Set(bv)
@@ -279,6 +380,12 @@ function DoUpdate()
 				local r = unitTypeUsage.bar.Right() + 1
 				if bv == 0 then r = unitTypeUsage.bar.Left() end
 				unitTypeUsage.maintBar.Left:Set(r)
+
+				unitType.typeUi.prodUnitsBox.SetOn(bv > 0)
+				unitType.typeUi.maintUnitsBox.SetOn(bmv > 0)
+
+
+
 				-- 		unitTypeUsage.text:SetText(string.format("%4.0f", unitTypeUsage.usage))
 
 --				local str = unitTypeUsage.usage
@@ -295,8 +402,6 @@ function DoUpdate()
 	end )
 
 	if relayoutRequired then
-		LOG("hi")
-		--UIP.test.ui.Left:Set(UIP.test.ui.Left()+10)
 		local y = 0
 		unitTypes.foreach(function(k, unitType)
 			if not unitType.typeUi.uiRoot:IsHidden() then
@@ -308,6 +413,51 @@ function DoUpdate()
 		UIP.test.ui.Height:Set(y)
 
 	end
+end
+
+function UnitBox(typeUi, unitType, spendType, workerType)
+	
+	local group = Group(typeUi.uiRoot);
+	group.Width:Set(20)
+	group.Height:Set(22)
+
+	local buttonBackgroundName = UIUtil.SkinnableFile('/game/avatar-factory-panel/avatar-s-e-f_bmp.dds')
+	local button = Bitmap(group, buttonBackgroundName)
+	button.Width:Set(20)
+	button.Height:Set(22)
+	LayoutHelpers.AtLeftIn(button, group, 0)
+	LayoutHelpers.AtVerticalCenterIn(button, group, 0)	
+	
+
+	local check = Bitmap(group, '/textures/ui/uef/game/temp_textures/checkmark.dds')
+	check.Width:Set(8)
+	check.Height:Set(8)
+	LayoutHelpers.AtLeftIn(check, group, 6)
+	LayoutHelpers.AtVerticalCenterIn(check, group, 0)
+
+
+	local unitBox = {
+		group = group,
+		button = button,
+		check = check,
+		unitType = unitType,
+		spendType = spendType,
+		workerType = workerType,
+	};
+
+	unitBox.SetOn = function(val) 
+		if val then
+			check:Show()
+		else
+			check:Hide()
+		end
+	end
+
+	unitBox.SetOn(false);
+	group.HandleEvent = function(self, event) return OnUnitBoxClick(self, event, unitBox) end
+
+	return unitBox
+
 end
 
 function Invoke()
@@ -354,8 +504,8 @@ function Invoke()
 
 		unitTypes.foreach( function(k, unitType)
 			unitType.usage = { }
-			unitType.pausedUnits = { }
-			unitType.hasPausedUnits = { }
+			unitType.pausedProdUnits = { }
+			unitType.pausedMaintUnits = { }
 		end )
 
 		local col0 = 0
@@ -370,7 +520,7 @@ function Invoke()
 		local uiRoot = Bitmap(GetFrame(0))
 		UIP.test.ui = uiRoot
 		uiRoot.Width:Set(42)
-		uiRoot.Width:Set(col7)
+		uiRoot.Width:Set(0)
 		uiRoot.Height:Set(100)
 		uiRoot.Left:Set(170)
 		uiRoot.Top:Set(110)
@@ -402,7 +552,7 @@ function Invoke()
 
 			typeUi.uiRoot = Bitmap(uiRoot)
 			typeUi.uiRoot.HandleEvent = function(self, event) return OnClick(self, event, unitType) end
-			typeUi.uiRoot.Width:Set(col5)
+			typeUi.uiRoot.Width:Set(150)
 			typeUi.uiRoot.Height:Set(22)
 			typeUi.uiRoot:InternalSetSolidColor('aa000000')
 			typeUi.uiRoot:Hide()
@@ -419,23 +569,47 @@ function Invoke()
 			LayoutHelpers.AtVerticalCenterIn(typeUi.stratIcon, typeUi.uiRoot, 0)
 			--typeUi.uiRoot.Height:Set(typeUi.stratIcon.Height())
 
-			typeUi.pauseButton = Bitmap(typeUi.uiRoot)
-			typeUi.pauseButton.HandleEvent = function(self, event) return OnPauseIconClick(self, event, unitType) end
-			typeUi.pauseButton.Width:Set(20)
-			typeUi.pauseButton.Height:Set(22)
-			--typeUi.pauseButton:InternalSetSolidColor('66ff0000')
-			typeUi.pauseButton:Hide()
-			LayoutHelpers.AtLeftIn(typeUi.pauseButton, typeUi.uiRoot, col0)
-			LayoutHelpers.AtTopIn(typeUi.pauseButton, typeUi.uiRoot, 0)
+--			typeUi.pauseButton = Bitmap(typeUi.uiRoot)
+--			typeUi.pauseButton.Width:Set(20)
+--			typeUi.pauseButton.Height:Set(22)
+--			typeUi.pauseButton:InternalSetSolidColor('66ff0000')
+--			--typeUi.pauseButton:Hide()
+--			LayoutHelpers.AtLeftIn(typeUi.pauseButton, typeUi.uiRoot, col0)
+--			LayoutHelpers.AtTopIn(typeUi.pauseButton, typeUi.uiRoot, 0)
 
-			typeUi.pauseIcon = Bitmap(typeUi.pauseButton)
-			iconName = '/textures/ui/common/game/strategicicons/pause_rest.dds'
-			typeUi.pauseIcon:SetTexture(iconName)
-			typeUi.pauseIcon.Height:Set(typeUi.pauseIcon.BitmapHeight)
-			typeUi.pauseIcon.Width:Set(typeUi.pauseIcon.BitmapWidth)			
-			LayoutHelpers.AtLeftIn(typeUi.pauseIcon, typeUi.pauseButton, -4)
-			LayoutHelpers.AtVerticalCenterIn(typeUi.pauseIcon, typeUi.pauseButton, 8)
-			typeUi.pauseIcon:DisableHitTest()
+--			typeUi.pauseIcon = Bitmap(typeUi.pauseButton)
+--			iconName = '/textures/ui/common/game/strategicicons/pause_rest.dds'
+--			typeUi.pauseIcon:SetTexture(iconName)
+--			typeUi.pauseIcon.Height:Set(typeUi.pauseIcon.BitmapHeight)
+--			typeUi.pauseIcon.Width:Set(typeUi.pauseIcon.BitmapWidth)			
+--			LayoutHelpers.AtLeftIn(typeUi.pauseIcon, typeUi.pauseButton, -4)
+--			LayoutHelpers.AtVerticalCenterIn(typeUi.pauseIcon, typeUi.pauseButton, 8)
+--			typeUi.pauseIcon:DisableHitTest()
+
+			typeUi.prodUnitsBox = UnitBox(typeUi, unitType, spendTypes.PROD, workerTypes.WORKING)
+			LayoutHelpers.AtLeftIn(typeUi.prodUnitsBox.group, typeUi.uiRoot, -40)
+			LayoutHelpers.AtVerticalCenterIn(typeUi.prodUnitsBox.group, typeUi.uiRoot, 0)
+
+			typeUi.maintUnitsBox = UnitBox(typeUi, unitType, spendTypes.MAINT, workerTypes.WORKING)
+			LayoutHelpers.AtLeftIn(typeUi.maintUnitsBox.group, typeUi.uiRoot, -20)
+			LayoutHelpers.AtVerticalCenterIn(typeUi.maintUnitsBox.group, typeUi.uiRoot, 0)
+
+			typeUi.prodPausedUnitsBox = UnitBox(typeUi, unitType, spendTypes.PROD, workerTypes.PAUSED)
+			LayoutHelpers.AtLeftIn(typeUi.prodPausedUnitsBox.group, typeUi.uiRoot, 150)
+			LayoutHelpers.AtVerticalCenterIn(typeUi.prodPausedUnitsBox.group, typeUi.uiRoot, 0)
+
+			typeUi.maintPausedUnitsBox = UnitBox(typeUi, unitType, spendTypes.MAINT, workerTypes.PAUSED)
+			LayoutHelpers.AtLeftIn(typeUi.maintPausedUnitsBox.group, typeUi.uiRoot, 170)
+			LayoutHelpers.AtVerticalCenterIn(typeUi.maintPausedUnitsBox.group, typeUi.uiRoot, 0)
+
+			typeUi.Clear = function() 
+			
+				typeUi.prodUnitsBox.check:Hide()
+				typeUi.maintUnitsBox.check:Hide()
+				typeUi.prodPausedUnitsBox.check:Hide()
+				typeUi.maintPausedUnitsBox.check:Hide()
+
+			end
 
 			typeUi.massBar = Bitmap(typeUi.uiRoot)
 			typeUi.massBar.Width:Set(10)
@@ -542,20 +716,28 @@ function Invoke()
 --			fu.GetCustomName = function()
 --				return "ABVC"
 --			end
+--			for i = 0,8 do
+--				local val = true
+--				--if i ~= 0 then val = false end
+--				ToggleScriptBit(units, i, val)
+--			end
+
+			for i = 0,8 do
+				ToggleScriptBit(units, i, true)
+			end
+
+--			local wv = import('/lua/ui/game/worldview.lua').GetWorldViews()["WorldCamera"];
+--			local posA = wv:Project(fu:GetPosition())
 
 
-			local wv = import('/lua/ui/game/worldview.lua').GetWorldViews()["WorldCamera"];
-			local posA = wv:Project(fu:GetPosition())
-
-
-			local UserDecal = import('/lua/user/UserDecal.lua').UserDecal
-			local s = UserDecal { }
-			local t2 = '/mods/ui-party/textures/entry.png'
-			--local t2 = '/mods/ui-party/textures/entry7.png'
-			s:SetTexture(t2)
-			s:SetPositionByScreen(posA)
-			local w = 15
-			s:SetScale(VECTOR3(w, 0.5, w))
+--			local UserDecal = import('/lua/user/UserDecal.lua').UserDecal
+--			local s = UserDecal { }
+--			local t2 = '/mods/ui-party/textures/entry.png'
+--			--local t2 = '/mods/ui-party/textures/entry7.png'
+--			s:SetTexture(t2)
+--			s:SetPositionByScreen(posA)
+--			local w = 15
+--			s:SetScale(VECTOR3(w, 0.5, w))
 
 
 

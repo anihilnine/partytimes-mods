@@ -4,6 +4,7 @@ local GameMain = import('/lua/ui/game/gamemain.lua')
 local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
 test = {};
 
+
 function Init() 
 
 	import('/mods/UI-Party/modules/linq.lua')
@@ -19,11 +20,24 @@ function Init()
 	GameMain.AddBeatFunction(SelectHelper.UpdateAllUnits)
 
 	UnitWatcher.Init()
-	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
-	GameMain.AddBeatFunction(function() 
-        import('/mods/UI-Party/modules/test.lua') 
-    end)
+--	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
+--	GameMain.AddBeatFunction(function() 
+--        import('/mods/UI-Party/modules/test.lua') 
+--    end)
+
+	GameMain.AddBeatFunction(OnBeat)
 end
+
+local tick = 0
+function OnBeat()
+	tick = tick + 1
+	if tick == 10 then
+		UnitWatcher.OnBeat();
+		import('/mods/UI-Party/modules/test.lua') ;
+		tick = 0
+	end
+end
+
 
 function PlayErrorSound()
     local sound = Sound({Cue = 'UI_Menu_Error_01', Bank = 'Interface',})

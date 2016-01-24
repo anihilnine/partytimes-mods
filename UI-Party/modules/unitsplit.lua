@@ -72,7 +72,11 @@ function FindNearestToPos(groups, pos)
 end
 
 function SplitGroups(desiredGroups)
-	local ungroupedUnits = from(GetSelectedUnits()).copy()
+	local selection = GetSelectedUnits()
+	if selection == nil then
+		return nil
+	end
+	local ungroupedUnits = from(selection).copy()
 	if ungroupedUnits == nil then return end
 
 	local avg = GetAveragePoint(ungroupedUnits)

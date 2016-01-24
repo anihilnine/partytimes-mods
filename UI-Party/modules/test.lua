@@ -41,37 +41,37 @@ end
 
 
 function OnUnitBoxClick(self, event, unitBox)
-	--LOG(unitBox.unitType.name, unitBox.spendType, unitBox.workerType)
-	--unitBox.SetOn(true)
+
 	if event.Type == 'ButtonPress' then
 
-		if unitBox.workerType == workerTypes.WORKING then
-			if event.Modifiers.Right then
-				DisableWorkers(unitBox)
-			else
-				SelectWorkers(unitBox)
-			end
-		elseif unitBox.workerType == workerTypes.PAUSED then
+		if event.Modifiers.Ctrl then 			
 			if event.Modifiers.Right then
 				EnablePaused(unitBox)
 			else
 				SelectPaused(unitBox)
 			end
+		else
+			if event.Modifiers.Right then
+				DisableWorkers(unitBox)
+			else
+				SelectWorkers(unitBox)
+			end
 		end
+		
+		--if unitBox.workerType == workerTypes.WORKING then
 
---		if event.Modifiers.Right then
-
---			DisableUnits(unitType)
-
---		else
---			if selectedUnitType ~= nil then
---				selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('aa000000')
+--			if event.Modifiers.Right then
+--				DisableWorkers(unitBox)
+--			else
+--				SelectWorkers(unitBox)
 --			end
---			selectedUnitType = unitType
---			SelectUnits(unitType.prodUnits)
-
+--		elseif unitBox.workerType == workerTypes.PAUSED then
+--			if event.Modifiers.Right then
+--				EnablePaused(unitBox)
+--			else
+--				SelectPaused(unitBox)
+--			end
 --		end
-
 	end
 
 end
@@ -95,17 +95,19 @@ function DisableWorkers(unitBox)
 	else
 
 		if unitBox.spendType == spendTypes.PROD then
+
 			for k,v in unitType.prodUnits do
 				table.insert(unitType.pausedProdUnits, v)
 			end
 			SetPaused(workers, true)
-			--unitType.typeUi.prodPausedUnitsBox.SetOn(true)
+
 		elseif unitBox.spendType == spendTypes.MAINT then
+
 			for k,v in unitType.maintUnits do
 				table.insert(unitType.pausedMaintUnits, v)
 			end
 			DisableUnitsAbility(workers)
-			--unitType.typeUi.maintPausedUnitsBox.SetOn(true)
+
 		end
 	end
 end
@@ -119,6 +121,7 @@ end
 function GetPaused(unitBox)
 	local unitType = unitBox.unitType
 	local workers = nil
+
 	if unitBox.spendType == spendTypes.PROD then
 		workers = unitType.pausedProdUnits
 	elseif unitBox.spendType == spendTypes.MAINT then
@@ -217,31 +220,30 @@ function OnClick(self, event, unitType)
 	end
 	if event.Type == 'ButtonPress' then
 
---		if event.Modifiers.Right then
-
---			DisableUnits(unitType)
-
---		else
---			if selectedUnitType ~= nil then
---				selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('aa000000')
---			end
---			selectedUnitType = unitType
---			SelectUnits(unitType.prodUnits)
-
---		end
+		if selectedUnitType ~= nil then
+			selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('aa000000')
+		end
+		selectedUnitType = unitType
+		--SelectUnits(unitType.prodUnits)
 
 	end
 
 	if hoverUnitType ~= nil then 
-		hoverUnitType.typeUi.uiRoot:InternalSetSolidColor('aa660000')
+		hoverUnitType.typeUi.uiRoot:InternalSetSolidColor('66660000')
 	end
 	if selectedUnitType~= nil then 
-		UIP.test.ui.textLabel:SetText(selectedUnitType.name)
-		selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('ff660000')
+		UpdateSelectedUnitType(selectedUnitType)
+		selectedUnitType.typeUi.uiRoot:InternalSetSolidColor('99660000')
 	end
 
 	return true
 end
+
+function UpdateSelectedUnitType(selectedUnitType)
+	UIP.test.ui.selectedTypeView.textLabel:SetText(selectedUnitType.name)
+end
+
+
 
 function GetEconData(unit)
 	local mi = unit:GetMissileInfo()
@@ -290,17 +292,11 @@ function DoUpdate()
 		end
 
 		if unit:GetFocus() then
-			-- prefix = "-CONSTR- "
 			unitToGetDataFrom = unit:GetFocus()
 			isMaint = false
-			-- consType = CONSTRUCTION
-			-- workProgressOnUnit[unit:GetFocus():GetEntityId()] = unit:GetWorkProgress() --it should be only set in the context of the "name" generated"
 		else
-			-- prefix = ""
 			unitToGetDataFrom = unit
 			isMaint = true
-			-- consType = CONSUMPTION
-			-- workProgressOnUnit[unit:GetEntityId()] = unit:GetWorkProgress() --it should be only set in the context of the "name" generated"
 		end
 
 
@@ -323,10 +319,6 @@ function DoUpdate()
 				unitHasUsage = true
 			end
 
-			-- 		if (usage ~= 0) then
-			-- 			LOG(unitType.name, usage, rType.name)	
-			-- 		end
-
 		end )
 
 		if unitHasUsage then
@@ -342,8 +334,8 @@ function DoUpdate()
 	local relayoutRequired = false
 	unitTypes.foreach( function(k, unitType)
 
-		unitType.typeUi.maintPausedUnitsBox.SetOn(table.getn(unitType.pausedMaintUnits) > 0)
-		unitType.typeUi.prodPausedUnitsBox.SetOn(table.getn(unitType.pausedProdUnits) > 0)
+		unitType.typeUi.maintUnitsBox.SetAltOn(table.getn(unitType.pausedMaintUnits) > 0)
+		unitType.typeUi.prodUnitsBox.SetAltOn(table.getn(unitType.pausedProdUnits) > 0)
 
 		resourceTypes.foreach( function(k, rType)
 			local unitTypeUsage = unitType.usage[rType.name]
@@ -388,8 +380,6 @@ function DoUpdate()
 				unitType.typeUi.prodUnitsBox.SetOn(bv > 0)
 				unitType.typeUi.maintUnitsBox.SetOn(bmv > 0)
 
-
-
 				-- 		unitTypeUsage.text:SetText(string.format("%4.0f", unitTypeUsage.usage))
 
 --				local str = unitTypeUsage.usage
@@ -432,12 +422,19 @@ function UnitBox(typeUi, unitType, spendType, workerType)
 	LayoutHelpers.AtLeftIn(button, group, 0)
 	LayoutHelpers.AtVerticalCenterIn(button, group, 0)	
 	
+	local check2 = Bitmap(group	)
+	check2.Width:Set(12)
+	check2.Height:Set(12)
+	check2:InternalSetSolidColor('aaff0000')
+	LayoutHelpers.AtLeftIn(check2, group, 4)
+	LayoutHelpers.AtVerticalCenterIn(check2, group, 0)
 
 	local check = Bitmap(group, '/textures/ui/uef/game/temp_textures/checkmark.dds')
 	check.Width:Set(8)
 	check.Height:Set(8)
 	LayoutHelpers.AtLeftIn(check, group, 6)
 	LayoutHelpers.AtVerticalCenterIn(check, group, 0)
+
 
 
 	local unitBox = {
@@ -455,9 +452,18 @@ function UnitBox(typeUi, unitType, spendType, workerType)
 		else
 			check:Hide()
 		end
+	end	
+	
+	unitBox.SetAltOn = function(val) 
+		if val then
+			check2:Show()
+		else
+			check2:Hide()
+		end
 	end
 
 	unitBox.SetOn(false);
+	unitBox.SetAltOn(false);
 	group.HandleEvent = function(self, event) return OnUnitBoxClick(self, event, unitBox) end
 
 	return unitBox
@@ -519,6 +525,10 @@ function Invoke()
 		local col4 = col3 + 105 
 		local col5 = col4 + 20
 		local col6 = col5 + 20
+		local col7 = col6 + 20
+		local col8 = 0
+		local col9 = col8 + 20
+		local col10 = col9 + 105
 
 		local uiRoot = Bitmap(GetFrame(0))
 		UIP.test.ui = uiRoot
@@ -530,7 +540,7 @@ function Invoke()
 		uiRoot.Depth:Set(99)
 		uiRoot:DisableHitTest()
 		
-		uiRoot.textLabel = UIUtil.CreateText(uiRoot, 'Reconomy', 15, UIUtil.bodyFont)
+		uiRoot.textLabel = UIUtil.CreateText(uiRoot, 'E-cop', 15, UIUtil.bodyFont)
 		uiRoot.textLabel.Width:Set(10)
 		uiRoot.textLabel.Height:Set(9)
 		uiRoot.textLabel:SetNewColor('white')
@@ -610,7 +620,7 @@ function Invoke()
 			typeUi.massBar:InternalSetSolidColor('lime')
 			typeUi.massBar:DisableHitTest()
 			LayoutHelpers.AtLeftIn(typeUi.massBar, typeUi.uiRoot, col3)
-			LayoutHelpers.AtTopIn(typeUi.massBar, typeUi.uiRoot, 6)
+			LayoutHelpers.AtTopIn(typeUi.massBar, typeUi.uiRoot, 8)
 
 			typeUi.massMaintBar = Bitmap(typeUi.uiRoot)
 			typeUi.massMaintBar.Width:Set(10)
@@ -618,7 +628,7 @@ function Invoke()
 			typeUi.massMaintBar:InternalSetSolidColor('cyan')
 			typeUi.massMaintBar:DisableHitTest()
 			LayoutHelpers.AtLeftIn(typeUi.massMaintBar, typeUi.uiRoot, col3)
-			LayoutHelpers.AtTopIn(typeUi.massMaintBar, typeUi.uiRoot, 6)
+			LayoutHelpers.AtTopIn(typeUi.massMaintBar, typeUi.uiRoot, 8)
 
 --			typeUi.massText = UIUtil.CreateText(typeUi.uiRoot, 'M', 9, UIUtil.bodyFont)
 --			typeUi.massText.Width:Set(10)
@@ -644,7 +654,7 @@ function Invoke()
 			typeUi.energyBar:InternalSetSolidColor('yellow')
 			typeUi.energyBar:DisableHitTest()			
 			LayoutHelpers.AtLeftIn(typeUi.energyBar, typeUi.uiRoot, col3)
-			LayoutHelpers.AtTopIn(typeUi.energyBar, typeUi.uiRoot, 10)
+			LayoutHelpers.AtTopIn(typeUi.energyBar, typeUi.uiRoot, 11)
 
 			typeUi.energyMaintBar = Bitmap(typeUi.uiRoot)
 			typeUi.energyMaintBar.Width:Set(10)
@@ -652,7 +662,7 @@ function Invoke()
 			typeUi.energyMaintBar:InternalSetSolidColor('orange')
 			typeUi.energyMaintBar:DisableHitTest()
 			LayoutHelpers.AtLeftIn(typeUi.energyMaintBar, typeUi.uiRoot, col3)
-			LayoutHelpers.AtTopIn(typeUi.energyMaintBar, typeUi.uiRoot, 10)
+			LayoutHelpers.AtTopIn(typeUi.energyMaintBar, typeUi.uiRoot, 11)
 
 --			typeUi.energyText = UIUtil.CreateText(typeUi.uiRoot, 'E', 9, UIUtil.bodyFont)
 --			typeUi.energyText.Width:Set(10)
@@ -694,6 +704,79 @@ function Invoke()
 
 		end )
 
+		local selectedTypeView = Bitmap(uiRoot)
+		uiRoot.selectedTypeView = selectedTypeView
+		selectedTypeView.Width:Set(col10)
+		selectedTypeView.Height:Set(250)
+		LayoutHelpers.AtLeftIn(selectedTypeView, uiRoot, col7)
+		LayoutHelpers.AtTopIn(selectedTypeView, uiRoot, 0)
+		--selectedTypeView:SetSolidColor("aa000000")
+
+
+		selectedTypeView.textLabel = UIUtil.CreateText(selectedTypeView, 'Unit Type', 15, UIUtil.bodyFont)
+		selectedTypeView.textLabel.Width:Set(10)
+		selectedTypeView.textLabel.Height:Set(9)
+		selectedTypeView.textLabel:SetNewColor('white')
+		selectedTypeView.textLabel:DisableHitTest()
+--		LayoutHelpers.AtLeftIn(selectedTypeView.textLabel, selectedTypeView, 5)
+		LayoutHelpers.AtLeftIn(selectedTypeView.textLabel, selectedTypeView, -160)
+		LayoutHelpers.AtTopIn(selectedTypeView.textLabel, selectedTypeView, -31)
+
+
+--		for i = 0,8 do
+
+--			local typeUi = { }
+
+--			typeUi.uiRoot = Bitmap(selectedTypeView)
+--			--typeUi.uiRoot.HandleEvent = function(self, event) return OnClick(self, event, unitType) end
+--			typeUi.uiRoot.Width:Set(col10)
+--			typeUi.uiRoot.Height:Set(22)
+--			typeUi.uiRoot:InternalSetSolidColor('ff000000')
+--			LayoutHelpers.AtLeftIn(typeUi.uiRoot, selectedTypeView, 0)
+--			LayoutHelpers.AtTopIn(typeUi.uiRoot, selectedTypeView,i*22)
+
+--			typeUi.stratIcon = Bitmap(typeUi.uiRoot)
+--			iconName = '/textures/ui/common/game/strategicicons/icon_land1_generic_rest.dds'
+--			typeUi.stratIcon:SetTexture(iconName)
+--			typeUi.stratIcon.Height:Set(typeUi.stratIcon.BitmapHeight)
+--			typeUi.stratIcon.Width:Set(typeUi.stratIcon.BitmapWidth)			
+--			LayoutHelpers.AtLeftIn(typeUi.stratIcon, typeUi.uiRoot, col8 + (20-typeUi.stratIcon.Width())/2)
+--			LayoutHelpers.AtVerticalCenterIn(typeUi.stratIcon, typeUi.uiRoot, 0)
+
+--			typeUi.massBar = Bitmap(typeUi.uiRoot)
+--			typeUi.massBar.Width:Set(10)
+--			typeUi.massBar.Height:Set(1)
+--			typeUi.massBar:InternalSetSolidColor('lime')
+--			typeUi.massBar:DisableHitTest()
+--			LayoutHelpers.AtLeftIn(typeUi.massBar, typeUi.uiRoot, col9)
+--			LayoutHelpers.AtTopIn(typeUi.massBar, typeUi.uiRoot, 6)
+
+--			typeUi.massMaintBar = Bitmap(typeUi.uiRoot)
+--			typeUi.massMaintBar.Width:Set(10)
+--			typeUi.massMaintBar.Height:Set(1)
+--			typeUi.massMaintBar:InternalSetSolidColor('cyan')
+--			typeUi.massMaintBar:DisableHitTest()
+--			LayoutHelpers.AtLeftIn(typeUi.massMaintBar, typeUi.uiRoot, col9)
+--			LayoutHelpers.AtTopIn(typeUi.massMaintBar, typeUi.uiRoot, 6)
+
+--			typeUi.energyBar = Bitmap(typeUi.uiRoot)
+--			typeUi.energyBar.Width:Set(10)
+--			typeUi.energyBar.Height:Set(1)
+--			typeUi.energyBar:InternalSetSolidColor('yellow')
+--			typeUi.energyBar:DisableHitTest()			
+--			LayoutHelpers.AtLeftIn(typeUi.energyBar, typeUi.uiRoot, col9)
+--			LayoutHelpers.AtTopIn(typeUi.energyBar, typeUi.uiRoot, 10)
+
+--			typeUi.energyMaintBar = Bitmap(typeUi.uiRoot)
+--			typeUi.energyMaintBar.Width:Set(10)
+--			typeUi.energyMaintBar.Height:Set(1)
+--			typeUi.energyMaintBar:InternalSetSolidColor('orange')
+--			typeUi.energyMaintBar:DisableHitTest()
+--			LayoutHelpers.AtLeftIn(typeUi.energyMaintBar, typeUi.uiRoot, col9)
+--			LayoutHelpers.AtTopIn(typeUi.energyMaintBar, typeUi.uiRoot, 10)
+
+--		end
+
 
 		UIP.test.beat = DoUpdate
 		GameMain.AddBeatFunction(UIP.test.beat)
@@ -704,83 +787,14 @@ function Invoke()
 
 			local fu = units[1]
 			LOG(fu:GetEntityId())
---			fu.GetCustomName = function()
---				return "ABVC"
---			end
---			for i = 0,8 do
---				local val = true
---				--if i ~= 0 then val = false end
---				ToggleScriptBit(units, i, val)
---			end
-
-			for i = 0,8 do
-				ToggleScriptBit(units, i, true)
-			end
-
---			local wv = import('/lua/ui/game/worldview.lua').GetWorldViews()["WorldCamera"];
---			local posA = wv:Project(fu:GetPosition())
-
-
---			local UserDecal = import('/lua/user/UserDecal.lua').UserDecal
---			local s = UserDecal { }
---			local t2 = '/mods/ui-party/textures/entry.png'
---			--local t2 = '/mods/ui-party/textures/entry7.png'
---			s:SetTexture(t2)
---			s:SetPositionByScreen(posA)
---			local w = 15
---			s:SetScale(VECTOR3(w, 0.5, w))
-
-
 
 		end
 
-		-- #### this is how you can replace a unit's implementation. Not sure exactly when to do it tho
-		-- 	local oldGED = fu.GetEconData
-		-- 	fu.GetEconData = function(self)
-		-- 		local r = oldGED(self)
-		-- 		r.massConsumed = 1200
-		-- 		r.massRequested = 1200
-		-- 		return r
-		-- 	end
-		-- 	LOG(repr(fu:GetEconData()))
-
-		-- 	LOG(repr(fu:GetMissileInfo()))
-		-- 	LOG(UserUnit)
-		-- 	LOG(repr(from(units).first():GetEconData()))
-		-- 	if (units ~= nil) then
-		-- 		local blueprints = from(units).select(function(k, u) return u:GetBlueprint(); end).distinct()
-		-- 		local str = ''
-		-- 		blueprints.foreach(function(k,v)	
-		-- 			str = str .. "+inview " .. v.BlueprintId .. ","
-		-- 		end)
-		-- 		LOG(str)
-		-- 		ConExecute("Ui_SelectByCategory " .. str)
-		-- 		--UI_SelectByCategory("+inview", "*")
-		-- 	end
-
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'X_Main_Menu_On'})) --!!
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Announcement_Open'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_END_Game_Victory'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Economy_Rollover'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_MFD_checklist'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Over'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Click'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_IG_Camera_Move'}))
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Diplomacy_Open'})) --!!
-		-- PlaySound(Sound({Cue = "UI_Score_Window_Open", Bank = "Interface"}))
-		-- PlaySound(Sound({Cue = "UI_Score_Window_Close", Bank = "Interface"}))
-		-- PlaySound(Sound({Cue = "AMB_SER_OP_Briefing", Bank = "AmbientTest",}))
-		-- PlaySound(Sound({Cue = "UI_Tab_Rollover_01", Bank = "Interface",}))
-		-- PlaySound(Sound({Cue = "UI_Tab_Click_01", Bank = "Interface",}))
-
-		-- local sound = Sound({Cue = 'UI_Menu_Error_01', Bank = 'Interface',})
-		-- PlaySound(sound)
-		-- PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Tab_Rollover_01'}))
-		-- print(UnitHelper.GetUnitName(u) .. " complete")
-
 	end )
 
-	LOG("UI PARTY RESULT: ", a, b)
+	if not a then 
+		WARN("UI PARTY RESULT: ", a, b)
+	end
 end
 
 Invoke()

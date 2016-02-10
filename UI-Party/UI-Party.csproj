@@ -54,6 +54,7 @@
     <None Include="modules\selection.lua" />
     <None Include="modules\linq.lua" />
     <None Include="modules\simSyncUnitEcoFix.lua" />
+    <None Include="modules\econtrol.lua" />
     <None Include="modules\unitHelper.lua" />
     <None Include="modules\selectHelper.lua" />
     <None Include="modules\test.lua" />

@@ -21,12 +21,9 @@ function Init()
 	GameMain.AddBeatFunction(SelectHelper.UpdateAllUnits)
 
 	UnitWatcher.Init()
---	GameMain.AddBeatFunction(UnitWatcher.OnBeat)
---	GameMain.AddBeatFunction(function() 
---        import('/mods/UI-Party/modules/test.lua') 
---    end)
 
 	GameMain.AddBeatFunction(OnBeat)
+
 end
 
 local tick = 0
@@ -34,7 +31,7 @@ function OnBeat()
 	tick = tick + 1
 	if tick == 10 then
 		UnitWatcher.OnBeat();
-		import('/mods/UI-Party/modules/test.lua') ;
+		import('/mods/UI-Party/modules/test.lua');
 		tick = 0
 	end
 end
@@ -49,6 +46,7 @@ function CreateUI(isReplay)
 
 	import('/mods/UI-Party/modules/settings.lua').init()
 	import('/mods/UI-Party/modules/ui.lua').init()
+	import('/mods/UI-Party/modules/econtrol.lua').setEnabled(GetSetting("showEcontrol"))
 
 end
 

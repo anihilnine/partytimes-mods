@@ -25,10 +25,10 @@ function init()
 			{ key="zoomPopSpeed", type="number", default=0.08, name="Zoom Pop Speed", description="Speed up/slow down the pop animation. (Zero = disabled).", min=0, max=10, valMult=0.01  },
 
 		}},
-		{ name = "UI Position", settings = {
+		{ name = "UI", settings = {
+			{ key="showEcontrol", type="bool", default=true, name="Show ECOntrol", description="Show a user interface with a summary of your economy" },
 			{ key="rearrangeBottomPanes", type="bool", default=true, name="Move bottom panes", description="Reorders the selected-unit-info pane and the orders pane to take up less vertical space. (For wide monitors)" },
 			{ key="hideMenusOnStart", type="bool", default=true, name="Hide misc menus", description="On startup, collapse the multifunction (pings) and tabs (main menu)" },
-			
 		}},
 		{ name = "Units", settings = {
 			{ key="setGroundFireOnAttack", type="bool", default=true, name="Start in ground fire mode", description="Sets it so all units are ground firing. This is because normal fire mode is useless and ground fire does the same except allows you to fire at ground as well." },
@@ -119,6 +119,7 @@ function setAllGlobalValues(t)
 		savedPrefs.global[id] = value
 	end
 	savePreferences()
+	import('/mods/UI-Party/modules/econtrol.lua').setEnabled(savedPrefs.global.showEcontrol)
 end
 
 function setXYvalues(posX, posY)

@@ -7,6 +7,7 @@ test = {};
 
 function Init() 
 
+
 	import('/mods/UI-Party/modules/linq.lua')
 	
 	InitKeys()
@@ -52,7 +53,6 @@ function CreateUI(isReplay)
 end
 
 function OnFirstUpdate()
-
 end
 
 function ToggleEnabled()

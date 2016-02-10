@@ -21,7 +21,7 @@ local panelConst = {
 	buttonXOffset = 0
 }
 
-local buttons = {
+buttons = {
 	dragButton = nil,
 	configButton = nil
 }

@@ -8,20 +8,32 @@ uid = "022E3DB4-9C00-4ED7-9876-4866D316E009"
 exclusive = false
 ui_only = true
 conflicts = {  }
+after = { 
+	"a0714870-3f5e-4b60-970e-1b02341990ec",     -- Supreme Economy 2.1 (nolag)
+}
 
 -- ### upcoming features
 
+-- building mexes
+-- hover over descriptions
+-- pause engies when toggle via mex buttons
+-- github
 
+
+-- better uiparty button
+-- use common (with check that is running and give to myx)
 -- remove reclaim from income in eco window (how to do team overspil)
 -- show reclaim graph
 -- only run test when in dev mode
--- a million silo problems
+-- a million silo problems`
 -- arty power usage problems
 -- clicking on mexes to see what is upgrading selects all including maintenance, which is all. do we need to split repair/upgrade/maint/build/etc
+-- econtrol needs switch, mex option, integrate github
 
 -- ### history
 
 -- v10
+--	new: Econ-trol ui
 --	added key - Select similar onscreen units
 --	added key - Undo last queue order - works for engies and factories
 --	update beep/message for finished structure/acu upgrades.

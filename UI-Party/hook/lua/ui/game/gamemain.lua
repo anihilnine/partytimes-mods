@@ -35,26 +35,40 @@ function CreateUI(isReplay)
 	end
 end 
 
+-- no ui party
+-- zoom pop fix
+-- split screen
+-- alternate start
+
 local oldOnFirstUpdate = OnFirstUpdate 
 function OnFirstUpdate()
 
-	if not UIP.GetSetting("startSplitScreen") or not UIP.Enabled() then 
+	if not UIP.Enabled() then 
 		oldOnFirstUpdate()
-
-					
-		if UIP.Enabled() and UIP.GetSetting("zoomPopOverride") then 
-			ForkThread(function()
-				import('/modules/zoompopper.lua').Init()
-				local cam = GetCamera('WorldCamera')
-				cam:Reset()
-			end)
-		end
-
-		UIP.OnFirstUpdate()
-
 		return
 	end
 
+	if UIP.GetSetting("zoomPopOverride") then 
+		ForkThread(function()
+			import('/modules/zoompopper.lua').Init()
+			local cam = GetCamera('WorldCamera')
+			cam:Reset()
+		end)
+	end
+
+
+	if UIP.GetSetting("useAlternativeStartSequence") then 
+		AlternateStartSequence()
+	else
+		oldOnFirstUpdate()
+	end
+
+	UIP.OnFirstUpdate()
+end
+
+function AlternateStartSequence()
+
+	-- normal stuff
 	import('/modules/hotbuild.lua').init()
 	EnableWorldSounds()
 	local avatars = GetArmyAvatars()
@@ -73,15 +87,19 @@ function OnFirstUpdate()
 
 	ForkThread(function()
 		
+		-- earlier unlock input
 		if not IsNISMode() then
 			import('/lua/ui/game/worldview.lua').UnlockInput()
 		end
 
 		-- split screen
-		local Borders = import('/lua/ui/game/borders.lua')
-		Borders.SplitMapGroup(true, true)
-		import('/lua/ui/game/worldview.lua').Expand() -- required to initialize something else there is a crash
-			
+		if UIP.GetSetting("startSplitScreen") then 
+			local Borders = import('/lua/ui/game/borders.lua')
+			Borders.SplitMapGroup(true, true)
+			import('/lua/ui/game/worldview.lua').Expand() -- required to initialize something else there is a crash
+		end
+
+		-- required else just zoom into middle all the time
 		if UIP.GetSetting("zoomPopOverride") then 
 			WaitSeconds(0)
 			import('/modules/zoompopper.lua').Init()
@@ -90,14 +108,18 @@ function OnFirstUpdate()
 		-- select acu & start placing fac
 		AddSelectUnits(avatars)
 		import('/modules/hotbuild.lua').buildAction('Builders')
-
-		-- both cams zoom out
+		
+		-- 1nd cam zoom out
 		local cam1 = GetCamera("WorldCamera")
-		local cam2 = GetCamera("WorldCamera2")
 		cam1:SetZoom(cam1:GetMaxZoom(),0)
-		cam2:SetZoom(cam2:GetMaxZoom(),0)
 		cam1:RevertRotation() -- UIZoomTo does something funny
-		cam2:RevertRotation() -- UIZoomTo does something funny
+
+		-- 2nd cam zoom out
+		if UIP.GetSetting("startSplitScreen") then 
+			local cam2 = GetCamera("WorldCamera2")
+			cam2:SetZoom(cam2:GetMaxZoom(),0)
+			cam2:RevertRotation() -- UIZoomTo does something funny
+		end
 
 		-- need to wait before ui can hide, so slip in artistic camera transition
 		WaitSeconds(1)
@@ -113,6 +135,7 @@ function OnFirstUpdate()
 		end
 	end)
 
+	-- normal stuff
 	if Prefs.GetOption('skin_change_on_start') != 'no' then
 		local focusarmy = GetFocusArmy()
 		local armyInfo = GetArmiesTable()
@@ -124,7 +147,6 @@ function OnFirstUpdate()
 		end
 	end
 
-	UIP.OnFirstUpdate()
 end
 
 

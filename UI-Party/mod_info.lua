@@ -2,7 +2,7 @@ name = "UI Party"
 version = 10
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL"
+author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu"
 url = ""
 uid = "022E3DB4-9C00-5ED7-9876-4866D316E010"
 exclusive = false
@@ -14,7 +14,6 @@ after = {
 
 -- ### todo
 
---  tatsu thing
 --  remove having to reselect for upgrades
 --  submerge adornment
 --	econtrol tooltip

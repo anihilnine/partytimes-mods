@@ -35,11 +35,6 @@ function CreateUI(isReplay)
 	end
 end 
 
--- no ui party
--- zoom pop fix
--- split screen
--- alternate start
-
 local oldOnFirstUpdate = OnFirstUpdate 
 function OnFirstUpdate()
 
@@ -48,18 +43,18 @@ function OnFirstUpdate()
 		return
 	end
 
-	if UIP.GetSetting("zoomPopOverride") then 
-		ForkThread(function()
-			import('/modules/zoompopper.lua').Init()
-			local cam = GetCamera('WorldCamera')
-			cam:Reset()
-		end)
-	end
-
-
 	if UIP.GetSetting("useAlternativeStartSequence") then 
 		AlternateStartSequence()
 	else
+
+		if UIP.GetSetting("zoomPopOverride") then 
+			ForkThread(function()
+				import('/modules/zoompopper.lua').Init()
+				local cam = GetCamera('WorldCamera')
+				cam:Reset()
+			end)
+		end
+
 		oldOnFirstUpdate()
 	end
 

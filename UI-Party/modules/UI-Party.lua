@@ -46,7 +46,7 @@ function CreateUI(isReplay)
 
 	import('/mods/UI-Party/modules/settings.lua').init()
 	import('/mods/UI-Party/modules/ui.lua').init()
-	import('/mods/UI-Party/modules/econtrol.lua').setEnabled(GetSetting("showEcontrol"))
+	import('/mods/UI-Party/modules/econtrol.lua').setEnabled(Enabled() and GetSetting("showEcontrol"))
 
 end
 

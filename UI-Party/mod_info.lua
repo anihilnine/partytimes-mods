@@ -14,8 +14,9 @@ after = {
 
 -- ### todo
 
+--  enable mod doesnt effect econtrol
 --  remove having to reselect for upgrades
---  submerge adornment
+--  submerge adornment fix
 --	econtrol tooltip
 --	better uiparty button
 --	use common (with check that is running and give to myx)

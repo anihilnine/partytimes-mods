@@ -37,6 +37,15 @@ function Init()
 				return { val = false }
 			end
 		},
+--		{
+--			name="submerged",
+--			testFn= function(u) 
+--				if u:IsInCategory("SUBMERSIBLE") and GetIsSubmerged({u}) == 1 then
+--					return { val=16, img='/mods/ui-party/textures/idle_icon.dds', width=16, height=16 } 
+--				end
+--				return { val = false }
+--			end
+--		},
 		{
 			name="locked",
 			testFn= function(u) 
@@ -233,7 +242,7 @@ function OnBeat()
 		end
 
 		if selectedUnits and table.getn(selectedUnits) == 1 then
-			-- return the queue back the way it was
+			-- return the queue back the way it was. For some reasons this throws errors (without harm) until you deselect and reselect your acu
 			SetCurrentFactoryForQueueDisplay(selectedUnits[1])
 		else
 			ClearCurrentFactoryForQueueDisplay()

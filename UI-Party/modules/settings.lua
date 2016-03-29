@@ -1,3 +1,4 @@
+local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 local Prefs = import('/lua/user/prefs.lua')
 local savedPrefs = Prefs.GetFromCurrentProfile("Party-UI Settings")
 local settingDescriptions
@@ -122,7 +123,7 @@ function setAllGlobalValues(t)
 		savedPrefs.global[id] = value
 	end
 	savePreferences()
-	import('/mods/UI-Party/modules/econtrol.lua').setEnabled(savedPrefs.global.showEcontrol)
+	import('/mods/UI-Party/modules/econtrol.lua').setEnabled(UIP.Enabled() and savedPrefs.global.showEcontrol)
 end
 
 function setXYvalues(posX, posY)

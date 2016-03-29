@@ -610,8 +610,8 @@ function OnMexCategoryUiClick(self, event, category)
 						SetPaused({ best }, false)
 					else
 						-- pause all except the best
-						local allButBest = from(sorted).where(function(k,u) return u ~= best end).toArray()
-						SetPaused(allButBest, true)
+						local worst = sorted[table.getn(sorted)]
+						SetPaused({ worst }, true)
 					end
 				else
 					SetPaused(category.units, not category.isPaused)
@@ -1056,4 +1056,6 @@ function setEnabled(value)
 		buildUi()
 	end
 end
+
+
 

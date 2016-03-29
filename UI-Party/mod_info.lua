@@ -1,39 +1,35 @@
 name = "UI Party"
-version = 9
+version = 10
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
 author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL"
 url = ""
-uid = "022E3DB4-9C00-4ED7-9876-4866D316E009"
+uid = "022E3DB4-9C00-5ED7-9876-4866D316E010"
 exclusive = false
 ui_only = true
 conflicts = {  }
 after = { 
-	"a0714870-3f5e-4b60-970e-1b02341990ec",     -- Supreme Economy 2.1 (nolag)
+
 }
 
--- ### upcoming features
+-- ### todo
 
--- building mexes
--- hover over descriptions
--- pause engies when toggle via mex buttons
--- github
-
-
--- better uiparty button
--- use common (with check that is running and give to myx)
--- remove reclaim from income in eco window (how to do team overspil)
--- show reclaim graph
--- only run test when in dev mode
--- a million silo problems`
--- arty power usage problems
--- clicking on mexes to see what is upgrading selects all including maintenance, which is all. do we need to split repair/upgrade/maint/build/etc
--- econtrol needs switch, mex option, integrate github
+--  tatsu thing
+--  remove having to reselect for upgrades
+--  submerge adornment
+--	econtrol tooltip
+--	better uiparty button
+--	use common (with check that is running and give to myx)
+--	remove reclaim from income in eco window (how to do team overspil)
+--	show reclaim graph
+--	only run test when in dev mode
+--	a million silo problems
+--	arty power usage problems
+--	get rounding fix integrated
 
 -- ### history
 
 -- v10
---	new: Econ-trol ui
 --	added key - Select similar onscreen units
 --	added key - Undo last queue order - works for engies and factories
 --	update beep/message for finished structure/acu upgrades.
@@ -41,6 +37,8 @@ after = {
 --	upgrade adorment for acu upgrades - this feature requires notify mod, doesnt work in replay
 --	fix - shows double adornments when upgrading fac
 --	adornments - greater emphasis on idle master facs
+--	new: Econtrol ui
+--	performance improvements
 
 -- v9
 --	Compatibility with FAF 3642

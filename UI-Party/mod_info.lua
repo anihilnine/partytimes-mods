@@ -37,8 +37,10 @@ after = {
 --	adornments - greater emphasis on idle master facs
 --	adornments - fixed: double adornments when upgrading fac
 --	alternative startup sequence - now for non split screen - thanks to tatsu!
+--	alternative startup sequence - fixed: have to reselect acu to get build menu items - thanks to tatsu!
 --	performance improvements
 --	new settings
+
 
 -- v9
 --	Compatibility with FAF 3642

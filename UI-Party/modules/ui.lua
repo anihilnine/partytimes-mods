@@ -54,7 +54,7 @@ function addMainpanelButtons()
 	LayoutHelpers.AtLeftTopIn(buttons.dragButton, mainPanel, panelConst.buttonXOffset, 0)
 	
 	buttons.configButton = Button(mainPanel, modpath..'/textures/options_up.dds', modpath..'/textures/options_down.dds', modpath..'/textures/options_over.dds', modpath..'/textures/options_up.dds')
-	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, panelConst.buttonXOffset + (panelConst.buttonSize+panelConst.buttonDistance)*1, 0)
+	LayoutHelpers.AtLeftTopIn(buttons.configButton, mainPanel, panelConst.buttonXOffset + (panelConst.buttonSize+40)*1, 0)
 	
 	buttons.dragButton.HandleEvent = function(self, event)
 		if event.Type == 'ButtonPress' then

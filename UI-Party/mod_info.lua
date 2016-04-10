@@ -14,11 +14,7 @@ after = {
 
 -- ### todo
 
---  enable mod doesnt effect econtrol
---  remove having to reselect for upgrades
---  submerge adornment fix
 --	econtrol tooltip
---	better uiparty button
 --	use common (with check that is running and give to myx)
 --	remove reclaim from income in eco window (how to do team overspil)
 --	show reclaim graph
@@ -30,15 +26,19 @@ after = {
 -- ### history
 
 -- v10
---	added key - Select similar onscreen units
---	added key - Undo last queue order - works for engies and factories
---	update beep/message for finished structure/acu upgrades.
---	upgrade adornment for structures
---	upgrade adorment for acu upgrades - this feature requires notify mod, doesnt work in replay
---	fix - shows double adornments when upgrading fac
---	adornments - greater emphasis on idle master facs
 --	new: Econtrol ui
+--	keys - added Select similar onscreen units
+--	keys - added Undo last queue order - works for engies and factories. 
+--	beep/message - added for finished structure/acu upgrades.
+--	adornments - added upgrading structures
+--	adornments - added upgrading acu - this feature requires notify mod, doesnt work in replay
+--	adornments - added submerged destroyers + surfaced subs
+--	adornments - added loaded tac/nuke/defense missile 
+--	adornments - greater emphasis on idle master facs
+--	adornments - fixed: double adornments when upgrading fac
+--	alternative startup sequence - now for non split screen - thanks to tatsu!
 --	performance improvements
+--	new settings
 
 -- v9
 --	Compatibility with FAF 3642

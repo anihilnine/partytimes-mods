@@ -26,13 +26,24 @@ function Init()
 
 end
 
+local wasWatching = false
 local tick = 0
 function OnBeat()
-	tick = tick + 1
-	if tick == 10 then
-		UnitWatcher.OnBeat();
-		import('/mods/UI-Party/modules/test.lua');
-		tick = 0
+	if (Enabled) then 
+		tick = tick + 1
+		if tick == 10 then			
+			local isWatching = GetSetting("watchUnits")
+			if isWatching then 
+				UnitWatcher.OnBeat();
+			end
+			if wasWatching and not isWatching then
+				UnitWatcher.Shutdown();
+			end
+			wasWatching = isWatching
+
+			import('/mods/UI-Party/modules/test.lua');
+			tick = 0
+		end
 	end
 end
 

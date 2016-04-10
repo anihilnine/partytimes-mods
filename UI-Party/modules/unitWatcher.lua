@@ -37,15 +37,44 @@ function Init()
 				return { val = false }
 			end
 		},
---		{
---			name="submerged",
---			testFn= function(u) 
---				if u:IsInCategory("SUBMERSIBLE") and GetIsSubmerged({u}) == 1 then
---					return { val=16, img='/mods/ui-party/textures/idle_icon.dds', width=16, height=16 } 
---				end
---				return { val = false }
---			end
---		},
+		{
+			name="submerged",
+			testFn= function(u) 
+				if u:IsInCategory("SUBMERSIBLE") then					
+					if u:IsInCategory("DESTROYER") then
+						if GetIsSubmerged({u}) == -1 then
+							-- submerged destroyer
+							return { val=16, img='/mods/ui-party/textures/down.dds', width=12, height=14 } 
+						end
+					else
+						if GetIsSubmerged({u}) == 1 then
+							-- surfaced sub
+							return { val=16, img='/mods/ui-party/textures/up.dds', width=12, height=14 } 
+						end
+					end
+				end
+				return { val = false }
+			end
+		},
+		{
+			name="loaded",
+			testFn= function(u) 
+				if u:IsInCategory("SILO") then		
+				
+					local mi = u:GetMissileInfo()
+					if (mi) then 
+						if (mi.nukeSiloStorageCount > 0) then 		
+							return { val=16, img='/mods/ui-party/textures/loaded1.dds', width=16, height=24 } 
+						end
+						if (mi.tacticalSiloStorageCount > 0) then 		
+							return { val=16, img='/mods/ui-party/textures/loaded1.dds', width=8, height=12 } 
+						end
+					end
+
+				end
+				return { val = false }
+			end
+		},
 		{
 			name="locked",
 			testFn= function(u) 
@@ -250,6 +279,13 @@ function OnBeat()
 
 	end
 
+end
+
+function Shutdown()
+	local units = SelectHelper.getAllUnits()
+	from(units).foreach(function(k,v)
+		RemoveAllAdornments(v)
+	end)
 end
 
 function RemoveAllAdornments(u)

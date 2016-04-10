@@ -14,7 +14,7 @@ local settings = import(modpath..'/modules/settings.lua')
 local savedPrefs = nil
 local curPrefs = nil
 local curY = 0
-local curX = 50
+local curX = 30
 
 local uiPanel = {
 	main = nil,
@@ -23,7 +23,7 @@ local uiPanel = {
 }
 
 local uiPanelSettings = {
-	width = 600,
+	width = 500,
 	textSize = {
 		headline = 20,
 		section = 16,
@@ -89,7 +89,7 @@ function createPrefsUi()
 	createMainPanel()
 	curY = 0
 	
-	LayoutHelpers.CenteredAbove(UIUtil.CreateText(uiPanel.main, "UI Party Settings", uiPanelSettings.textSize.headline, UIUtil.bodyFont), uiPanel.main, curY - 30)
+	LayoutHelpers.CenteredAbove(UIUtil.CreateText(uiPanel.main, "ui party", uiPanelSettings.textSize.headline, UIUtil.bodyFont), uiPanel.main, curY - 30)
 	curY = curY + 30
 	createOptions(curY)
 	
@@ -104,14 +104,14 @@ end
 
 
 function createMainPanel()
-	posX = 500
+	posX = 100
 	posY = 100
 	
 	uiPanel.main = Bitmap(GetFrame(0))
-	uiPanel.main.Depth:Set(99)
+	uiPanel.main.Depth:Set(1199)
 	LayoutHelpers.AtLeftTopIn(uiPanel.main, GetFrame(0), posX, posY)
+	uiPanel.main:InternalSetSolidColor('dd000000')
 	uiPanel.main.Width:Set(uiPanelSettings.width)
-	uiPanel.main:SetTexture('/textures/ui/common/game/economic-overlay/econ_bmp_m.dds')
 	uiPanel.main:Show()
 end
 
@@ -124,19 +124,23 @@ function createOptions()
 	from(settingGroups).foreach(function(gk, kv) 
 	
 		if kv.name ~= "Hidden" then
-			curY = curY + 10
-			LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, kv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX-20, curY)
-			curY = curY + 30
+
+			curY = curY + 5
+			LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, kv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX, curY)
+			curY = curY + 20
 
 			from(kv.settings).foreach(function(sk, sv) 
 	
+				local indent = 5 + (sv.indent or 0) * 15
+				
+
 				if sv.type == "bool" then
-					createSettingCheckbox(curX, curY, 13, {"global", sv.key}, sv.name, sv.key)
+					createSettingCheckbox(curX+indent, curY, 13, {"global", sv.key}, sv.name, sv.key)
 				elseif sv.type == "number" then
-					createSettingsSliderWithText(curX, curY, sv.name, sv.min, sv.max, sv.valMult, {"global", sv.key}, sv.key)
+					createSettingsSliderWithText(curX+indent, curY, sv.name, sv.min, sv.max, sv.valMult, {"global", sv.key}, sv.key)
 				elseif sv.type == "custom" then
-					LayoutHelpers.AtLeftTopIn(sv.control(sv), uiPanel.main, curX+30, curY)
-					LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, sv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+130, curY+7)
+					LayoutHelpers.AtLeftTopIn(sv.control(sv), uiPanel.main, curX+indent, curY)
+					LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, sv.name, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+100+indent, curY+7)
 					curY = curY + 30
 				else
 					UipLog("Unknown settings type: " .. sv.type)
@@ -155,7 +159,7 @@ function createOkCancelButtons()
 	local UIUtil = import('/lua/ui/uiutil.lua')
 
 	local btnOk = UIUtil.CreateButtonStd(uiPanel.main, '/dialogs/standard-small_btn/standard-small', 'OK', 12, 2, 0, "UI_Opt_Mini_Button_Click", "UI_Opt_Mini_Button_Over")
-	LayoutHelpers.AtLeftTopIn(btnOk, uiPanel.main, curX-20, curY)
+	LayoutHelpers.AtLeftTopIn(btnOk, uiPanel.main, curX, curY)
 	btnOk.OnClick = function(self)
 		settings.setAllGlobalValues(curPrefs.global)
 		uiPartyUi.reloadAndApplyGlobalConfigs()
@@ -164,7 +168,7 @@ function createOkCancelButtons()
 	end
 
 	local btnCancel = UIUtil.CreateButtonStd(uiPanel.main, '/dialogs/standard-small_btn/standard-small', 'Cancel', 12, 2, 0, "UI_Opt_Mini_Button_Click", "UI_Opt_Mini_Button_Over")
-	LayoutHelpers.AtLeftTopIn(btnCancel, uiPanel.main, curX + 80, curY)
+	LayoutHelpers.AtLeftTopIn(btnCancel, uiPanel.main, curX + 100, curY)
 	btnCancel.OnClick = function(self)
 		uiPanel.main:Destroy()
 		uiPanel.main = nil
@@ -203,7 +207,7 @@ function createSettingCheckbox(posX, posY, size, args, text, key)
 	end
 	
 	LayoutHelpers.AtLeftTopIn(box, uiPanel.main, posX, posY+1)
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, text, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
+	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, text, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, posX+15, curY)
 	curY = curY + 20
 	
 end
@@ -236,7 +240,7 @@ function createSettingsSliderWithText(posX, posY, text, minVal, maxVal, valMult,
     Tooltip.AddCheckboxTooltip(slider, 'UIP_' .. key)
 
 
-	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, text, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+30, curY)
+	LayoutHelpers.AtLeftTopIn(UIUtil.CreateText(uiPanel.main, text, uiPanelSettings.textSize.option, UIUtil.bodyFont), uiPanel.main, curX+20, curY)
 
 	curY = curY + 20
 

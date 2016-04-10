@@ -70,11 +70,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="textures\crown_icon.dds" />
+    <Content Include="textures\down.dds" />
     <Content Include="textures\drag_up.dds" />
+    <Content Include="textures\loaded1.dds" />
+    <Content Include="textures\loaded2.dds" />
     <Content Include="textures\lock_icon.dds" />
     <Content Include="textures\options_down.dds" />
     <Content Include="textures\options_over.dds" />
     <Content Include="textures\options_up.dds" />
+    <Content Include="textures\up.dds" />
     <Content Include="textures\upgrade.dds" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

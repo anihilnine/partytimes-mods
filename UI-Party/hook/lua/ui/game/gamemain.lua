@@ -100,10 +100,6 @@ function AlternateStartSequence()
 			import('/modules/zoompopper.lua').Init()
 		end
 
-		-- select acu & start placing fac
-		AddSelectUnits(avatars)
-		import('/modules/hotbuild.lua').buildAction('Builders')
-		
 		-- 1nd cam zoom out
 		local cam1 = GetCamera("WorldCamera")
 		cam1:SetZoom(cam1:GetMaxZoom(),0)
@@ -128,6 +124,13 @@ function AlternateStartSequence()
 			WaitSeconds(0)
 			cam1:RevertRotation() -- UIZoomTo does something funny
 		end
+
+		-- select acu & start placing fac
+		WaitSeconds(0)
+		AddSelectUnits(avatars)
+		import('/modules/hotbuild.lua').buildAction('Builders')
+
+
 	end)
 
 	-- normal stuff

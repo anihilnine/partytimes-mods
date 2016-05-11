@@ -1,10 +1,10 @@
 name = "UI Party"
-version = 10
+version = 11
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu"
+author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu, sheeo"
 url = ""
-uid = "022E3DB4-9C00-5ED7-9876-4866D316E010"
+uid = "022E3DB4-9C00-5ED7-9876-4866D316E011"
 exclusive = false
 ui_only = true
 conflicts = {  }
@@ -24,6 +24,9 @@ after = {
 --	get rounding fix integrated
 
 -- ### history
+
+-- v11
+--	released v10 to public (which was only released to individuals since vault down)
 
 -- v10
 --	new: Econtrol ui

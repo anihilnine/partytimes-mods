@@ -37,6 +37,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="hook\lua\ui\game\avatars.lua" />
+    <None Include="hook\lua\userInit.lua" />
     <None Include="hook\lua\UserSync.lua" />
     <None Include="hook\lua\SimSync.lua" />
     <None Include="hook\lua\simInit.lua" />

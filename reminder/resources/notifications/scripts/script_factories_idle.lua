@@ -79,6 +79,9 @@ function triggerNotification()
 			end
 			
 			runtimeConfig.subtext = num.." idle "..catValues.name.." "..amountText
+
+			PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Opt_Mini_Button_Over'}))
+
 			return true
 		end
 	end

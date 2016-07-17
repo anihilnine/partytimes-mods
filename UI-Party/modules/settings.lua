@@ -35,6 +35,8 @@ function init()
 			{ key="watchUnits", type="bool", default=true, name="Watch units (slow?)", description="Mod analyzes units" },
 			{ indent = 1, key="showAdornments", type="bool", default=true, name="Show Adornments (slow?)", description="Display symbols if unit is being assisted, is locked, is repeating. Requires Watch units" },
 			{ indent = 1, key="alertUpgradeFinished", type="bool", default=true, name="Alert when upgrade structure/acu finished", description="Beeps and messages you whenever a structure (eg: mex/factory/radar) or acu has finished upgrading. Requires Watch units. Acu upgrades also requires Notify mod" },
+			{ key="alertIdleFac", type="bool", default=true, name="Highglight idle factory in avatars", description="Beeps and show big red marker on the avatars pane, whenever there is an idle fac" },
+			{ key="immersionAcuDamage", type="bool", default=true, name="Screen goes red when acu is damage", description="Show red damage effect when acu gets damaged" },
 		}},
 		{ name = "Units", settings = {
 			{ key="setGroundFireOnAttack", type="bool", default=true, name="Start in ground fire mode", description="Sets it so all units are ground firing. This is because normal fire mode is useless and ground fire does the same except allows you to fire at ground as well." },

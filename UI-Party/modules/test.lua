@@ -2,13 +2,17 @@
 function Invoke()
 	local a, b = pcall( function()
 
---		local units = GetSelectedUnits()
---		if (units ~= nil) then
+		local units = GetSelectedUnits()
+		if (units ~= nil) then
 
---			local fu = units[1]
---			LOG(fu:GetEntityId())
+			local fu = units[1]
+			LOG(fu)
 
---		end
+			for k,v in fu do
+				LOG(k,v)
+			end
+
+		end
 
 	end )
 

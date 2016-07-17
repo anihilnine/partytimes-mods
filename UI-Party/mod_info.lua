@@ -14,6 +14,8 @@ after = {
 
 -- ### todo
 
+
+-- options for beep idle fac
 --	econtrol tooltip
 --	use common (with check that is running and give to myx)
 --	remove reclaim from income in eco window (how to do team overspil)
@@ -24,6 +26,11 @@ after = {
 --	get rounding fix integrated
 
 -- ### history
+
+-- v12
+--	notifications - beep & red avatars marker - on idle fac
+--	immersion - screen goes red when acu takes damage
+--	adornments - performance enhancements
 
 -- v11
 --	released v10 to public (which was only released to individuals since vault down)

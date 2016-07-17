@@ -12,6 +12,47 @@ local hasNotify = exists('/mods/Notify/modules/notify.lua')
 local notify = nil
 if hasNotify then notify = import('/mods/Notify/modules/notify.lua') end
 
+local idle1 = { val=16, img='/mods/ui-party/textures/idle_icon.dds', width=16, height=16 } 
+local idle2 = { val=14, img='/mods/ui-party/textures/idle_icon.dds', width=14, height=14 } 
+local idle3 = { val=12, img='/mods/ui-party/textures/idle_icon.dds', width=12, height=12 }
+local idle4 = { val=8, img='/mods/ui-party/textures/idle_icon_small.dds', width=8, height=8 }
+local idle5 = { val = false }
+local sub1 = { val=16, img='/mods/ui-party/textures/down.dds', width=12, height=14 } 
+local sub2 = { val=16, img='/mods/ui-party/textures/up.dds', width=12, height=14 } 
+local sub3 = { val = false }
+local silo1 = { val=16, img='/mods/ui-party/textures/loaded1.dds', width=16, height=24 } 
+local silo2 = { val=16, img='/mods/ui-party/textures/loaded1.dds', width=8, height=12 } 
+local silo3 = { val = false }
+local locked1 = { val=12, img='/mods/ui-party/textures/lock_icon.dds', width=12, height=12 }
+local locked2 = { val=8, img='/mods/ui-party/textures/lock_icon_small.dds', width=8, height=8 }
+local locked3 = { val = false }
+local upgrade1 = { val=7, img='/mods/ui-party/textures/upgrade.dds', width=8, height=8 }
+local upgrade2 = { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+local upgrade3 = { val = false }
+local assisted1 = { val=8, img='/mods/ui-party/textures/crown_icon_small.dds', width=8, height=8 }
+local assisted2 = { val=8, img='/mods/ui-party/textures/crown_icon_small_grey.dds', width=8, height=8 }
+local assisted3 = { val = false }
+local master1 = { val=1, img='/mods/ui-party/textures/repeating_master_fac.dds', width=12, height=16 }
+local master2 = { val=2, img='/mods/ui-party/textures/master_fac.dds', width=12, height=16 }
+local master3 = { val=3, img='/mods/ui-party/textures/repeating_solo_fac.dds', width=12, height=16 }
+local master4 = { val=4, img='/mods/ui-party/textures/solo_fac.dds', width=12, height=16 }
+local master5 = { val = false }
+local enhance1 = { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+local enhance2 = { val = false }
+
+
+function SetIdle(u, idle)
+	local changedOn = (not u.lastIsIdle) and idle
+
+	if (UIP.GetSetting("alertIdleFac")) then 
+		if (changedOn and u:IsInCategory("FACTORY")) then
+			PlaySound(Sound({Bank = 'Interface', Cue = 'UI_Menu_Error_01'}))
+		end
+	end
+
+	u.lastIsIdle = idle;
+end
+
 function Init()
 	trackers = {
 		{
@@ -21,20 +62,25 @@ function Init()
 					if u:IsInCategory("FACTORY") then 
 						if (u.assistedByF) then 
 							-- idle master fac is terrible
-							return { val=16, img='/mods/ui-party/textures/idle_icon.dds', width=16, height=16 } 
+							SetIdle(u, true)
+							return idle1
 						elseif (u.assistedByE) then 
 							-- idle assistedByEng fac is bad
-							return { val=14, img='/mods/ui-party/textures/idle_icon.dds', width=14, height=14 } 
+							SetIdle(u, true)
+							return idle2
 						else
 							-- idle solo fac is bad
-							return { val=12, img='/mods/ui-party/textures/idle_icon.dds', width=12, height=12 } 
+							SetIdle(u, true)
+							return idle3 
 						end
 					else
 						-- idle engie is not bad
-						return { val=8, img='/mods/ui-party/textures/idle_icon_small.dds', width=8, height=8 }
+						SetIdle(u, true)
+						return idle4
 					end					
 				end
-				return { val = false }
+				SetIdle(u, false)
+				return idle5
 			end
 		},
 		{
@@ -44,16 +90,16 @@ function Init()
 					if u:IsInCategory("DESTROYER") then
 						if GetIsSubmerged({u}) == -1 then
 							-- submerged destroyer
-							return { val=16, img='/mods/ui-party/textures/down.dds', width=12, height=14 } 
+							return sub1
 						end
 					else
 						if GetIsSubmerged({u}) == 1 then
 							-- surfaced sub
-							return { val=16, img='/mods/ui-party/textures/up.dds', width=12, height=14 } 
+							return sub2
 						end
 					end
 				end
-				return { val = false }
+				return sub3
 			end
 		},
 		{
@@ -64,25 +110,25 @@ function Init()
 					local mi = u:GetMissileInfo()
 					if (mi) then 
 						if (mi.nukeSiloStorageCount > 0) then 		
-							return { val=16, img='/mods/ui-party/textures/loaded1.dds', width=16, height=24 } 
+							return silo1
 						end
 						if (mi.tacticalSiloStorageCount > 0) then 		
-							return { val=16, img='/mods/ui-party/textures/loaded1.dds', width=8, height=12 } 
+							return silo2
 						end
 					end
 
 				end
-				return { val = false }
+				return silo3
 			end
 		},
 		{
 			name="locked",
 			testFn= function(u) 
 				if u.locked then 
-					if u:IsInCategory("FACTORY") then return { val=12, img='/mods/ui-party/textures/lock_icon.dds', width=12, height=12 } end
-					return { val=8, img='/mods/ui-party/textures/lock_icon_small.dds', width=8, height=8 }
+					if u:IsInCategory("FACTORY") then return locked1 end
+					return locked1
 				end
-				return { val = false }
+				return locked3
 			end,
 			
 		},
@@ -97,35 +143,35 @@ function Init()
 						local firstIsStruct = from(firstBp.Categories).contains("STRUCTURE")
 						if (firstIsStruct) then 
 							if GetIsPaused({ u }) then 
-								return { val=7, img='/mods/ui-party/textures/upgrade.dds', width=8, height=8 }
+								return upgrade1
 							else
-								return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+								return upgrade2
 							end
 						end
 					end
 				end
-				return { val = false }
+				return upgrade3
 			end
 		},
 		{
 			name="assisted",
 			testFn= function(u) 				
 				if (not u:IsInCategory("FACTORY")) then
-					if u.assistedByE then return { val=8, img='/mods/ui-party/textures/crown_icon_small.dds', width=8, height=8 }
-					elseif u.assistedByU then return { val=8, img='/mods/ui-party/textures/crown_icon_small_grey.dds', width=8, height=8 }
+					if u.assistedByE then return assisted1
+					elseif u.assistedByU then return assisted2
 					end
 				end
-				return { val = false }
+				return assisted3
 			end
 		},
 		{
 			name="masterFactory",
 			testFn= function(u) 
 
-				local repeating_master = { val=1, img='/mods/ui-party/textures/repeating_master_fac.dds', width=12, height=16 }
-				local master = { val=2, img='/mods/ui-party/textures/master_fac.dds', width=12, height=16 }
-				local repeating_solo = { val=3, img='/mods/ui-party/textures/repeating_solo_fac.dds', width=12, height=16 }
-				local solo = { val=4, img='/mods/ui-party/textures/solo_fac.dds', width=12, height=16 }
+				local repeating_master = master1
+				local master = master2
+				local repeating_solo = master3
+				local solo = master4
 				
 				if (u:IsInCategory("FACTORY")) then
 					local isGuarding = u:GetGuardedEntity() ~= nil
@@ -163,7 +209,7 @@ function Init()
 
 					end
 				end		
-				return { val = false }
+				return master5
 			end
 		}
 	}
@@ -178,9 +224,9 @@ function Init()
 				testFn= function(u) 	
 
 					if (u.isEnhancing) then 
-						return { val=8, img='/mods/ui-party/textures/upgrade.dds', width=12, height=12 }
+						return enhance1
 					end
-					return { val = false }
+					return enhance2
 				end
 			});
 

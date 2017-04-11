@@ -33,7 +33,7 @@ function CreateIdleTab(unitData, id, expandFunc)
 				end
 			bg.overlay:SetNeedsFrameUpdate(true)
 
-			ShowBigRedScreen()
+			--ShowBigRedScreen()
 		end
 
 	end
@@ -42,46 +42,46 @@ function CreateIdleTab(unitData, id, expandFunc)
 end
 
 
-local bigRed;
+--local bigRed;
 
-function CreateBigRedScreen()
+--function CreateBigRedScreen()
 
-	if (UIP.GetSetting("immersionAcuDamage")) then 
+--	if (UIP.GetSetting("immersionAcuDamage")) then 
 
-		bigRed = Bitmap(GetFrame(0))
-		LayoutHelpers.AtLeftTopIn(bigRed, GetFrame(0), 7, 8)
-		bigRed.Left:Set(0)
-		bigRed.Top:Set(0)
-		bigRed:SetSolidColor('33FF0000')
-		bigRed.Width:Set(90)
-		bigRed.Height:Set(34)
-		bigRed.Width:Set(1920)
-		bigRed.Height:Set(1080)
-		bigRed:DisableHitTest()
-		bigRed:SetAlpha(0)
-		bigRed:SetNeedsFrameUpdate(false)
+--		bigRed = Bitmap(GetFrame(0))
+--		LayoutHelpers.AtLeftTopIn(bigRed, GetFrame(0), 7, 8)
+--		bigRed.Left:Set(0)
+--		bigRed.Top:Set(0)
+--		bigRed:SetSolidColor('33FF0000')
+--		bigRed.Width:Set(90)
+--		bigRed.Height:Set(34)
+--		bigRed.Width:Set(1920)
+--		bigRed.Height:Set(1080)
+--		bigRed:DisableHitTest()
+--		bigRed:SetAlpha(0)
+--		bigRed:SetNeedsFrameUpdate(false)
 
-	end
-end
+--	end
+--end
 
-function ShowBigRedScreen()
+--function ShowBigRedScreen()
 
-	if (UIP.GetSetting("immersionAcuDamage")) then 
+--	if (UIP.GetSetting("immersionAcuDamage")) then 
 
-		bigRed:SetAlpha(1)
-		bigRed:SetNeedsFrameUpdate(true)
+--		bigRed:SetAlpha(1)
+--		bigRed:SetNeedsFrameUpdate(true)
 
-		bigRed.OnFrame = function(self, delta)
-			local newAlpha = self:GetAlpha() - 0.005
-			if newAlpha >= 0 then -- some rare bug here
-				self:SetAlpha(newAlpha)
+--		bigRed.OnFrame = function(self, delta)
+--			local newAlpha = self:GetAlpha() - 0.005
+--			if newAlpha >= 0 then -- some rare bug here
+--				self:SetAlpha(newAlpha)
 
-				if newAlpha == 0 then
-					bigRed:SetNeedsFrameUpdate(false)
-				end
-			end
-		end
-	end
-end
+--				if newAlpha == 0 then
+--					bigRed:SetNeedsFrameUpdate(false)
+--				end
+--			end
+--		end
+--	end
+--end
 
-CreateBigRedScreen()
+--CreateBigRedScreen()

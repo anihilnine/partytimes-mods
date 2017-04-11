@@ -18,6 +18,11 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+FilterSelection/
+Advanced Coop FA/
+common/
+additionalCameraStuff/
+selectionSort/
 
 # Roslyn cache directories
 *.ide/

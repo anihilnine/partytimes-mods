@@ -268,6 +268,23 @@ function DoUpdate()
 	UpdateMexesUi();
 end
 
+function GetEnergyRate()
+	local econData = GetEconomyTotals()
+	local simFrequency = GetSimTicksPerSecond()
+	local lastActualVal = econData["lastUseActual"]['ENERGY']
+	local incomeVal = econData["income"]['ENERGY']
+	local incomeAvg = math.min(incomeVal * simFrequency, 99999999)
+	local actualAvg = math.min(lastActualVal * simFrequency, 99999999)
+	local rateVal = math.ceil(incomeAvg - actualAvg)
+	return rateVal
+end
+
+function UpdatePop(pop)
+	local rate = GetEnergyRate()
+	UIP.econtrol.ui.powerOnPowerLabel:SetText('Spend on E: ' .. (-pop))
+	UIP.econtrol.ui.powerOnPowerLabel2:SetText('Income:        ' .. rate)
+end
+
 function UpdateResourcesUi()
 
 	local units = from(SelectHelper.getAllUnits())
@@ -347,6 +364,11 @@ function UpdateResourcesUi()
 		resourceTypes.foreach( function(k, rType)
 			local unitTypeUsage = unitType.usage[rType.name]
 			local rTypeUsageTotal = rType.usage + rType.maintUsage
+
+			if (unitType.isPop) then
+				UpdatePop(unitTypeUsage.usage)				
+			end
+
 			if rTypeUsageTotal == 0 then
 				unitTypeUsage.bar.Width:Set(0)
 				unitTypeUsage.maintBar.Width:Set(0)
@@ -397,7 +419,7 @@ function UpdateResourcesUi()
 --				if (str == 0) then str = "" else str = string.format("%10.3f", str) end
 --				unitTypeUsage.maintText:SetText(str)
 
-
+		
 			end
 		end )
 	end )
@@ -763,7 +785,7 @@ function buildUi()
 			{ name = "Sonar", category = categories.STRUCTURE * categories.SONAR + categories.MOBILESONAR, icon = "icon_structure_intel", spacer = 0  },
 			{ name = "Stealth", category = categories.STRUCTURE * categories.COUNTERINTELLIGENCE, icon = "icon_structure_intel", spacer = 20 },
 
-			{ name = "Energy production", category = categories.STRUCTURE * categories.ENERGYPRODUCTION, icon = "icon_structure1_energy", spacer = 0 },
+			{ name = "Energy production", category = categories.STRUCTURE * categories.ENERGYPRODUCTION, icon = "icon_structure1_energy", spacer = 0, isPop=true },
 			{ name = "Mass extraction", category = categories.MASSEXTRACTION + categories.MASSSTORAGE, icon = "icon_structure1_mass", spacer = 0 },
 			{ name = "Mass fabrication", category = categories.STRUCTURE * categories.MASSFABRICATION, icon = "icon_structure1_mass", spacer = 20 },
 
@@ -815,6 +837,22 @@ function buildUi()
 		uiRoot.textLabel:DisableHitTest()
 		LayoutHelpers.AtLeftIn(uiRoot.textLabel, uiRoot, 0)
 		LayoutHelpers.AtTopIn(uiRoot.textLabel, uiRoot, -95)
+
+		uiRoot.powerOnPowerLabel = UIUtil.CreateText(uiRoot, 'pop: XX', 11, UIUtil.bodyFont)
+		uiRoot.powerOnPowerLabel.Width:Set(10)
+		uiRoot.powerOnPowerLabel.Height:Set(9)
+		uiRoot.powerOnPowerLabel:SetNewColor('white')
+		uiRoot.powerOnPowerLabel:DisableHitTest()
+		LayoutHelpers.AtLeftIn(uiRoot.powerOnPowerLabel, uiRoot, 80)
+		LayoutHelpers.AtTopIn(uiRoot.powerOnPowerLabel, uiRoot, -120)
+
+		uiRoot.powerOnPowerLabel2 = UIUtil.CreateText(uiRoot, 'pop: XX', 11, UIUtil.bodyFont)
+		uiRoot.powerOnPowerLabel2.Width:Set(10)
+		uiRoot.powerOnPowerLabel2.Height:Set(9)
+		uiRoot.powerOnPowerLabel2:SetNewColor('white')
+		uiRoot.powerOnPowerLabel2:DisableHitTest()
+		LayoutHelpers.AtLeftIn(uiRoot.powerOnPowerLabel2, uiRoot, 80)
+		LayoutHelpers.AtTopIn(uiRoot.powerOnPowerLabel2, uiRoot, -108)
 
 		function CreateText(text, x)
 

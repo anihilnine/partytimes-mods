@@ -31,6 +31,7 @@ after = {
 --	notifications - beep & red avatars marker - on idle fac
 --	immersion - screen goes red when acu takes damage
 --	adornments - performance enhancements
+--	Econtrol - added power-spent-on-power
 
 -- v11
 --	released v10 to public (which was only released to individuals since vault down)

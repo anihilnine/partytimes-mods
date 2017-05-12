@@ -51,7 +51,6 @@
     <None Include="hook\lua\ui\game\layouts\unitview_mini.lua" />
     <None Include="hook\lua\ui\game\tabs.lua" />
     <None Include="hook\lua\ui\game\construction.lua" />
-    <None Include="hook\modules\reclaim.lua" />
     <None Include="hook\lua\sim\Unit.lua" />
     <None Include="modules\selection.lua" />
     <None Include="modules\linq.lua" />
@@ -67,7 +66,7 @@
     <None Include="modules\settings.lua" />
     <None Include="modules\settingsUi.lua" />
     <None Include="modules\ui.lua" />
-    <None Include="hook\modules\zoompopper.lua" />
+    <None Include="hook\lua\ui\game\zoompopper.lua" />
     <None Include="mod_info.lua" />
   </ItemGroup>
   <ItemGroup>

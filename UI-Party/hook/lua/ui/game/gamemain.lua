@@ -49,7 +49,7 @@ function OnFirstUpdate()
 
 		if UIP.GetSetting("zoomPopOverride") then 
 			ForkThread(function()
-				import('/modules/zoompopper.lua').Init()
+				import('/lua/ui/game/zoompopper.lua').Init()
 				local cam = GetCamera('WorldCamera')
 				cam:Reset()
 			end)
@@ -64,7 +64,7 @@ end
 function AlternateStartSequence()
 
 	-- normal stuff
-	import('/modules/hotbuild.lua').init()
+	import('/lua/keymap/hotbuild.lua').init()
 	EnableWorldSounds()
 	local avatars = GetArmyAvatars()
 	if avatars and avatars[1]:IsInCategory("COMMAND") then
@@ -97,7 +97,7 @@ function AlternateStartSequence()
 		-- required else just zoom into middle all the time
 		if UIP.GetSetting("zoomPopOverride") then 
 			WaitSeconds(0)
-			import('/modules/zoompopper.lua').Init()
+			import('/lua/ui/game/zoompopper.lua').Init()
 		end
 
 		-- 1nd cam zoom out
@@ -120,7 +120,7 @@ function AlternateStartSequence()
 			UIZoomTo(avatars, 1.2)
 			
 			WaitSeconds(1)
-			cam1:SetZoom(import('/modules/zoompopper.lua').GetPopLevel(),0.1) -- different zoom level to usual, not as close
+			cam1:SetZoom(import('/lua/ui/game/zoompopper.lua').GetPopLevel(),0.1) -- different zoom level to usual, not as close
 			WaitSeconds(0)
 			cam1:RevertRotation() -- UIZoomTo does something funny
 		end
@@ -128,7 +128,7 @@ function AlternateStartSequence()
 		-- select acu & start placing fac
 		WaitSeconds(0)
 		AddSelectUnits(avatars)
-		import('/modules/hotbuild.lua').buildAction('Builders')
+		import('/lua/keymap/hotbuild.lua').buildAction('Builders')
 
 
 	end)

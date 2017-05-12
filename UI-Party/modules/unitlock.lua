@@ -1,5 +1,5 @@
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
-local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
+local CommonUnits = import('/mods/common/units.lua')
 local ignoreLocks = false
 
 function IgnoreLocksWhile(a)
@@ -9,7 +9,7 @@ function IgnoreLocksWhile(a)
 end
 
 function SelectAllLockedUnits()
-	local units = from(SelectHelper.getAllUnits()).where(function(k,v) return v.locked end).toArray()
+	local units = from(CommonUnits.Get()).where(function(k,v) return v.locked end).toArray()
 	SelectUnits(units)
 end
 

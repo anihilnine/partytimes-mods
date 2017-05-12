@@ -47,12 +47,12 @@ end
 
 
 function Reset()
---	local currentlySelected = GetSelectedUnits() or {}
---	isAutoSelection = true
---	UISelectionByCategory("ALLUNITS", false, false, false, false)
---	AddSelection()
---	SelectUnits(currentlySelected)
---	isAutoSelection = false
+	local currentlySelected = GetSelectedUnits() or {}
+	isAutoSelection = true
+	UISelectionByCategory("ALLUNITS", false, false, false, false)
+	AddSelection()
+	SelectUnits(currentlySelected)
+	isAutoSelection = false
 end
 
 

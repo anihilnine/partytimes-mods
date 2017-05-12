@@ -1,6 +1,33 @@
+local a, b = pcall(function() 
+	local CommonUnits = import('/mods/common/units.lua')
+end)
+if a == false then
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	LOG("Crashed. ui party requires another ui mod to work: Common Mod Tools v1")
+	local UIUtil = import('/lua/ui/uiutil.lua')
+	UIUtil.CreateText(GetFrame(0), "Crashed. Ui party requires another ui mod to work: Common Mod Tools v1", 20, UIUtil.bodyFont)
+	return 0
+end
+
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 local UnitSplit = import('/mods/UI-Party/modules/UnitSplit.lua')
-local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
 local UnitLock = import('/mods/ui-party/modules/unitlock.lua')
 
 UIP.Init()
@@ -8,7 +35,6 @@ UIP.Init()
 local oldCreateUI = CreateUI
 function CreateUI(isReplay)
 
- 
 	oldCreateUI(isReplay)
 
 	UIP.CreateUI(isReplay)
@@ -16,7 +42,7 @@ function CreateUI(isReplay)
 	if UIP.Enabled() then 
 
 		ForkThread(function() 
-			
+
 			local tabs = import('/lua/ui/game/tabs.lua')
 			local mf = import('/lua/ui/game/multifunction.lua')
 
@@ -81,7 +107,7 @@ function AlternateStartSequence()
 	PlaySound( Sound { Bank='AmbientTest', Cue='AMB_Planet_Rumble_zoom'} )
 
 	ForkThread(function()
-		
+
 		-- earlier unlock input
 		if not IsNISMode() then
 			import('/lua/ui/game/worldview.lua').UnlockInput()
@@ -118,7 +144,7 @@ function AlternateStartSequence()
 		if not GetReplayState() then
 			-- left cam glides towards acu
 			UIZoomTo(avatars, 1.2)
-			
+
 			WaitSeconds(1)
 			cam1:SetZoom(import('/lua/ui/game/zoompopper.lua').GetPopLevel(),0.1) -- different zoom level to usual, not as close
 			WaitSeconds(0)
@@ -150,14 +176,14 @@ end
 
 local oldOnSelectionChanged = OnSelectionChanged
 function OnSelectionChanged(oldSelection, newSelection, added, removed)
-	if not SelectHelper.IsAutoSelection() then 
+	--if not SelectHelper.IsAutoSelection() then 
 		UnitSplit.SelectionChanged()
 
 		local selectionChanged = UnitLock.OnSelectionChanged(oldSelection, newSelection, added, removed)
 		if not selectionChanged then
 			oldOnSelectionChanged(oldSelection, newSelection, added, removed)
 		end
-	end
+	--end
 end
 
 

@@ -1,7 +1,6 @@
 local settings = import('/mods/UI-Party/modules/settings.lua')
 local UnitWatcher = import('/mods/UI-Party/modules/unitWatcher.lua')
 local GameMain = import('/lua/ui/game/gamemain.lua')
-local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
 test = {};
 
 
@@ -18,8 +17,6 @@ function Init()
 		end
 	end
 	
-	GameMain.AddBeatFunction(SelectHelper.UpdateAllUnits)
-
 	UnitWatcher.Init()
 
 	GameMain.AddBeatFunction(OnBeat)

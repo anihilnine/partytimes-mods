@@ -1,21 +1,20 @@
 name = "UI Party"
-version = 11
+version = 13
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu, sheeo"
+author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu, sheeo, icedreamer"
 url = ""
-uid = "022E3DB4-9C00-5ED7-9876-4866D316E011"
+uid = "022E3DB4-9C00-5ED7-9876-4866D316E013"
 exclusive = false
 ui_only = true
 conflicts = {  }
-after = { 
-
-}
+requires = {"zcbf6277-24e3-437a-b968-Common-v1"}
+before = {"zcbf6277-24e3-437a-b968-Common-v1"}
+after = { }
 
 -- ### todo
 
-
--- options for beep idle fac
+--  options for beep idle fac
 --	econtrol tooltip
 --	use common (with check that is running and give to myx)
 --	remove reclaim from income in eco window (how to do team overspil)
@@ -27,9 +26,12 @@ after = {
 
 -- ### history
 
+-- v13
+--	Compatibility with FAF 3680
+--  added icedreamer to list of contributors
+
 -- v12
 --	notifications - beep & red avatars marker - on idle fac
---	immersion - screen goes red when acu takes damage
 --	adornments - performance enhancements
 --	Econtrol - added power-spent-on-power
 

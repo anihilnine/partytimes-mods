@@ -1,6 +1,6 @@
 -- with heavy inspiration from Idle Engineers by camelCase
 local GameMain = import('/lua/ui/game/gamemain.lua')
-local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
+local CommonUnits = import('/mods/common/units.lua')
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 local Group = import('/lua/maui/group.lua').Group
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
@@ -241,7 +241,7 @@ function OnBeat()
 
 		local selectedUnits = GetSelectedUnits()
 
-		local units = SelectHelper.getAllUnits()
+		local units = CommonUnits.Get()
 
 		from(units).foreach(function(k,v)
 			if v.uip == nil then
@@ -328,7 +328,7 @@ function OnBeat()
 end
 
 function Shutdown()
-	local units = SelectHelper.getAllUnits()
+	local units = CommonUnits.Get()
 	from(units).foreach(function(k,v)
 		RemoveAllAdornments(v)
 	end)

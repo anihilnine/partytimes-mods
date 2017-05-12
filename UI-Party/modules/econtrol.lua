@@ -1,4 +1,4 @@
-local SelectHelper = import('/mods/ui-party/modules/selectHelper.lua')
+local CommonUnits = import('/mods/common/units.lua')
 local UnitHelper = import('/mods/ui-party/modules/unitHelper.lua')
 local UIP = import('/mods/UI-Party/modules/UI-Party.lua')
 local Bitmap = import('/lua/maui/bitmap.lua').Bitmap
@@ -287,7 +287,7 @@ end
 
 function UpdateResourcesUi()
 
-	local units = from(SelectHelper.getAllUnits())
+	local units = from(CommonUnits.Get())
 
 	unitTypes.foreach( function(k, unitType)
 		unitType.prodUnits = { }
@@ -514,7 +514,7 @@ function UpdateMexesUi()
 	end)
 
 
-	local units = from(SelectHelper.getAllUnits())
+	local units = from(CommonUnits.Get())
 
 	units.foreach(function(k, unit)
 

@@ -227,3 +227,72 @@ function SelectionChanged()
 		lastSelectedGroup = nil
 	end
 end
+
+function SelectNextLandUnitsGroupByRole()	
+	if lastSelectedGroup ~= nil then
+		local appendToExistingSelection = IsKeyDown("Shift")
+		SelectGroup(lastSelectedGroup.Name + 1, appendToExistingSelection)
+	else
+		SplitLandUnitsByRole()
+	end
+end
+
+function SplitLandUnitsByRole()
+	local units = GetSelectedUnits()
+	if units == nil or table.getn(units) == 0 then
+		ConExecute("Ui_SelectByCategory +inview MOBILE LAND")
+	end
+
+
+	local groupDefns = {
+		{ 
+		  Name = 1,
+		  testFn= function(u) 
+			return u:IsInCategory("DIRECTFIRE") and not u:IsInCategory("ENGINEER") and not u:IsInCategory("SCOUT") and not u:IsInCategory("del0204") and not u:IsInCategory("drl0204") and not u:IsInCategory("xrl0302") -- mongoose and hoplite and firebeetle
+		  end,
+		  Units = from({})
+		},
+		{ 
+		  Name = 2,
+		  testFn= function(u) 
+			return u:IsInCategory("INDIRECTFIRE") or u:IsInCategory("del0204") or u:IsInCategory("drl0204") -- mongoose and hoplite
+		  end,
+		  Units = from({})
+		},
+		{ 
+		  Name = 3,
+		  testFn= function(u) 
+			return not u:IsInCategory("ENGINEER") and (not u:IsInCategory("DIRECTFIRE") or u:IsInCategory("SCOUT") or u:IsInCategory("xrl0302")) -- fire beetle
+		  end,
+		  Units = from({})
+		}
+	};
+
+	-- give lock a chance to run
+	ForkThread(function() 
+		units = GetSelectedUnits()
+		
+		from(units).foreach(function(uk,uv) 
+			local found = false
+			for gk, gv in groupDefns do
+				if (not found and gv.testFn(uv)) then
+					gv.Units.addValue(uv)
+					found = true
+				end
+			end
+		end);
+
+		local nonEmptyGroups = from({})
+		for gk, gv in groupDefns do
+			if (gv.Units.any()) then
+				nonEmptyGroups.addValue(gv)
+			end
+		end
+
+		groups = nonEmptyGroups
+		if (groups.any()) then
+			SelectGroup(groups.first().Name)
+		end
+
+	end)	
+end

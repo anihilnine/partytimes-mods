@@ -1,10 +1,10 @@
 name = "UI Party"
-version = 13
+version = 14
 copyright = "nah"
 description = "Various UI Enhancements. With contributions from many."
-author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu, sheeo, icedreamer"
+author = "Anihilnine, with contributions (technical help / ideas / I stole their code) from Zock, Domino, Myxir, yorick, Sir Prize, Crotalus, Coding Squirrel, Morax, Speed2, Hotbuild, camelCase, HUSAR_PL, MaCielPL, tatsu, sheeo, icedreamer, JoonasTo, Heaven, Fast-Thick-Pants"
 url = ""
-uid = "022E3DB4-9C00-5ED7-9876-4866D316E013"
+uid = "022E3DB4-9C00-5ED7-9876-4866D316E014"
 exclusive = false
 ui_only = true
 conflicts = {  }
@@ -23,11 +23,25 @@ after = { }
 --	a million silo problems
 --	arty power usage problems
 --	get rounding fix integrated
+-- bugs: 
+-- snoops are considered nonsupport
+-- locked units mess up select support
+-- unit split no work
+
+
 
 -- ### history
 
+-- v14
+--  option for starting with Player Colours on (allies = green, enemy = red, you = blue). Inspired by Heaven
+--  option for hiding just the resource summary of EControl. Inspired by edmundopt 
+--	doubleclicking a non-assister will select all similarly locked non-assisters (used to select all units of that unit type regardless of lock or assistance). Inspired by JoonasTo
+--  added bindable key for select onscreen directfire land units. Inspired by Fast-Thick-Pants
+--  added bindable key for select onscreen support land units (not direct fire or engineer or ACU or SACU). Inspired by Fast-Thick-Pants
+--  added bindable key for split land units by role (directfire/support)
+
 -- v13
---	Compatibility with FAF 3680
+--	compatibility with FAF 3680
 --  added icedreamer to list of contributors
 
 -- v12

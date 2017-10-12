@@ -79,29 +79,27 @@ function OnSelectionChanged(oldSelection, newSelection, added, removed)
 	local tobeSelected = {}
 	local changesMade = false
 
-	if UIP.GetSetting("doubleClickSelectsSimilarAssisters") then 
+	if not ignoreLocks and UIP.GetSetting("doubleClickSelectsSimilarAssisters") then 
 
 		-- if its a double click on an assister, select all fellow assisters
 		if isDoubleclick(newSelection) then
 			UipLog("-- double click detected")
 
 			local dblClickGuardedUnit = dblClickUnit:GetGuardedEntity() 
-			local isAssisting = dblClickGuardedUnit and not dblClickGuardedUnit:IsDead()
+			local dblClickLocked = dblClickUnit.locked
 
-			if isAssisting then 
-				for entityid, unit in ipairs(newSelection) do
+			for entityid, unit in ipairs(newSelection) do
 		
-					local guardedUnit = unit:GetGuardedEntity() 
-				
-					if guardedUnit == dblClickGuardedUnit then
-						UipLog("found a brother")
-						table.insert(tobeSelected,unit)
-						changesMade = true
-					else
-						UipLog("didnt find brother")
-					end
+				local isSame = unit:GetGuardedEntity() == dblClickGuardedUnit and unit.locked == dblClickUnit.locked
+				if isSame then
+					UipLog("found a brother")
+					table.insert(tobeSelected,unit)
+					changesMade = true
+				else
+					UipLog("didnt find brother")
 				end
-			end 
+			end
+			
 		end
 	end
 
@@ -109,7 +107,6 @@ function OnSelectionChanged(oldSelection, newSelection, added, removed)
 
 		-- if double click didnt happen then select everything except assisters
 		if not changesMade then
-
 			if newSelection then
 	
 				local newSelectionCount = table.getn(newSelection)
@@ -119,8 +116,6 @@ function OnSelectionChanged(oldSelection, newSelection, added, removed)
 		
 					for entityid, unit in ipairs(newSelection) do
 		
-						local guardedUnit = unit:GetGuardedEntity() 
-					
 						if unit.locked then
 							changesMade = true
 						else

@@ -28,6 +28,7 @@ function init()
 		}},
 		{ name = "UI", settings = {
 			{ key="showEcontrol", type="bool", default=true, name="Show ECOntrol (slow?)", description="Show a user interface with a summary of your economy" },
+			{ indent = 1, key="showEcontrolResources", type="bool", default=true, name="Show resource summary", description="Shows what you are spending your mass/energy on" },
 			{ key="rearrangeBottomPanes", type="bool", default=true, name="Move bottom panes", description="Reorders the selected-unit-info pane and the orders pane to take up less vertical space. (For wide monitors)" },
 			{ key="hideMenusOnStart", type="bool", default=true, name="Hide misc menus", description="On startup, collapse the multifunction (pings) and tabs (main menu)" },
 		}},
@@ -46,6 +47,7 @@ function init()
 		{ name = "Start Sequence", settings = {
 			{ key="useAlternativeStartSequence", type="bool", default=true, name="Use Alternative Start Sequence", description="Different zoom in.\r\nAcu is selected earlier.\r\nFirst fac placement started." },
 			{ indent = 1, key="startSplitScreen", type="bool", default=true, name="Start Split Screen", description="The game starts in split screen mode.\r\nLeft screen zooms in.\r\nRight screen zooms out.\r\nUser can control acu earlier.\r\nAcu is automatically set in place-land-factory mode.\r\nRequires alternative start sequence." },
+			{ key="playerColors", type="bool", default=false, name="Start with Player Colors on", description="Start in alternate player colour mode (allies = green, enemy = red, you = blue)." },
 		}},
 		{ name = "Split Screen", settings = {
 			{ key="smallerContructionTabWhenSplitScreen", type="bool", default=true, name="Construction to left", description="Construction menu just spans left screen (not both)" },

@@ -21,6 +21,10 @@ function Init()
 
 	GameMain.AddBeatFunction(OnBeat)
 
+	if GetSetting("playerColors") then
+		TeamColorMode(true)
+	end
+
 end
 
 local wasWatching = false
@@ -107,6 +111,15 @@ function InitKeys()
 	KeyMapper.SetUserKeyAction('Toggle Unit Lock', {action = "UI_Lua import('/mods/UI-Party/modules/unitlock.lua').ToggleSelectedUnitsLock()", category = cat, order = order,})
 	order = order + 1
 	KeyMapper.SetUserKeyAction('Select all locked units', {action = "UI_Lua import('/mods/UI-Party/modules/unitlock.lua').SelectAllLockedUnits()", category = cat, order = order,})
+	order = order + 1
+	--KeyMapper.SetUserKeyAction('Select onscreen directfire land units', {action = "UI_Lua import('/lua/keymap/smartSelection.lua').smartSelect('+inview MOBILE LAND DIRECTFIRE -ENGINEER -SCOUT')", category = cat, order = order,})
+	KeyMapper.SetUserKeyAction('Select onscreen directfire land units', {action = "UI_Lua import('/mods/UI-Party/modules/selection.lua').SelectOnScreenDirectFireLandUnits()", category = cat, order = order,})
+	--order = order + 1
+	--KeyMapper.SetUserKeyAction('Select onscreen support land units', {action = "UI_Lua import('/lua/keymap/smartSelection.lua').smartSelect('+inview MOBILE LAND -DIRECTFIRE -ENGINEER')", category = cat, order = order,})
+	KeyMapper.SetUserKeyAction('Select onscreen support land units', {action = "UI_Lua import('/mods/UI-Party/modules/selection.lua').SelectOnScreenSupportLandUnits()", category = cat, order = order,})
+	order = order + 1
+	KeyMapper.SetUserKeyAction('Split land units by role', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectNextLandUnitsGroupByRole()", category = cat, order = order,})
+	order = order + 1
 end
 
 function GetSettings()

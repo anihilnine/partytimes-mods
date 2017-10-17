@@ -23,10 +23,6 @@ after = { }
 --	a million silo problems
 --	arty power usage problems
 --	get rounding fix integrated
--- bugs: 
--- snoops are considered nonsupport
--- locked units mess up select support
--- unit split no work
 
 
 

@@ -292,6 +292,8 @@ function SplitLandUnitsByRole()
 		groups = nonEmptyGroups
 		if (groups.any()) then
 			SelectGroup(groups.first().Name)
+		else
+			SelectUnits({})
 		end
 
 	end)	

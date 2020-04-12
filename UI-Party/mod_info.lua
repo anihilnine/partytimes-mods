@@ -28,6 +28,9 @@ after = { }
 
 -- ### history
 
+-- v15
+--  added bindable key to quickswitch observer
+
 -- v14
 --  option for starting with Player Colours on (allies = green, enemy = red, you = blue). Inspired by Heaven
 --  option for hiding just the resource summary of EControl. Inspired by edmundopt 

@@ -120,6 +120,8 @@ function InitKeys()
 	order = order + 1
 	KeyMapper.SetUserKeyAction('Split land units by role', {action = "UI_Lua import('/mods/UI-Party/modules/unitsplit.lua').SelectNextLandUnitsGroupByRole()", category = cat, order = order,})
 	order = order + 1
+	KeyMapper.SetUserKeyAction('Quick switch observer mode', {action = "UI_Lua import('/mods/UI-Party/modules/observer.lua').QuickSwitch()", category = cat, order = order,})
+	order = order + 1
 end
 
 function GetSettings()
